@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "mtlmotoparkings - Montreal Motorcycle Parkings",
+  title: "mtlmotoparking - Montreal Motorcycle Parkings",
   description: "Find and navigate to motorcycle parking spots in Montreal.",
 };
 
