@@ -43,7 +43,7 @@ export default function MotorcycleScene() {
       <Suspense fallback={null}>
         <MotorcycleModel />
       </Suspense>
-      <OrbitControls enablePan={false} />
+      <OrbitControls enablePan={false} enableZoom={false} />
     </Canvas>
   );
 }
