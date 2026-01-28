@@ -19,6 +19,7 @@
     "lucide-react": "^0.563.0",
     "maplibre-gl": "^5.16.0",
     "next": "16.1.5",
+    "posthog-js": "^1.335.5",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-map-gl": "^8.1.0",

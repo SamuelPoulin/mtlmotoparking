@@ -8,7 +8,7 @@ export type Parking = {
   Longitude: string;
 };
 
-export const fetchMontrealParking = async (): Promise<Parking[]> => {
+export async function fetchMontrealParking(): Promise<Parking[]> {
   const baseUrl =
     "https://donnees.montreal.ca/api/3/action/datastore_search_sql";
   const params = new URLSearchParams({
@@ -28,4 +28,4 @@ export const fetchMontrealParking = async (): Promise<Parking[]> => {
   } = await response.json();
 
   return data.result.records;
-};
+}

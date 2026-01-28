@@ -15,8 +15,9 @@ import {
   Marker,
   type MapRef,
 } from "react-map-gl/maplibre";
+import posthog from "posthog-js";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/src/components/ui/button";
 import {
   CommandDialog,
   CommandEmpty,
@@ -24,7 +25,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "@/src/components/ui/command";
 import {
   Dialog,
   DialogContent,
@@ -33,16 +34,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import useGeocode from "@/hooks/useGeocode";
-import { Parking } from "@/lib/api/parkings";
+} from "@/src/components/ui/dialog";
+import useGeocode from "@/src/hooks/useGeocode";
+import { Parking } from "@/src/lib/api/parkings";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import Link from "next/link";
 import Image from "next/image";
 
 import styles from "../page.module.css";
-import MotorcycleScene from "@/components/three/MotorcycleScene";
+import MotorcycleScene from "@/src/components/three/MotorcycleScene";
+import { PortfolioLink } from "@/src/components/social/PortfolioLink";
+import { KofiLink } from "@/src/components/social/KofiLink";
 
 export default function MapClient({ parkings }: { parkings: Parking[] }) {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -79,20 +82,7 @@ export default function MapClient({ parkings }: { parkings: Parking[] }) {
               mtlmotoparking
             </span>
           </Link>
-          <Link
-            href="https://ko-fi.com/samuelpoulin"
-            target="_blank"
-            className="transition-all duration-300 hover:scale-105"
-          >
-            <Image
-              width="150"
-              height="38"
-              // style="border:0px;height:36px;"
-              src="https://storage.ko-fi.com/cdn/kofi6.png?v=6"
-              // border="0"
-              alt="Buy Me a Coffee at ko-fi.com"
-            />
-          </Link>
+          <KofiLink />
         </div>
       </header>
 
@@ -101,7 +91,10 @@ export default function MapClient({ parkings }: { parkings: Parking[] }) {
           <Button
             variant="outline"
             className="mt-5"
-            onClick={() => setSearchOpen(true)}
+            onClick={() => {
+              posthog.capture("search_address_opened");
+              setSearchOpen(true);
+            }}
           >
             Search an address
           </Button>
@@ -166,6 +159,11 @@ export default function MapClient({ parkings }: { parkings: Parking[] }) {
                       <button
                         type="button"
                         className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-blue-600 shadow-md"
+                        onClick={() => {
+                          posthog.capture("parking_spot_opened", {
+                            id: parking._id,
+                          });
+                        }}
                       >
                         <Motorbike className="h-4 w-4 text-foreground" />
                       </button>
@@ -254,17 +252,7 @@ export default function MapClient({ parkings }: { parkings: Parking[] }) {
                 Montréal
               </span>
             </div>
-            <div className="text-sm text-muted-foreground font-semibold">
-              <span></span>© {new Date().getFullYear()}{" "}
-              <Link
-                href="https://samuelpoulin.ca/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-4"
-              >
-                Samuel Poulin
-              </Link>
-            </div>
+            <PortfolioLink />
           </div>
         </div>
       </footer>

@@ -1,10 +1,12 @@
-import MotorcycleScene from "@/components/three/MotorcycleScene";
-import { Button } from "@/components/ui/button";
 import { ArrowRight, MapPin, Navigation } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
+import MotorcycleScene from "@/src/components/three/MotorcycleScene";
+import { Button } from "@/src/components/ui/button";
+
 import styles from "./page.module.css";
+import { PortfolioLink } from "@/src/components/social/PortfolioLink";
+import { KofiLink } from "@/src/components/social/KofiLink";
 
 export default function Home() {
   return (
@@ -16,20 +18,7 @@ export default function Home() {
               mtlmotoparking
             </span>
           </div>
-          <Link
-            href="https://ko-fi.com/samuelpoulin"
-            target="_blank"
-            className="transition-all duration-300 hover:scale-105"
-          >
-            <Image
-              width="150"
-              height="38"
-              // style="border:0px;height:36px;"
-              src="https://storage.ko-fi.com/cdn/kofi6.png?v=6"
-              // border="0"
-              alt="Buy Me a Coffee at ko-fi.com"
-            />
-          </Link>
+          <KofiLink />
         </div>
       </header>
 
@@ -102,17 +91,7 @@ export default function Home() {
                 Montréal
               </span>
             </div>
-            <div className="text-sm text-muted-foreground font-semibold">
-              <span></span>© {new Date().getFullYear()}{" "}
-              <Link
-                href="https://samuelpoulin.ca/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-4"
-              >
-                Samuel Poulin
-              </Link>
-            </div>
+            <PortfolioLink />
           </div>
         </div>
       </footer>
