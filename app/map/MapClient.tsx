@@ -70,7 +70,7 @@ export default function MapClient({ parkings }: { parkings: Parking[] }) {
   };
 
   return (
-    <div className="h-dvh flex flex-col bg-background">
+    <div className="flex flex-1 min-h-0 flex-col bg-background">
       <div className="absolute flex justify-center w-screen z-10">
         <Button
           variant="outline"
@@ -113,9 +113,9 @@ export default function MapClient({ parkings }: { parkings: Parking[] }) {
           )}
         </CommandList>
       </CommandDialog>
-      <div className="flex-1 min-h-0">
+      <div className="flex-1 relative">
         <Map
-          style={{ width: "100%", height: "100%" }}
+          style={{ position: "absolute", width: "100%", height: "100%" }}
           ref={mapRef}
           initialViewState={{
             latitude: 45.5019,
@@ -132,84 +132,82 @@ export default function MapClient({ parkings }: { parkings: Parking[] }) {
           <GeolocateControl position="bottom-right" />
           {parkings.map((parking) => (
             <Dialog key={parking._id}>
-              <form>
-                <Marker
-                  key={parking._id}
-                  latitude={Number(parking.Latitude)}
-                  longitude={Number(parking.Longitude)}
-                  anchor="bottom"
-                >
-                  <DialogTrigger asChild>
-                    <button
-                      type="button"
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-blue-600 shadow-md"
-                      onClick={() => {
-                        posthog.capture("parking_spot_opened", {
-                          id: parking._id,
-                        });
-                      }}
-                    >
-                      <Motorbike className="h-4 w-4 text-foreground" />
-                    </button>
-                  </DialogTrigger>
-                </Marker>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Motorcycle Parking</DialogTitle>
-                    <DialogDescription>{parking.NOM_ARROND}</DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter className="flex-col sm:flex-col gap-2">
-                    <p className="text-muted-foreground text-sm">
-                      Navigate with:
-                    </p>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start"
-                      type="submit"
-                      onClick={() =>
-                        window.open(
-                          `https://waze.com/ul?ll=${parking.Latitude},${parking.Longitude}&navigate=yes`,
-                          "_blank",
-                        )
-                      }
-                    >
-                      <Navigation className="mr-2 size-4" />
-                      Waze
-                      <ExternalLink className="ml-auto size-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start"
-                      type="submit"
-                      onClick={() =>
-                        window.open(
-                          `https://www.google.com/maps?q=${parking.Latitude},${parking.Longitude}`,
-                          "_blank",
-                        )
-                      }
-                    >
-                      <MapIcon className="mr-2 size-4" />
-                      Google Maps
-                      <ExternalLink className="ml-auto size-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start"
-                      type="submit"
-                      onClick={() =>
-                        window.open(
-                          `https://maps.apple.com/?daddr=${parking.Latitude},${parking.Longitude}`,
-                          "_blank",
-                        )
-                      }
-                    >
-                      <Apple className="mr-2 size-4" />
-                      Apple Maps
-                      <ExternalLink className="ml-auto size-4" />
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </form>
+              <Marker
+                key={parking._id}
+                latitude={Number(parking.Latitude)}
+                longitude={Number(parking.Longitude)}
+                anchor="bottom"
+              >
+                <DialogTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-blue-600 shadow-md"
+                    onClick={() => {
+                      posthog.capture("parking_spot_opened", {
+                        id: parking._id,
+                      });
+                    }}
+                  >
+                    <Motorbike className="h-4 w-4 text-foreground" />
+                  </button>
+                </DialogTrigger>
+              </Marker>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Motorcycle Parking</DialogTitle>
+                  <DialogDescription>{parking.NOM_ARROND}</DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="flex-col sm:flex-col gap-2">
+                  <p className="text-muted-foreground text-sm">
+                    Navigate with:
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    type="submit"
+                    onClick={() =>
+                      window.open(
+                        `https://waze.com/ul?ll=${parking.Latitude},${parking.Longitude}&navigate=yes`,
+                        "_blank",
+                      )
+                    }
+                  >
+                    <Navigation className="mr-2 size-4" />
+                    Waze
+                    <ExternalLink className="ml-auto size-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    type="submit"
+                    onClick={() =>
+                      window.open(
+                        `https://www.google.com/maps?q=${parking.Latitude},${parking.Longitude}`,
+                        "_blank",
+                      )
+                    }
+                  >
+                    <MapIcon className="mr-2 size-4" />
+                    Google Maps
+                    <ExternalLink className="ml-auto size-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    type="submit"
+                    onClick={() =>
+                      window.open(
+                        `https://maps.apple.com/?daddr=${parking.Latitude},${parking.Longitude}`,
+                        "_blank",
+                      )
+                    }
+                  >
+                    <Apple className="mr-2 size-4" />
+                    Apple Maps
+                    <ExternalLink className="ml-auto size-4" />
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
             </Dialog>
           ))}
           {selectedSearchMarker && (
