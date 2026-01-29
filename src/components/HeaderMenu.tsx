@@ -11,18 +11,11 @@ import {
   DrawerTrigger,
 } from "./ui/drawer";
 import { LocaleSwitch } from "../i18n/LocaleSwitch";
-import { usePathname } from "../i18n/navigation";
 import { FeedbackLink } from "./FeedbackLink";
 import { MadeWithLove } from "./MadeWithLove";
 import { PortfolioLink } from "./PortfolioLink";
 
 export function HeaderMenu() {
-  const pathname = usePathname();
-
-  if (pathname === "/") {
-    return null;
-  }
-
   return (
     <Drawer direction="bottom">
       <DrawerTrigger asChild>
