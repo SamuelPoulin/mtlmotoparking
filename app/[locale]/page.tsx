@@ -1,10 +1,13 @@
 import { ArrowRight, MapPin, Navigation } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import MotorcycleScene from "@/src/components/MotorcycleScene";
 import { Button } from "@/src/components/ui/button";
 
 export default function Home() {
+  const t = useTranslations("HomePage");
+
   return (
     <div className="container mx-auto px-6 py-20 md:py-32">
       <div className="max-w-3xl mx-auto text-center">
@@ -13,11 +16,11 @@ export default function Home() {
         </div>
 
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-6 text-balance">
-          Montréal Motorcycle Parkings
+          {t("title")}
         </h1>
 
         <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-xl mx-auto text-pretty">
-          Find and navigate to motorcycle parkings in Montréal
+          {t("description")}
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -27,7 +30,7 @@ export default function Home() {
             className="px-8 py-6 text-base font-medium rounded-full"
           >
             <Link href="/map">
-              Open Map
+              {t("openMapButton")}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
@@ -39,10 +42,11 @@ export default function Home() {
               <MapPin className="h-6 w-6 text-foreground" />
             </div>
             <div className="text-left">
-              <h3 className="font-semibold text-foreground">Find Parking</h3>
+              <h3 className="font-semibold text-foreground">
+                {t("findParkingTip.title")}
+              </h3>
               <p className="text-sm text-muted-foreground">
-                Sourced from the official Montréal database and updated
-                regularly
+                {t("findParkingTip.description")}
               </p>
             </div>
           </div>
@@ -52,9 +56,11 @@ export default function Home() {
               <Navigation className="h-6 w-6 text-foreground" />
             </div>
             <div className="text-left">
-              <h3 className="font-semibold text-foreground">Navigate</h3>
+              <h3 className="font-semibold text-foreground">
+                {t("navigateTip.title")}
+              </h3>
               <p className="text-sm text-muted-foreground">
-                Open directions directly within your favorite navigation app
+                {t("navigateTip.description")}
               </p>
             </div>
           </div>

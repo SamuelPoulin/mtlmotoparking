@@ -1,9 +1,12 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import posthog from "posthog-js";
 
 export function FeedbackLink() {
+  const t = useTranslations("Footer");
+
   return (
     <div className="text-sm text-muted-foreground font-semibold">
       <Link
@@ -13,7 +16,7 @@ export function FeedbackLink() {
         className="underline underline-offset-4"
         onClick={() => posthog.capture("feedback_link_clicked")}
       >
-        Give me feedback
+        {t("giveFeedback")}
       </Link>
     </div>
   );

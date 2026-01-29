@@ -1,0 +1,25 @@
+{
+  "HomePage": {
+    "title": "Montréal Motorcycle Parkings",
+    "description": "Find and navigate to motorcycle parking spots in Montréal",
+    "openMapButton": "Open Map",
+    "findParkingTip": {
+      "title": "Find Parking",
+      "description": "Sourced from the official Montréal database and updated regularly"
+    },
+    "navigateTip": {
+      "title": "Navigate",
+      "description": "Open directions directly within your favorite navigation app"
+    }
+  },
+  "Footer": {
+    "giveFeedback": "Give me feedback",
+    "madeWith": "Made with",
+    "fromMontreal": "from Montréal"
+  },
+  "MapPage": {
+    "searchAnAddress": "Search an address",
+    "motorcycleParking": "Motorcycle Parking",
+    "navigateWith": "Navigate with:"
+  }
+}

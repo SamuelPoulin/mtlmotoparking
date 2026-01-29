@@ -8,6 +8,7 @@ import {
   Motorbike,
   Navigation,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import posthog from "posthog-js";
 import { useRef, useState } from "react";
 import {
@@ -46,6 +47,7 @@ type MarkerCoordinates = {
 };
 
 export default function MapClient({ parkings }: { parkings: Parking[] }) {
+  const t = useTranslations("MapPage");
   const [searchOpen, setSearchOpen] = useState(false);
   const mapRef = useRef<MapRef>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -80,7 +82,7 @@ export default function MapClient({ parkings }: { parkings: Parking[] }) {
             setSearchOpen(true);
           }}
         >
-          Search an address
+          {t("searchAnAddress")}
         </Button>
       </div>
       <CommandDialog
@@ -154,12 +156,12 @@ export default function MapClient({ parkings }: { parkings: Parking[] }) {
               </Marker>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Motorcycle Parking</DialogTitle>
+                  <DialogTitle>{t("motorcycleParking")}</DialogTitle>
                   <DialogDescription>{parking.NOM_ARROND}</DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="flex-col sm:flex-col gap-2">
                   <p className="text-muted-foreground text-sm">
-                    Navigate with:
+                    {t("navigateWith")}
                   </p>
                   <Button
                     variant="outline"

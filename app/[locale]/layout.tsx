@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
 
 import StyledComponentsRegistry from "@/src/lib/registry";
 import { Footer } from "@/src/components/Footer";
 import { Header } from "@/src/components/Header";
-
-import "./globals.css";
 
 export const metadata: Metadata = {
   title: "mtlmotoparking - Montreal Motorcycle Parkings",
@@ -20,9 +19,11 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className="h-full flex flex-col font-sans antialiased">
         <StyledComponentsRegistry>
-          <Header />
-          <main className="flex flex-1">{children}</main>
-          <Footer />
+          <NextIntlClientProvider>
+            <Header />
+            <main className="flex flex-1">{children}</main>
+            <Footer />
+          </NextIntlClientProvider>
         </StyledComponentsRegistry>
       </body>
     </html>

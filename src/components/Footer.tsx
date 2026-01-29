@@ -1,7 +1,9 @@
 import styled from "styled-components";
+import { useTranslations } from "next-intl";
 
 import { PortfolioLink } from "./PortfolioLink";
 import { FeedbackLink } from "./FeedbackLink";
+import { LocaleSwitch } from "../i18n/LocaleSwitch";
 
 const HeartPulse = styled.span`
   @keyframes heart-pulse {
@@ -19,17 +21,30 @@ const HeartPulse = styled.span`
 `;
 
 export function Footer() {
+  const t = useTranslations("Footer");
+
   return (
     <footer className="border-t border-border">
       <div className="container mx-auto px-6 py-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <FeedbackLink />
-          <div className="flex items-center gap-2 text-sm text-muted-foreground font-semibold">
-            <span>
-              Made with <HeartPulse>💖</HeartPulse> from Montréal
-            </span>
+        <div className="flex flex-col gap-4 text-muted-foreground font-semibold">
+          <div className="flex items-center justify-center">
+            <LocaleSwitch />
           </div>
-          <PortfolioLink />
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+              <FeedbackLink />
+            </div>
+            <div>
+              <span>
+                {t("madeWith")}
+                <HeartPulse className="mx-1">💖</HeartPulse>
+                {t("fromMontreal")}
+              </span>
+            </div>
+            <div>
+              <PortfolioLink />
+            </div>
+          </div>
         </div>
       </div>
     </footer>
