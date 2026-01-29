@@ -1,45 +1,27 @@
-import styled from "styled-components";
-import { useTranslations } from "next-intl";
+"use client";
 
 import { PortfolioLink } from "./PortfolioLink";
 import { FeedbackLink } from "./FeedbackLink";
-import { LocaleSwitch } from "../i18n/LocaleSwitch";
-
-const HeartPulse = styled.span`
-  @keyframes heart-pulse {
-    0%,
-    100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.2);
-    }
-  }
-
-  animation: heart-pulse 2s ease-in-out infinite;
-  display: inline-block;
-`;
+import { MadeWithLove } from "./MadeWithLove";
+import { usePathname } from "../i18n/navigation";
 
 export function Footer() {
-  const t = useTranslations("Footer");
+  const pathname = usePathname();
+
+  const allowHiding = pathname !== "/";
 
   return (
-    <footer className="border-t border-border">
+    <footer
+      className={`${allowHiding ? "hidden md:flex" : ""} border-t border-border`}
+    >
       <div className="container mx-auto px-6 py-8">
         <div className="flex flex-col gap-4 text-muted-foreground font-semibold">
-          <div className="flex items-center justify-center">
-            <LocaleSwitch />
-          </div>
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
               <FeedbackLink />
             </div>
             <div>
-              <span>
-                {t("madeWith")}
-                <HeartPulse className="mx-1">💖</HeartPulse>
-                {t("fromMontreal")}
-              </span>
+              <MadeWithLove />
             </div>
             <div>
               <PortfolioLink />

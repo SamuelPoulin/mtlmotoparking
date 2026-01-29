@@ -5,6 +5,8 @@ import StyledComponentsRegistry from "@/src/lib/registry";
 import { Footer } from "@/src/components/Footer";
 import { Header } from "@/src/components/Header";
 
+import "../globals.css";
+
 export const metadata: Metadata = {
   title: "mtlmotoparking - Montreal Motorcycle Parkings",
   description: "Find and navigate to motorcycle parking spots in Montreal.",
