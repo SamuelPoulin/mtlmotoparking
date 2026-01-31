@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import posthog from "posthog-js";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import {
   GeolocateControl,
   Map,
@@ -29,8 +29,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/src/components/ui/dialog";
-import { Parking } from "@/src/lib/api/parkings";
 import { useStore } from "@/src/lib/zustand/store";
+import { Parking } from "@/src/lib/zustand/slices/map";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 

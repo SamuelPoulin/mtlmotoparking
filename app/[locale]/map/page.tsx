@@ -1,14 +1,5 @@
 import { ParkingMap } from "@/src/components/ParkingMap";
-
-export type Parking = {
-  _id: string;
-  NOM_ARROND: string;
-  CODE_RPA: string;
-  DESCRIPTION_CAT: string;
-  DESCRIPTION_RPA: string;
-  Latitude: string;
-  Longitude: string;
-};
+import { Parking } from "@/src/lib/zustand/slices/map";
 
 export async function fetchMontrealParking(): Promise<Parking[]> {
   const baseUrl = "https://donnees.montreal.ca/api/3/action/datastore_search";
