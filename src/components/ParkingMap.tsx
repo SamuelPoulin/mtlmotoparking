@@ -30,7 +30,7 @@ import {
   DialogTrigger,
 } from "@/src/components/ui/dialog";
 import { useStore } from "@/src/lib/zustand/store";
-import { Parking } from "@/src/lib/zustand/slices/map";
+import { Parking } from "@/src/lib/db/schema";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -48,8 +48,6 @@ export function ParkingMap({ parkings }: Props) {
   const mapRef = useRef<MapRef>(null);
 
   const { selectedCoordinates } = useStore();
-
-  console.log(selectedCoordinates);
 
   return (
     <div className="flex-1 relative">
@@ -73,11 +71,11 @@ export function ParkingMap({ parkings }: Props) {
       >
         <GeolocateControl position="bottom-right" />
         {parkings.map((parking) => (
-          <Dialog key={parking._id}>
+          <Dialog key={parking.id}>
             <Marker
-              key={parking._id}
-              latitude={Number(parking.Latitude)}
-              longitude={Number(parking.Longitude)}
+              key={parking.id}
+              latitude={Number(parking.latitude)}
+              longitude={Number(parking.longitude)}
               anchor="bottom"
             >
               <DialogTrigger asChild>
@@ -86,7 +84,7 @@ export function ParkingMap({ parkings }: Props) {
                   className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-blue-600 shadow-md"
                   onClick={() => {
                     posthog.capture("parking_spot_opened", {
-                      id: parking._id,
+                      id: parking.id,
                     });
                   }}
                 >
@@ -97,7 +95,7 @@ export function ParkingMap({ parkings }: Props) {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>{t("motorcycleParking")}</DialogTitle>
-                <DialogDescription>{parking.NOM_ARROND}</DialogDescription>
+                <DialogDescription>{parking.borough}</DialogDescription>
               </DialogHeader>
               <DialogFooter className="flex-col sm:flex-col gap-2">
                 <p className="text-muted-foreground text-sm">
@@ -109,7 +107,7 @@ export function ParkingMap({ parkings }: Props) {
                   type="submit"
                   onClick={() =>
                     window.open(
-                      `https://waze.com/ul?ll=${parking.Latitude},${parking.Longitude}&navigate=yes`,
+                      `https://waze.com/ul?ll=${parking.latitude},${parking.longitude}&navigate=yes`,
                       "_blank",
                     )
                   }
@@ -124,7 +122,7 @@ export function ParkingMap({ parkings }: Props) {
                   type="submit"
                   onClick={() =>
                     window.open(
-                      `https://www.google.com/maps?q=${parking.Latitude},${parking.Longitude}`,
+                      `https://www.google.com/maps?q=${parking.latitude},${parking.longitude}`,
                       "_blank",
                     )
                   }
@@ -139,7 +137,7 @@ export function ParkingMap({ parkings }: Props) {
                   type="submit"
                   onClick={() =>
                     window.open(
-                      `https://maps.apple.com/?daddr=${parking.Latitude},${parking.Longitude}`,
+                      `https://maps.apple.com/?daddr=${parking.latitude},${parking.longitude}`,
                       "_blank",
                     )
                   }
