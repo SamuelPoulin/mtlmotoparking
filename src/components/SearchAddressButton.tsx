@@ -123,7 +123,7 @@ export function SearchAddressButton({ mapRef }: Props) {
         <CommandList>
           {!isFetching && <CommandEmpty>No results found.</CommandEmpty>}
           {isFetching && (
-            <CommandLoading className="flex flex-1 items-center justify-center">
+            <CommandLoading className="flex flex-1 items-center justify-center py-4">
               <Spinner className="size-8" />
             </CommandLoading>
           )}
