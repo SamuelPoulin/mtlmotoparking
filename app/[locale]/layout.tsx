@@ -6,6 +6,7 @@ import { Footer } from "@/src/components/Footer";
 import { Header } from "@/src/components/Header";
 
 import "../globals.css";
+import { QueryProvider } from "@/src/lib/api/QueryProvider";
 
 export const metadata: Metadata = {
   title: "mtlmotoparking - Montreal Motorcycle Parkings",
@@ -22,9 +23,11 @@ export default function RootLayout({
       <body className="h-full flex flex-col font-sans antialiased">
         <StyledComponentsRegistry>
           <NextIntlClientProvider>
-            <Header />
-            <main className="flex flex-1">{children}</main>
-            <Footer />
+            <QueryProvider>
+              <Header />
+              <main className="flex flex-1">{children}</main>
+              <Footer />
+            </QueryProvider>
           </NextIntlClientProvider>
         </StyledComponentsRegistry>
       </body>
