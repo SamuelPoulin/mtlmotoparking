@@ -10,7 +10,7 @@ import { QueryProvider } from "@/src/lib/api/QueryProvider";
 import { ThemeProvider } from "@/src/components/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "mtlmotoparking - Montreal Motorcycle Parkings",
+  title: "mtlmotoparking",
   description: "Find and navigate to motorcycle parking spots in Montreal.",
 };
 
