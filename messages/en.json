@@ -18,7 +18,9 @@
   "MapPage": {
     "searchAnAddress": "Search an address",
     "motorcycleParking": "Motorcycle Parking",
-    "navigateWith": "Navigate with:"
+    "navigateWith": "Navigate with:",
+    "results": "Results",
+    "noResults": "No results found"
   },
   "madeWith": "Made with",
   "fromMontreal": "in Montreal"

@@ -6,7 +6,12 @@ const nextConfig: NextConfig = {
     styledComponents: true,
   },
   images: {
-    domains: ["storage.ko-fi.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "storage.ko-fi.com",
+      },
+    ],
   },
 };
 

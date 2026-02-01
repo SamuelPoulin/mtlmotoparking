@@ -58,9 +58,8 @@ export function SearchAddressButton({ mapRef }: Props) {
 
   const { data: suggestions = [], isFetching } = useQuery({
     queryKey: ["suggest", debouncedTerm],
-    enabled: debouncedTerm.trim().length > 0,
+    enabled: debouncedTerm.trim().length > 3,
     queryFn: async () => {
-      console.log("Fetching...");
       const { suggestions } = await searchBoxCore.suggest(debouncedTerm, {
         sessionToken: session.sessionToken,
       });
@@ -71,7 +70,7 @@ export function SearchAddressButton({ mapRef }: Props) {
 
   const debouncedSetTerm = debounce(
     (value: string) => setDebouncedTerm(value),
-    300,
+    1000,
   );
 
   useEffect(() => {
@@ -117,18 +116,18 @@ export function SearchAddressButton({ mapRef }: Props) {
         className="top-40/100"
       >
         <CommandInput
-          placeholder="Search an address..."
+          placeholder={`${t("searchAnAddress")}...`}
           onValueChange={setSearchTerm}
         />
         <CommandList>
-          {!isFetching && <CommandEmpty>No results found.</CommandEmpty>}
+          {!isFetching && <CommandEmpty>{t("noResults")}</CommandEmpty>}
           {isFetching && (
             <CommandLoading className="flex flex-1 items-center justify-center py-4">
               <Spinner className="size-8" />
             </CommandLoading>
           )}
           {suggestions.length > 0 && (
-            <CommandGroup heading="Results">
+            <CommandGroup heading={t("results")}>
               {suggestions.map((suggestion) => (
                 <CommandItem
                   key={suggestion.mapbox_id}
