@@ -3,6 +3,7 @@ import Link from "next/link";
 import { KofiLink } from "./KofiLink";
 import { HeaderMenu } from "./HeaderMenu";
 import { LocaleSwitch } from "../i18n/LocaleSwitch";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 
 export function Header() {
   return (
@@ -19,7 +20,8 @@ export function Header() {
           </Link>
         </div>
         <div className="flex gap-4">
-          <div className="hidden md:flex items-center">
+          <div className="hidden md:flex items-center gap-4">
+            <ThemeSwitcher />
             <LocaleSwitch />
           </div>
           <KofiLink />

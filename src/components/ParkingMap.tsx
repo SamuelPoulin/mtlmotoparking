@@ -33,6 +33,7 @@ import { useStore } from "@/src/lib/zustand/store";
 import { Parking } from "@/src/lib/db/schema";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import { useTheme } from "next-themes";
 
 export type MarkerCoordinates = {
   latitude: number;
@@ -46,6 +47,12 @@ type Props = {
 export function ParkingMap({ parkings }: Props) {
   const t = useTranslations("MapPage");
   const mapRef = useRef<MapRef>(null);
+  const { resolvedTheme } = useTheme();
+
+  const mapStyle =
+    resolvedTheme === "dark"
+      ? "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+      : "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
 
   const { selectedCoordinates } = useStore();
 
@@ -62,7 +69,7 @@ export function ParkingMap({ parkings }: Props) {
           longitude: -73.5674,
           zoom: 14,
         }}
-        mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+        mapStyle={mapStyle}
         attributionControl={{
           compact: true,
           customAttribution:
@@ -81,7 +88,7 @@ export function ParkingMap({ parkings }: Props) {
               <DialogTrigger asChild>
                 <button
                   type="button"
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-blue-600 shadow-md"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-md hover:bg-accent hover:text-accent-foreground"
                   onClick={() => {
                     posthog.capture("parking_spot_opened", {
                       id: parking.id,
@@ -156,7 +163,7 @@ export function ParkingMap({ parkings }: Props) {
             longitude={selectedCoordinates.longitude}
             anchor="bottom"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-black shadow-md">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-md  hover:bg-accent hover:text-accent-foreground">
               <Pin />
             </div>
           </Marker>

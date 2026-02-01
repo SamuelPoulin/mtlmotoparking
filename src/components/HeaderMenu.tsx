@@ -14,6 +14,7 @@ import { LocaleSwitch } from "../i18n/LocaleSwitch";
 import { FeedbackLink } from "./FeedbackLink";
 import { MadeWithLove } from "./MadeWithLove";
 import { PortfolioLink } from "./PortfolioLink";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 
 export function HeaderMenu() {
   return (
@@ -33,6 +34,7 @@ export function HeaderMenu() {
           <DrawerTitle>Menu</DrawerTitle>
         </DrawerHeader>
         <div className="flex flex-col items-center justify-center pb-8 pt-2 gap-8">
+          <ThemeSwitcher />
           <LocaleSwitch />
           <div className="flex flex-col gap-4 items-center">
             <FeedbackLink />
