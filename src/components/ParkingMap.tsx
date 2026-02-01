@@ -57,12 +57,12 @@ export function ParkingMap({ parkings }: Props) {
   const { selectedCoordinates } = useStore();
 
   return (
-    <div className="flex-1 relative">
+    <div className="flex-1">
       <div className="absolute flex justify-center w-screen z-10">
         <SearchAddressButton mapRef={mapRef} />
       </div>
       <Map
-        style={{ position: "absolute", width: "100%", height: "100%" }}
+        style={{ height: "100%" }}
         ref={mapRef}
         initialViewState={{
           latitude: 45.5019,
