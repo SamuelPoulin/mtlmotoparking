@@ -62,6 +62,7 @@ export function SearchAddressButton({ mapRef }: Props) {
     queryFn: async () => {
       const { suggestions } = await searchBoxCore.suggest(debouncedTerm, {
         sessionToken: session.sessionToken,
+        types: "address,poi,place",
       });
 
       return suggestions;
@@ -133,7 +134,9 @@ export function SearchAddressButton({ mapRef }: Props) {
                   key={suggestion.mapbox_id}
                   onSelect={() => handleSelected(suggestion)}
                 >
-                  {suggestion.full_address}
+                  {suggestion.feature_type === "poi"
+                    ? `${suggestion.name}, ${suggestion.full_address}`
+                    : suggestion.full_address}
                 </CommandItem>
               ))}
             </CommandGroup>
