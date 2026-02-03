@@ -2,13 +2,17 @@
 
 import {
   Apple,
+  Copy,
+  CopyCheck,
   ExternalLink,
   MapIcon,
   Motorbike,
   Navigation,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
+import { useState } from "react";
 import { Marker } from "react-map-gl/maplibre";
 
 import { Button } from "@/src/components/ui/button";
@@ -23,13 +27,13 @@ import {
 import { Parking } from "@/src/lib/db/schema";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useRouter, useSearchParams } from "next/navigation";
 
 type Props = {
   parking: Parking;
 };
 
 export function ParkingSpotDialog({ parking }: Props) {
+  const [linkCopied, setLinkCopied] = useState(false);
   const search = useSearchParams();
   const router = useRouter();
   const t = useTranslations("MapPage");
@@ -46,6 +50,12 @@ export function ParkingSpotDialog({ parking }: Props) {
     const params = new URLSearchParams(search.toString());
     params.append("parkingId", String(parking.id));
     router.replace(`?${params.toString()}`, { scroll: false });
+  };
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(window.location.href);
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 1500);
   };
 
   return (
@@ -76,8 +86,18 @@ export function ParkingSpotDialog({ parking }: Props) {
       </Marker>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("motorcycleParking")}</DialogTitle>
-          <DialogDescription>{parking.borough}</DialogDescription>
+          <DialogTitle className="text-nowrap">
+            <div className="flex items-center justify-between pr-6">
+              {t("motorcycleParking")}
+              <Button variant="ghost" onClick={handleCopy}>
+                {linkCopied ? t("copied") : t("share")}{" "}
+                {linkCopied ? <CopyCheck /> : <Copy />}
+              </Button>
+            </div>
+          </DialogTitle>
+          <DialogDescription className="text-left">
+            {parking.borough}
+          </DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex-col sm:flex-col gap-2">
           <p className="text-muted-foreground text-sm">{t("navigateWith")}</p>

@@ -17,10 +17,12 @@
   },
   "MapPage": {
     "searchAnAddress": "Rechercher une adresse",
-    "motorcycleParking": "Place de stationnement pour moto",
+    "motorcycleParking": "Stationnement moto",
     "navigateWith": "Se rendre avec:",
     "results": "Résultats",
-    "noResults": "Aucun résultat"
+    "noResults": "Aucun résultat",
+    "share": "Partager",
+    "copied": "Copié"
   },
   "madeWith": "Fait avec",
   "fromMontreal": "à Montréal"
