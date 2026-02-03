@@ -36,7 +36,7 @@ export function SearchAddressButton({ mapRef }: Props) {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
 
-  const { setSelectedCoordinates } = useStore();
+  const { setAddressCoordinates } = useStore();
   const accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
 
   const searchBoxCore = useMemo(
@@ -92,7 +92,7 @@ export function SearchAddressButton({ mapRef }: Props) {
 
     const [lng, lat] = res.features[0].geometry.coordinates;
 
-    setSelectedCoordinates({ latitude: lat, longitude: lng });
+    setAddressCoordinates({ latitude: lat, longitude: lng });
     mapRef?.current?.flyTo({
       center: [lng, lat],
       duration: 2000,

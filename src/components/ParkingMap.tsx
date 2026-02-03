@@ -1,16 +1,8 @@
 "use client";
 
-import {
-  Apple,
-  ExternalLink,
-  MapIcon,
-  Motorbike,
-  Navigation,
-  Pin,
-} from "lucide-react";
-import { useTranslations } from "next-intl";
-import posthog from "posthog-js";
-import { useRef } from "react";
+import { Pin } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   GeolocateControl,
   Map,
@@ -18,22 +10,13 @@ import {
   type MapRef,
 } from "react-map-gl/maplibre";
 
+import { ParkingSpotDialog } from "@/src/components/ParkingSpotDialog";
 import { SearchAddressButton } from "@/src/components/SearchAddressButton";
-import { Button } from "@/src/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/src/components/ui/dialog";
-import { useStore } from "@/src/lib/zustand/store";
 import { Parking } from "@/src/lib/db/schema";
+import { useStore } from "@/src/lib/zustand/store";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useTheme } from "next-themes";
+import { useSearchParams } from "next/navigation";
 
 export type MarkerCoordinates = {
   latitude: number;
@@ -45,16 +28,37 @@ type Props = {
 };
 
 export function ParkingMap({ parkings }: Props) {
-  const t = useTranslations("MapPage");
   const mapRef = useRef<MapRef>(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
   const { resolvedTheme } = useTheme();
+  const searchParams = useSearchParams();
 
-  const mapStyle =
-    resolvedTheme === "dark"
-      ? "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
-      : "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
+  const parkingId = searchParams.get("parkingId");
 
-  const { selectedCoordinates } = useStore();
+  const selectedParking = useMemo(() => {
+    if (!parkingId) return null;
+
+    return parkings.find((p) => p.id === Number(parkingId));
+  }, [parkingId, parkings]);
+
+  const { addressCoordinates } = useStore();
+
+  useEffect(() => {
+    if (
+      !mapLoaded ||
+      !selectedParking ||
+      !selectedParking.latitude ||
+      !selectedParking.longitude
+    ) {
+      return;
+    }
+
+    mapRef.current?.flyTo({
+      center: [selectedParking.longitude, selectedParking.latitude],
+      zoom: 15,
+      duration: 1000,
+    });
+  }, [mapLoaded, selectedParking]);
 
   return (
     <div className="flex-1">
@@ -69,98 +73,26 @@ export function ParkingMap({ parkings }: Props) {
           longitude: -73.5674,
           zoom: 14,
         }}
-        mapStyle={mapStyle}
+        mapStyle={
+          resolvedTheme === "dark"
+            ? "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+            : "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+        }
         attributionControl={{
           compact: true,
           customAttribution:
             '<a href="https://donnees.montreal.ca">Ville de Montréal</a> | <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>',
         }}
+        onLoad={() => setMapLoaded(true)}
       >
         <GeolocateControl position="bottom-right" />
         {parkings.map((parking) => (
-          <Dialog key={parking.id}>
-            <Marker
-              key={parking.id}
-              latitude={Number(parking.latitude)}
-              longitude={Number(parking.longitude)}
-              anchor="bottom"
-            >
-              <DialogTrigger asChild>
-                <button
-                  type="button"
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-md hover:bg-accent hover:text-accent-foreground"
-                  onClick={() => {
-                    posthog.capture("parking_spot_opened", {
-                      id: parking.id,
-                    });
-                  }}
-                >
-                  <Motorbike className="h-4 w-4 text-foreground" />
-                </button>
-              </DialogTrigger>
-            </Marker>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{t("motorcycleParking")}</DialogTitle>
-                <DialogDescription>{parking.borough}</DialogDescription>
-              </DialogHeader>
-              <DialogFooter className="flex-col sm:flex-col gap-2">
-                <p className="text-muted-foreground text-sm">
-                  {t("navigateWith")}
-                </p>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  type="submit"
-                  onClick={() =>
-                    window.open(
-                      `https://waze.com/ul?ll=${parking.latitude},${parking.longitude}&navigate=yes`,
-                      "_blank",
-                    )
-                  }
-                >
-                  <Navigation className="mr-2 size-4" />
-                  Waze
-                  <ExternalLink className="ml-auto size-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  type="submit"
-                  onClick={() =>
-                    window.open(
-                      `https://www.google.com/maps?q=${parking.latitude},${parking.longitude}`,
-                      "_blank",
-                    )
-                  }
-                >
-                  <MapIcon className="mr-2 size-4" />
-                  Google Maps
-                  <ExternalLink className="ml-auto size-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  type="submit"
-                  onClick={() =>
-                    window.open(
-                      `https://maps.apple.com/?daddr=${parking.latitude},${parking.longitude}`,
-                      "_blank",
-                    )
-                  }
-                >
-                  <Apple className="mr-2 size-4" />
-                  Apple Maps
-                  <ExternalLink className="ml-auto size-4" />
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <ParkingSpotDialog key={parking.id} parking={parking} />
         ))}
-        {selectedCoordinates && (
+        {addressCoordinates && (
           <Marker
-            latitude={selectedCoordinates.latitude}
-            longitude={selectedCoordinates.longitude}
+            latitude={addressCoordinates.latitude}
+            longitude={addressCoordinates.longitude}
             anchor="bottom"
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-md  hover:bg-accent hover:text-accent-foreground">
