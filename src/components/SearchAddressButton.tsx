@@ -92,6 +92,12 @@ export function SearchAddressButton({ mapRef }: Props) {
 
     const [lng, lat] = res.features[0].geometry.coordinates;
 
+    posthog.capture("search_suggestion_clicked", {
+      suggestion,
+      latitude: lat,
+      longitude: lng,
+    });
+
     setAddressCoordinates({ latitude: lat, longitude: lng });
     mapRef?.current?.flyTo({
       center: [lng, lat],

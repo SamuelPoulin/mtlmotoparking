@@ -89,6 +89,12 @@ export function ParkingSpotDialog({ parking }: Props) {
     const url = new URL(window.location.href);
     url.searchParams.set("parkingId", String(parking.id));
     await navigator.clipboard.writeText(url.toString());
+
+    posthog.capture("parking_spot_link_copied", {
+      parking,
+      link: url.toString(),
+    });
+
     setLinkCopied(true);
     setTimeout(() => setLinkCopied(false), 1500);
   };

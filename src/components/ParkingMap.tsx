@@ -2,6 +2,7 @@
 
 import { Pin } from "lucide-react";
 import { useTheme } from "next-themes";
+import posthog from "posthog-js";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   GeolocateControl,
@@ -36,7 +37,7 @@ export function ParkingMap({ parkings }: Props) {
 
   const searchParkingId = Number(searchParams.get("parkingId"));
 
-  const selectedParking = useMemo(() => {
+  const searchParking = useMemo(() => {
     if (!searchParkingId) return null;
 
     return parkings.find((p) => p.id === searchParkingId);
@@ -46,21 +47,25 @@ export function ParkingMap({ parkings }: Props) {
   useEffect(() => {
     if (
       !mapLoaded ||
-      !selectedParking ||
-      !selectedParking.latitude ||
-      !selectedParking.longitude
+      !searchParking ||
+      !searchParking.latitude ||
+      !searchParking.longitude
     ) {
       return;
     }
 
+    posthog.capture("parking_spot_link_opened", {
+      parking: searchParking,
+    });
+
     mapRef.current?.flyTo({
-      center: [selectedParking.longitude, selectedParking.latitude],
+      center: [searchParking.longitude, searchParking.latitude],
       zoom: 15,
       duration: 1000,
     });
 
-    setLaunchParkingSpotId(selectedParking.id);
-  }, [setLaunchParkingSpotId, mapLoaded, selectedParking]);
+    setLaunchParkingSpotId(searchParking.id);
+  }, [setLaunchParkingSpotId, mapLoaded, searchParking]);
 
   return (
     <div className="flex-1">
