@@ -10,9 +10,8 @@ import {
   Navigation,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRouter, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Marker } from "react-map-gl/maplibre";
 
 import { Button } from "@/src/components/ui/button";
@@ -25,8 +24,50 @@ import {
   DialogTitle,
 } from "@/src/components/ui/dialog";
 import { Parking } from "@/src/lib/db/schema";
+import { useStore } from "@/src/lib/zustand/store";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import styled, { css } from "styled-components";
+
+const PulsateMarkerButton = styled.button<{ $pulsate: boolean }>`
+  position: relative;
+  overflow: visible;
+
+  @keyframes ripple {
+    0% {
+      transform: scale(0.8);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(2.5);
+      opacity: 0;
+    }
+  }
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background-color: #3b82f6;
+    opacity: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  ${({ $pulsate }) =>
+    $pulsate &&
+    css`
+      &::before {
+        animation: ripple 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+      }
+      &::after {
+        animation: ripple 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        animation-delay: 0.6s;
+      }
+    `}
+`;
 
 type Props = {
   parking: Parking;
@@ -34,43 +75,52 @@ type Props = {
 
 export function ParkingSpotDialog({ parking }: Props) {
   const [linkCopied, setLinkCopied] = useState(false);
-  const search = useSearchParams();
-  const router = useRouter();
+  const [delayedOpen, setDelayedOpen] = useState(false);
+
   const t = useTranslations("MapPage");
-
-  const selectedParkingId = Number(search.get("parkingId"));
-
-  const removeParkingIdParam = () => {
-    const params = new URLSearchParams(search.toString());
-    params.delete("parkingId");
-    router.replace(`?${params.toString()}`, { scroll: false });
-  };
-
-  const setParkingIdParam = () => {
-    const params = new URLSearchParams(search.toString());
-    params.append("parkingId", String(parking.id));
-    router.replace(`?${params.toString()}`, { scroll: false });
-  };
+  const {
+    launchParkingSpotId,
+    selectedParkingSpotId,
+    setLaunchParkingSpotId,
+    setSelectedParkingSpotId,
+  } = useStore();
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(window.location.href);
+    const url = new URL(window.location.href);
+    url.searchParams.set("parkingId", String(parking.id));
+    await navigator.clipboard.writeText(url.toString());
     setLinkCopied(true);
     setTimeout(() => setLinkCopied(false), 1500);
   };
 
+  const handleClose = () => {
+    setSelectedParkingSpotId(null);
+    setDelayedOpen(false);
+  };
+
+  useEffect(() => {
+    if (!launchParkingSpotId || launchParkingSpotId !== parking.id) return;
+
+    const timeoutId = setTimeout(() => {
+      setDelayedOpen(true);
+      setLaunchParkingSpotId(null);
+    }, 1500);
+
+    return () => clearTimeout(timeoutId);
+  }, [setDelayedOpen, setLaunchParkingSpotId, launchParkingSpotId, parking]);
+
+  const open = delayedOpen || selectedParkingSpotId === parking.id;
+
   return (
-    <Dialog
-      key={parking.id}
-      open={selectedParkingId === parking.id}
-      onOpenChange={removeParkingIdParam}
-    >
+    <Dialog key={parking.id} open={open} onOpenChange={handleClose}>
       <Marker
         key={parking.id}
         latitude={Number(parking.latitude)}
         longitude={Number(parking.longitude)}
         anchor="bottom"
       >
-        <button
+        <PulsateMarkerButton
+          $pulsate={launchParkingSpotId === parking.id}
           type="button"
           className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-md hover:bg-accent hover:text-accent-foreground"
           onClick={() => {
@@ -78,11 +128,11 @@ export function ParkingSpotDialog({ parking }: Props) {
               id: parking.id,
             });
 
-            setParkingIdParam();
+            setSelectedParkingSpotId(parking.id);
           }}
         >
           <Motorbike className="h-4 w-4 text-foreground" />
-        </button>
+        </PulsateMarkerButton>
       </Marker>
       <DialogContent>
         <DialogHeader>

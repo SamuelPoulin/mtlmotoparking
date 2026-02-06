@@ -32,17 +32,17 @@ export function ParkingMap({ parkings }: Props) {
   const [mapLoaded, setMapLoaded] = useState(false);
   const { resolvedTheme } = useTheme();
   const searchParams = useSearchParams();
+  const { setLaunchParkingSpotId } = useStore();
 
-  const parkingId = searchParams.get("parkingId");
+  const searchParkingId = Number(searchParams.get("parkingId"));
 
   const selectedParking = useMemo(() => {
-    if (!parkingId) return null;
+    if (!searchParkingId) return null;
 
-    return parkings.find((p) => p.id === Number(parkingId));
-  }, [parkingId, parkings]);
+    return parkings.find((p) => p.id === searchParkingId);
+  }, [searchParkingId, parkings]);
 
   const { addressCoordinates } = useStore();
-
   useEffect(() => {
     if (
       !mapLoaded ||
@@ -58,7 +58,9 @@ export function ParkingMap({ parkings }: Props) {
       zoom: 15,
       duration: 1000,
     });
-  }, [mapLoaded, selectedParking]);
+
+    setLaunchParkingSpotId(selectedParking.id);
+  }, [setLaunchParkingSpotId, mapLoaded, selectedParking]);
 
   return (
     <div className="flex-1">
