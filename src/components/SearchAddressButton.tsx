@@ -108,8 +108,8 @@ export function SearchAddressButton({ mapRef }: Props) {
   return (
     <>
       <Button
-        variant="outline"
-        className="mt-5"
+        variant="secondary"
+        className="mt-5 border border-border bg-background text-foreground shadow-md hover:bg-accent hover:text-accent-foreground"
         onClick={() => {
           posthog.capture("search_address_opened");
           setSearchOpen(true);
