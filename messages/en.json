@@ -21,9 +21,12 @@
     "navigateWith": "Navigate with:",
     "results": "Results",
     "noResults": "No results found",
-    "share": "Share",
-    "copied": "Copied"
+    "additionalDetails": "Additional details",
+    "coordinates": "Coordinates"
   },
   "madeWith": "Made with",
-  "fromMontreal": "in Montreal"
+  "fromMontreal": "in Montreal",
+  "share": "Share",
+  "copy": "Copy",
+  "copied": "Copied"
 }

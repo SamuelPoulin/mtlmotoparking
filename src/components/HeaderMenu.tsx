@@ -18,7 +18,7 @@ import { ThemeSwitcher } from "./ThemeSwitcher";
 
 export function HeaderMenu() {
   return (
-    <Drawer direction="bottom">
+    <Drawer direction="left">
       <DrawerTrigger asChild>
         <Button
           variant="ghost"
@@ -29,7 +29,7 @@ export function HeaderMenu() {
           <Menu />
         </Button>
       </DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent className="flex justify-between">
         <DrawerHeader>
           <DrawerTitle>Menu</DrawerTitle>
         </DrawerHeader>

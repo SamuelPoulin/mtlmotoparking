@@ -30,6 +30,13 @@ export const parkings = pgTable("parkings", {
   ...timestamps,
 });
 
+export const parkingAddresses = pgTable("parking_addresses", {
+  id: integer().primaryKey(),
+  parking_id: integer().references(() => parkings.id),
+  address: text(),
+  ...timestamps,
+});
+
 export type APIParking = {
   _id: string;
   Latitude: string;
@@ -48,3 +55,4 @@ export type APIParking = {
 };
 
 export type Parking = typeof parkings.$inferSelect;
+export type ParkingAddress = typeof parkingAddresses.$inferSelect;

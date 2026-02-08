@@ -11,7 +11,7 @@ import {
   type MapRef,
 } from "react-map-gl/maplibre";
 
-import { ParkingSpotDialog } from "@/src/components/ParkingSpotDialog";
+import { ParkingSpotSheet } from "@/src/components/ParkingSpotSheet";
 import { SearchAddressButton } from "@/src/components/SearchAddressButton";
 import { Parking } from "@/src/lib/db/schema";
 import { useStore } from "@/src/lib/zustand/store";
@@ -94,7 +94,7 @@ export function ParkingMap({ parkings }: Props) {
       >
         <GeolocateControl position="bottom-right" />
         {parkings.map((parking) => (
-          <ParkingSpotDialog key={parking.id} parking={parking} />
+          <ParkingSpotSheet key={parking.id} parking={parking} />
         ))}
         {addressCoordinates && (
           <Marker

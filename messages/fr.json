@@ -21,9 +21,12 @@
     "navigateWith": "Se rendre avec:",
     "results": "Résultats",
     "noResults": "Aucun résultat",
-    "share": "Partager",
-    "copied": "Copié"
+    "additionalDetails": "Plus de détails",
+    "coordinates": "Coordonnées"
   },
   "madeWith": "Fait avec",
-  "fromMontreal": "à Montréal"
+  "fromMontreal": "à Montréal",
+  "share": "Partager",
+  "copy": "Copier",
+  "copied": "Copié"
 }
