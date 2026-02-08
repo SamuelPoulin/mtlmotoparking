@@ -1,0 +1,1 @@
+ALTER TABLE "parking_addresses" ALTER COLUMN "id" SET DATA TYPE serial;

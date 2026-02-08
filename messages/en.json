@@ -22,7 +22,8 @@
     "results": "Results",
     "noResults": "No results found",
     "additionalDetails": "Additional details",
-    "coordinates": "Coordinates"
+    "coordinates": "Coordinates",
+    "address": "Address"
   },
   "madeWith": "Made with",
   "fromMontreal": "in Montreal",

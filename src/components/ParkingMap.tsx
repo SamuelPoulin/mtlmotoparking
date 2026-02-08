@@ -24,8 +24,12 @@ export type MarkerCoordinates = {
   longitude: number;
 };
 
+export type ParkingWithAddress = Parking & {
+  address: string | null;
+};
+
 type Props = {
-  parkings: Parking[];
+  parkings: ParkingWithAddress[];
 };
 
 export function ParkingMap({ parkings }: Props) {

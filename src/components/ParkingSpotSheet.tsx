@@ -2,8 +2,6 @@
 
 import {
   Apple,
-  Copy,
-  ExternalLink,
   Locate,
   MapIcon,
   MapPin,
@@ -16,18 +14,11 @@ import { useEffect, useMemo, useState } from "react";
 import { Marker } from "react-map-gl/maplibre";
 
 import { Button } from "@/src/components/ui/button";
-import { Parking } from "@/src/lib/db/schema";
 import { useStore } from "@/src/lib/zustand/store";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import styled, { css } from "styled-components";
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "./ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "./ui/sheet";
 import {
   Item,
   ItemActions,
@@ -43,6 +34,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
+import { ParkingWithAddress } from "./ParkingMap";
 
 const PulsateMarkerButton = styled.button<{ $pulsate: boolean }>`
   position: relative;
@@ -85,7 +77,7 @@ const PulsateMarkerButton = styled.button<{ $pulsate: boolean }>`
 `;
 
 type Props = {
-  parking: Parking;
+  parking: ParkingWithAddress;
 };
 
 export function ParkingSpotSheet({ parking }: Props) {
@@ -160,18 +152,23 @@ export function ParkingSpotSheet({ parking }: Props) {
           </SheetTitle>
         </SheetHeader>
 
-        {/*<Item variant="muted" size="sm">
-          <ItemMedia variant="icon">
-            <MapPin />
-          </ItemMedia>
-          <ItemContent>
-            <ItemTitle>{t("MapPage.address")}</ItemTitle>
-            <ItemDescription>some address</ItemDescription>
-          </ItemContent>
-          <ItemActions>
-            <CopyButton item="parking_spot_address" content="some address" />
-          </ItemActions>
-        </Item>*/}
+        {parking.address && (
+          <Item variant="muted" size="sm">
+            <ItemMedia variant="icon">
+              <MapPin />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>{t("MapPage.address")}</ItemTitle>
+              <ItemDescription>{parking.address}</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <CopyButton
+                item="parking_spot_address"
+                content={parking.address}
+              />
+            </ItemActions>
+          </Item>
+        )}
 
         <div className="flex flex-1 flex-col gap-2">
           <p className="text-muted-foreground text-sm">

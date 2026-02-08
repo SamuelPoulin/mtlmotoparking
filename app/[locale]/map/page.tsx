@@ -1,9 +1,9 @@
-import { eq, sql } from "drizzle-orm";
+import { and, eq, getTableColumns, isNull, lt, or, sql } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 
 import { ParkingMap } from "@/src/components/ParkingMap";
 import { db } from "@/src/lib/db/drizzle";
-import { APIParking, parkings } from "@/src/lib/db/schema";
+import { APIParking, parkingAddresses, parkings } from "@/src/lib/db/schema";
 
 async function fetchMontrealParking(): Promise<APIParking[]> {
   const baseUrl = "https://donnees.montreal.ca/api/3/action/datastore_search";
@@ -26,6 +26,37 @@ async function fetchMontrealParking(): Promise<APIParking[]> {
   } = await response.json();
 
   return data.result.records;
+}
+
+async function fetchMapboxAddress(
+  latitude: number,
+  longitude: number,
+): Promise<string | null> {
+  const accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+
+  if (!accessToken) {
+    throw new Error("Missing Mapbox access token");
+  }
+
+  const params = new URLSearchParams({
+    access_token: accessToken,
+    longitude: longitude.toString(),
+    latitude: latitude.toString(),
+    country: "ca",
+    types: "address,street",
+  });
+
+  const url = `https://api.mapbox.com/search/geocode/v6/reverse?${params.toString()}`;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    console.error(`Mapbox API error: ${response.status}`);
+    return null;
+  }
+
+  const data = await response.json();
+
+  return data.features[0]?.properties?.name;
 }
 
 const getCachedParkings = unstable_cache(
@@ -71,11 +102,57 @@ const getCachedParkings = unstable_cache(
             borough: sql`excluded.borough`,
           },
         });
+
+      const staleOrMissing = await db
+        .select({
+          parkingId: parkings.id,
+          latitude: parkings.latitude,
+          longitude: parkings.longitude,
+        })
+        .from(parkings)
+        .leftJoin(
+          parkingAddresses,
+          eq(parkings.id, parkingAddresses.parking_id),
+        )
+        .where(
+          and(
+            eq(parkings.rep_description, "Réel"),
+            or(
+              isNull(parkingAddresses.id),
+              isNull(parkingAddresses.address),
+              lt(parkingAddresses.updatedAt, sql`now() - interval '48 hours'`),
+            ),
+          ),
+        );
+
+      for (const parking of staleOrMissing) {
+        if (!parking.latitude || !parking.longitude) continue;
+
+        const address = await fetchMapboxAddress(
+          parking.latitude,
+          parking.longitude,
+        );
+
+        await db
+          .insert(parkingAddresses)
+          .values({
+            parking_id: parking.parkingId,
+            address,
+          })
+          .onConflictDoUpdate({
+            target: parkingAddresses.parking_id,
+            set: { address: sql`excluded.address` },
+          });
+      }
     }
 
     const dbParkings = await db
-      .select()
+      .select({
+        ...getTableColumns(parkings),
+        address: parkingAddresses.address,
+      })
       .from(parkings)
+      .leftJoin(parkingAddresses, eq(parkings.id, parkingAddresses.parking_id))
       .where(eq(parkings.rep_description, "Réel"));
 
     return dbParkings;

@@ -43,6 +43,20 @@
       "when": 1770513842478,
       "tag": "0005_light_the_hand",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1770520168266,
+      "tag": "0006_dazzling_millenium_guard",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1770520931840,
+      "tag": "0007_perfect_puppet_master",
+      "breakpoints": true
     }
   ]
 }

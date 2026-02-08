@@ -1,5 +1,11 @@
 import { sql } from "drizzle-orm";
-import { doublePrecision, integer, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  doublePrecision,
+  integer,
+  serial,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { pgTable } from "drizzle-orm/pg-core";
 
 const timestamps = {
@@ -31,8 +37,10 @@ export const parkings = pgTable("parkings", {
 });
 
 export const parkingAddresses = pgTable("parking_addresses", {
-  id: integer().primaryKey(),
-  parking_id: integer().references(() => parkings.id),
+  id: serial().primaryKey(),
+  parking_id: integer()
+    .unique()
+    .references(() => parkings.id),
   address: text(),
   ...timestamps,
 });

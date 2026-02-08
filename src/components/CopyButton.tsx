@@ -27,7 +27,7 @@ export function CopyButton({ label, content, item, onClick }: Props) {
   };
 
   return (
-    <Button variant="ghost" onClick={onClick ? onClick : handleCopy}>
+    <Button variant="outline" onClick={onClick ? onClick : handleCopy}>
       {isCopied ? t("copied") : (label ?? t("copy"))}
       {isCopied ? <CopyCheck /> : <Copy />}
     </Button>
