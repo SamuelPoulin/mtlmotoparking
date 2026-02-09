@@ -1,8 +1,9 @@
 "use client";
 
 import { useLocale } from "next-intl";
-import { Switch } from "../components/ui/switch";
-import { useRouter, usePathname } from "./navigation";
+
+import { Switch } from "@/src/components/ui/switch";
+import { useRouter, usePathname } from "@/src/i18n/navigation";
 
 export function LocaleSwitch() {
   const locale = useLocale();

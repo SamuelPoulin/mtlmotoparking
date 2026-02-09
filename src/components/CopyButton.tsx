@@ -1,8 +1,9 @@
 import { Copy, CopyCheck } from "lucide-react";
-import { useState } from "react";
-import { Button } from "./ui/button";
-import posthog from "posthog-js";
 import { useTranslations } from "next-intl";
+import posthog from "posthog-js";
+import { useState } from "react";
+
+import { Button } from "@/src/components/ui/button";
 
 type Props = {
   label?: string;

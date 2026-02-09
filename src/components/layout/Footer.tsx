@@ -1,9 +1,9 @@
 "use client";
 
-import { PortfolioLink } from "./PortfolioLink";
-import { FeedbackLink } from "./FeedbackLink";
-import { MadeWithLove } from "./MadeWithLove";
-import { usePathname } from "../i18n/navigation";
+import { FeedbackLink } from "@/src/components/layout/FeedbackLink";
+import { MadeWithLove } from "@/src/components/layout/MadeWithLove";
+import { PortfolioLink } from "@/src/components/layout/PortfolioLink";
+import { usePathname } from "@/src/i18n/navigation";
 
 export function Footer() {
   const pathname = usePathname();

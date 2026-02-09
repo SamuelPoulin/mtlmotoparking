@@ -2,19 +2,19 @@
 
 import { Menu } from "lucide-react";
 
-import { Button } from "./ui/button";
+import { FeedbackLink } from "@/src/components/layout/FeedbackLink";
+import { MadeWithLove } from "@/src/components/layout/MadeWithLove";
+import { PortfolioLink } from "@/src/components/layout/PortfolioLink";
+import { ThemeSwitcher } from "@/src/components/layout/ThemeSwitcher";
+import { Button } from "@/src/components/ui/button";
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "./ui/drawer";
-import { LocaleSwitch } from "../i18n/LocaleSwitch";
-import { FeedbackLink } from "./FeedbackLink";
-import { MadeWithLove } from "./MadeWithLove";
-import { PortfolioLink } from "./PortfolioLink";
-import { ThemeSwitcher } from "./ThemeSwitcher";
+} from "@/src/components/ui/drawer";
+import { LocaleSwitch } from "@/src/i18n/LocaleSwitch";
 
 export function HeaderMenu() {
   return (

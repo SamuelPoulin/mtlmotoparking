@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-import { KofiLink } from "./KofiLink";
-import { HeaderMenu } from "./HeaderMenu";
-import { LocaleSwitch } from "../i18n/LocaleSwitch";
-import { ThemeSwitcher } from "./ThemeSwitcher";
+import { HeaderMenu } from "@/src/components/layout/HeaderMenu";
+import { KofiLink } from "@/src/components/layout/KofiLink";
+import { ThemeSwitcher } from "@/src/components/layout/ThemeSwitcher";
+import { LocaleSwitch } from "@/src/i18n/LocaleSwitch";
 
 export function Header() {
   return (

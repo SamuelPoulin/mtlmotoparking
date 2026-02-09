@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { createMapSlice, MapSlice } from "./slices/map";
+
+import { createMapSlice, MapSlice } from "@/src/lib/zustand/slices/map";
 
 export type RootStore = MapSlice;
 

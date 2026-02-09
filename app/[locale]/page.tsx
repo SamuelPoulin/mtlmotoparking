@@ -1,11 +1,11 @@
 import { ArrowRight, MapPin, Navigation } from "lucide-react";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 import MotorcycleScene from "@/src/components/MotorcycleScene";
 import { Button } from "@/src/components/ui/button";
 
-export default function Home() {
+export default function HomePage() {
   const t = useTranslations("HomePage");
 
   return (

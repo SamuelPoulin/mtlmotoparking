@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 
+import { Footer } from "@/src/components/layout/Footer";
+import { Header } from "@/src/components/layout/Header";
 import StyledComponentsRegistry from "@/src/lib/registry";
-import { Footer } from "@/src/components/Footer";
-import { Header } from "@/src/components/Header";
+
+import { ThemeProvider } from "@/src/components/ThemeProvider";
+import { QueryProvider } from "@/src/lib/api/QueryProvider";
 
 import "../globals.css";
-import { QueryProvider } from "@/src/lib/api/QueryProvider";
-import { ThemeProvider } from "@/src/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "mtlmotoparking",

@@ -12,13 +12,17 @@ import { useTranslations } from "next-intl";
 import posthog from "posthog-js";
 import { useEffect, useMemo, useState } from "react";
 import { Marker } from "react-map-gl/maplibre";
-
-import { Button } from "@/src/components/ui/button";
-import { useStore } from "@/src/lib/zustand/store";
-
-import "maplibre-gl/dist/maplibre-gl.css";
 import styled, { css } from "styled-components";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "./ui/sheet";
+
+import { CopyButton } from "@/src/components/CopyButton";
+import { ParkingWithAddress } from "@/src/components/ParkingMap";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/src/components/ui/accordion";
+import { Button } from "@/src/components/ui/button";
 import {
   Item,
   ItemActions,
@@ -26,15 +30,16 @@ import {
   ItemDescription,
   ItemMedia,
   ItemTitle,
-} from "./ui/item";
-import { CopyButton } from "./CopyButton";
+} from "@/src/components/ui/item";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "./ui/accordion";
-import { ParkingWithAddress } from "./ParkingMap";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/src/components/ui/sheet";
+import { useStore } from "@/src/lib/zustand/store";
+
+import "maplibre-gl/dist/maplibre-gl.css";
 
 const PulsateMarkerButton = styled.button<{ $pulsate: boolean }>`
   position: relative;
