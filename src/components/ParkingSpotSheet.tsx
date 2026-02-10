@@ -2,6 +2,7 @@
 
 import {
   Apple,
+  Construction,
   Locate,
   MapIcon,
   MapPin,
@@ -248,6 +249,25 @@ export function ParkingSpotSheet({ parking }: Props) {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+
+        <div className="relative border-2 border-secondary p-4 rounded-lg">
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <h3 className="text-md font-bold text-primary">
+                {t("MapPage.community.title")}
+              </h3>
+              <div className="flex gap-2">
+                <span className="text-xs font-semibold px-2 py-1 bg-primary text-primary-foreground rounded-full text-nowrap">
+                  {t("comingSoon")}
+                </span>
+                <Construction className="h-5 w-5 text-primary animate-pulse" />
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {t("MapPage.community.description")}
+            </p>
+          </div>
+        </div>
       </SheetContent>
     </Sheet>
   );

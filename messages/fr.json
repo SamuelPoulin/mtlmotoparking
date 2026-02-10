@@ -23,11 +23,16 @@
     "noResults": "Aucun résultat",
     "additionalDetails": "Plus de détails",
     "coordinates": "Coordonnées",
-    "address": "Addresse"
+    "address": "Addresse",
+    "community": {
+      "title": "Communauté",
+      "description": "Contribuez en partageant des images et descriptions des zones de stationnement pour aider les autres utilisateurs de mtlmotoparking."
+    }
   },
   "madeWith": "Fait avec",
   "fromMontreal": "à Montréal",
   "share": "Partager",
   "copy": "Copier",
-  "copied": "Copié"
+  "copied": "Copié",
+  "comingSoon": "À venir"
 }

@@ -23,11 +23,16 @@
     "noResults": "No results found",
     "additionalDetails": "Additional details",
     "coordinates": "Coordinates",
-    "address": "Address"
+    "address": "Address",
+    "community": {
+      "title": "Community",
+      "description": "Upload pictures and descriptions of parking zones to help other users of mtlmotoparking."
+    }
   },
   "madeWith": "Made with",
   "fromMontreal": "in Montreal",
   "share": "Share",
   "copy": "Copy",
-  "copied": "Copied"
+  "copied": "Copied",
+  "comingSoon": "Coming soon"
 }
