@@ -1,1 +1,0 @@
-ALTER TABLE "parkings" ADD COLUMN "rep_description" text NOT NULL;

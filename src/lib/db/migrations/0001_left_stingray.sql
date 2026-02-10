@@ -1,1 +1,0 @@
-ALTER TABLE "parkings" ADD COLUMN "borough" text NOT NULL;

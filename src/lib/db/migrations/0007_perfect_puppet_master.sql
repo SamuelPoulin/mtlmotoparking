@@ -1,1 +1,0 @@
-ALTER TABLE "parking_addresses" ADD CONSTRAINT "parking_addresses_parking_id_unique" UNIQUE("parking_id");
