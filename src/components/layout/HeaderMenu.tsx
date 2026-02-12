@@ -53,7 +53,7 @@ export function HeaderMenu() {
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="flex md:w-75 [&>button:first-of-type]:hidden"
+        className="flex [&>button:first-of-type]:hidden"
       >
         <SheetHeader className="flex justify-center p-5">
           <DrawerTitle className="text-xl">mtlmotoparking</DrawerTitle>
@@ -82,7 +82,7 @@ export function HeaderMenu() {
                 </Avatar>
                 <div className="flex flex-col">
                   <div className="text-md">{session?.user.name}</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-sm text-muted-foreground truncate max-w-40 md:max-w-60">
                     {session?.user.email}
                   </div>
                 </div>
