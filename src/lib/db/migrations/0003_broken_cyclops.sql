@@ -1,0 +1,1 @@
+ALTER TABLE "parkings" ADD CONSTRAINT "parkings_lat_lon_sign_post_unique" UNIQUE("latitude","longitude","sign_id","post_id");

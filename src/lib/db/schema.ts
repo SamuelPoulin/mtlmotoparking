@@ -8,6 +8,7 @@ import {
   serial,
   text,
   timestamp,
+  unique,
 } from "drizzle-orm/pg-core";
 
 const timestamps = {
@@ -21,9 +22,8 @@ const timestamps = {
 };
 
 export const parkings = pgTable("parkings", {
-  id: integer().primaryKey(),
-  latitude: doublePrecision(),
-  longitude: doublePrecision(),
+  id: serial().primaryKey(),
+  source_id: integer(),
   rpa_code: text(),
   rpa_description: text(),
   rep_description: text(),
@@ -35,17 +35,23 @@ export const parkings = pgTable("parkings", {
   sign_id: text(),
   sign_rpa_id: text(),
   borough: text(),
+  location_id: integer().references(() => locations.id),
   ...timestamps,
 });
 
-export const parkingAddresses = pgTable("parking_addresses", {
-  id: serial().primaryKey(),
-  parking_id: integer()
-    .unique()
-    .references(() => parkings.id),
-  address: text(),
-  ...timestamps,
-});
+export const locations = pgTable(
+  "locations",
+  {
+    id: serial().primaryKey(),
+    latitude: doublePrecision().notNull(),
+    longitude: doublePrecision().notNull(),
+    address: text(),
+    ...timestamps,
+  },
+  (table) => [
+    unique("locations_lat_lon_unique").on(table.latitude, table.longitude),
+  ],
+);
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -156,4 +162,3 @@ export type APIParking = {
 };
 
 export type Parking = typeof parkings.$inferSelect;
-export type ParkingAddress = typeof parkingAddresses.$inferSelect;

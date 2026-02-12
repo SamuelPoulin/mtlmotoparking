@@ -16,7 +16,7 @@ import { Marker } from "react-map-gl/maplibre";
 import styled, { css } from "styled-components";
 
 import { CopyButton } from "@/src/components/CopyButton";
-import { ParkingWithAddress } from "@/src/components/ParkingMap";
+import { ParkingWithLocation } from "@/src/components/ParkingMap";
 import {
   Accordion,
   AccordionContent,
@@ -83,7 +83,7 @@ const PulsateMarkerButton = styled.button<{ $pulsate: boolean }>`
 `;
 
 type Props = {
-  parking: ParkingWithAddress;
+  parking: ParkingWithLocation;
 };
 
 export function ParkingSpotSheet({ parking }: Props) {

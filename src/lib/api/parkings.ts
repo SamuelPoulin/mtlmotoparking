@@ -1,8 +1,17 @@
-import { APIParking, parkingAddresses, parkings } from "@/src/lib/db/schema";
+import { APIParking, locations, parkings } from "@/src/lib/db/schema";
 import { db } from "@/src/lib/db/drizzle";
-import { and, eq, getTableColumns, isNull, lt, or, sql } from "drizzle-orm";
+import {
+  and,
+  desc,
+  eq,
+  getTableColumns,
+  isNull,
+  lt,
+  or,
+  sql,
+} from "drizzle-orm";
 
-export async function fetchMontrealParking(): Promise<APIParking[]> {
+export async function fetchMontrealParkings(): Promise<APIParking[]> {
   const baseUrl = "https://donnees.montreal.ca/api/3/action/datastore_search";
 
   const params = new URLSearchParams({
@@ -57,96 +66,117 @@ export async function fetchMapboxAddress(
 }
 
 export async function getParkings() {
-  const newParkings = await fetchMontrealParking();
+  const newParkings = await fetchMontrealParkings();
 
-  const normalized = newParkings.map((parking) => ({
-    id: Number(parking._id),
-    latitude: Number(parking.Latitude),
-    longitude: Number(parking.Longitude),
-    rpa_code: parking.CODE_RPA,
-    rpa_description: parking.DESCRIPTION_RPA,
-    rep_description: parking.DESCRIPTION_REP,
-    rac_description: parking.DESCRIPTION_RAC,
-    cat_description: parking.DESCRIPTION_CAT,
-    post_id: parking.POTEAU_ID_POT,
-    post_version: parking.POTEAU_VERSION_POT,
-    post_conception_date: parking.DATE_CONCEPTION_POT,
-    sign_id: parking.PANNEAU_ID_PAN,
-    sign_rpa_id: parking.PANNEAU_ID_RPA,
-    borough: parking.NOM_ARROND,
-  }));
+  const uniqueLocationsMap = new Map<
+    string,
+    { latitude: number; longitude: number }
+  >();
+  for (const parking of newParkings) {
+    const latitude = Number(parking.Latitude);
+    const longitude = Number(parking.Longitude);
+    uniqueLocationsMap.set(`${latitude},${longitude}`, { latitude, longitude });
+  }
+
+  const uniqueLocations = Array.from(uniqueLocationsMap.values());
+
+  if (uniqueLocations.length > 0) {
+    await db.insert(locations).values(uniqueLocations).onConflictDoNothing();
+  }
+
+  let locationRows: { id: number; latitude: number; longitude: number }[] = [];
+  if (uniqueLocations.length > 0) {
+    const locationFilters = uniqueLocations.map((loc) =>
+      and(
+        eq(locations.latitude, loc.latitude),
+        eq(locations.longitude, loc.longitude),
+      ),
+    );
+
+    locationRows = await db
+      .select({
+        id: locations.id,
+        latitude: locations.latitude,
+        longitude: locations.longitude,
+      })
+      .from(locations)
+      .where(or(...locationFilters));
+  }
+
+  const locationIdByKey = new Map(
+    locationRows.map((row) => [`${row.latitude},${row.longitude}`, row.id]),
+  );
+
+  const normalizedParkings = newParkings.map((parking) => {
+    const latitude = Number(parking.Latitude);
+    const longitude = Number(parking.Longitude);
+    const location_id = locationIdByKey.get(`${latitude},${longitude}`);
+
+    return {
+      source_id: Number(parking._id),
+      location_id,
+      rpa_code: parking.CODE_RPA,
+      rpa_description: parking.DESCRIPTION_RPA,
+      rep_description: parking.DESCRIPTION_REP,
+      rac_description: parking.DESCRIPTION_RAC,
+      cat_description: parking.DESCRIPTION_CAT,
+      post_id: parking.POTEAU_ID_POT,
+      post_version: parking.POTEAU_VERSION_POT,
+      post_conception_date: parking.DATE_CONCEPTION_POT,
+      sign_id: parking.PANNEAU_ID_PAN,
+      sign_rpa_id: parking.PANNEAU_ID_RPA,
+      borough: parking.NOM_ARROND,
+    };
+  });
 
   if (newParkings.length > 0) {
-    await db
-      .insert(parkings)
-      .values(normalized)
-      .onConflictDoUpdate({
-        target: parkings.id,
-        set: {
-          latitude: sql`excluded.latitude`,
-          longitude: sql`excluded.longitude`,
-          rpa_code: sql`excluded.rpa_code`,
-          rpa_description: sql`excluded.rpa_description`,
-          rep_description: sql`excluded.rep_description`,
-          rac_description: sql`excluded.rac_description`,
-          cat_description: sql`excluded.cat_description`,
-          post_id: sql`excluded.post_id`,
-          post_version: sql`excluded.post_version`,
-          post_conception_date: sql`excluded.post_conception_date`,
-          sign_id: sql`excluded.sign_id`,
-          sign_rpa_id: sql`excluded.sign_rpa_id`,
-          borough: sql`excluded.borough`,
-        },
-      });
+    await db.insert(parkings).values(normalizedParkings);
 
     const staleOrMissing = await db
       .select({
-        parkingId: parkings.id,
-        latitude: parkings.latitude,
-        longitude: parkings.longitude,
+        locationId: locations.id,
+        latitude: locations.latitude,
+        longitude: locations.longitude,
       })
       .from(parkings)
-      .leftJoin(parkingAddresses, eq(parkings.id, parkingAddresses.parking_id))
+      .leftJoin(locations, eq(parkings.location_id, locations.id))
       .where(
         and(
           eq(parkings.rep_description, "Réel"),
           or(
-            isNull(parkingAddresses.id),
-            isNull(parkingAddresses.address),
-            lt(parkingAddresses.updatedAt, sql`now() - interval '48 hours'`),
+            isNull(locations.address),
+            lt(locations.updatedAt, sql`now() - interval '48 hours'`),
           ),
         ),
       );
 
-    for (const parking of staleOrMissing) {
-      if (!parking.latitude || !parking.longitude) continue;
+    for (const location of staleOrMissing) {
+      if (!location.locationId || !location.latitude || !location.longitude)
+        continue;
 
       const address = await fetchMapboxAddress(
-        parking.latitude,
-        parking.longitude,
+        location.latitude,
+        location.longitude,
       );
 
       await db
-        .insert(parkingAddresses)
-        .values({
-          parking_id: parking.parkingId,
-          address,
-        })
-        .onConflictDoUpdate({
-          target: parkingAddresses.parking_id,
-          set: { address: sql`excluded.address` },
-        });
+        .update(locations)
+        .set({ address })
+        .where(eq(locations.id, location.locationId));
     }
   }
 
   const dbParkings = await db
-    .select({
+    .selectDistinctOn([parkings.location_id], {
       ...getTableColumns(parkings),
-      address: parkingAddresses.address,
+      latitude: locations.latitude,
+      longitude: locations.longitude,
+      address: locations.address,
     })
     .from(parkings)
-    .leftJoin(parkingAddresses, eq(parkings.id, parkingAddresses.parking_id))
-    .where(eq(parkings.rep_description, "Réel"));
+    .leftJoin(locations, eq(parkings.location_id, locations.id))
+    .where(eq(parkings.rep_description, "Réel"))
+    .orderBy(parkings.location_id, desc(parkings.updatedAt));
 
   return dbParkings;
 }

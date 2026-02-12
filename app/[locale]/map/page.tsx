@@ -4,7 +4,8 @@ import { ParkingMap } from "@/src/components/ParkingMap";
 import { getParkings } from "@/src/lib/api/parkings";
 
 const getCachedParkings = unstable_cache(getParkings, ["parkings"], {
-  revalidate: 3600,
+  // Every 12 hours
+  revalidate: 60 * 60 * 12,
 });
 
 export default async function MapPage() {

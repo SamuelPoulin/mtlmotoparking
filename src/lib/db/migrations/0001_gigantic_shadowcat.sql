@@ -1,0 +1,1 @@
+ALTER TABLE "parkings" ADD COLUMN "source_id" integer;

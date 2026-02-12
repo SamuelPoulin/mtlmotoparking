@@ -24,12 +24,14 @@ export type MarkerCoordinates = {
   longitude: number;
 };
 
-export type ParkingWithAddress = Parking & {
+export type ParkingWithLocation = Parking & {
   address: string | null;
+  latitude: number | null;
+  longitude: number | null;
 };
 
 type Props = {
-  parkings: ParkingWithAddress[];
+  parkings: ParkingWithLocation[];
 };
 
 export function ParkingMap({ parkings }: Props) {
@@ -70,6 +72,10 @@ export function ParkingMap({ parkings }: Props) {
 
     setLaunchParkingSpotId(searchParking.id);
   }, [setLaunchParkingSpotId, mapLoaded, searchParking]);
+
+  useEffect(() => {
+    console.log("Parking zone count: ", parkings.length);
+  }, [parkings]);
 
   return (
     <div className="flex-1">

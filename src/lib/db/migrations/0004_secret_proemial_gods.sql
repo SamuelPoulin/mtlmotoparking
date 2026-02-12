@@ -1,0 +1,1 @@
+ALTER TABLE "parkings" DROP CONSTRAINT "parkings_lat_lon_sign_post_unique";
