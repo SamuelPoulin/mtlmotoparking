@@ -93,14 +93,15 @@ async function runWithConcurrency<T>(
 export async function getParkings() {
   const newParkings = await fetchMontrealParkings();
 
-  const uniqueLocationsMap = new Map<
-    string,
-    { latitude: number; longitude: number }
-  >();
+  const uniqueLocationsMap = new Map();
+
   for (const parking of newParkings) {
     const latitude = Number(parking.Latitude);
     const longitude = Number(parking.Longitude);
-    uniqueLocationsMap.set(`${latitude},${longitude}`, { latitude, longitude });
+    uniqueLocationsMap.set(locationKey(latitude, longitude), {
+      latitude,
+      longitude,
+    });
   }
 
   const uniqueLocations = Array.from(uniqueLocationsMap.values());
@@ -163,7 +164,7 @@ export async function getParkings() {
   for (const parking of newParkings) {
     const latitude = Number(parking.Latitude);
     const longitude = Number(parking.Longitude);
-    const location_id = locationIdByKey.get(`${latitude},${longitude}`);
+    const location_id = locationIdByKey.get(locationKey(latitude, longitude));
 
     if (location_id == null) {
       continue;
