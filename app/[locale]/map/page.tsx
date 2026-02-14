@@ -1,7 +1,32 @@
 import { unstable_cache } from "next/cache";
 
 import { ParkingMap } from "@/src/components/ParkingMap";
-import { getParkings } from "@/src/lib/api/parkings";
+import {
+  updateStaleOrMissingAddresses,
+  upsertAndFetchLocationIds,
+} from "@/src/lib/api/locations";
+import {
+  fetchMontrealParkings,
+  normalizeAndDedupeParkings,
+  queryFinalParkings,
+  upsertParkings,
+} from "@/src/lib/api/parkings";
+
+async function getParkings() {
+  const newParkings = await fetchMontrealParkings();
+
+  const locationIdByKey = await upsertAndFetchLocationIds(newParkings);
+
+  const finalParkings = normalizeAndDedupeParkings(
+    newParkings,
+    locationIdByKey,
+  );
+
+  await upsertParkings(finalParkings);
+  await updateStaleOrMissingAddresses();
+
+  return queryFinalParkings();
+}
 
 const getCachedParkings = unstable_cache(getParkings, ["parkings"], {
   // Every 12 hours
