@@ -157,12 +157,19 @@ export async function getParkings() {
     ]),
   );
 
-  const normalizedParkings = newParkings.map((parking) => {
+  // Normalize and dedupe parkings from the Montreal API
+  const processedParkings = new Map();
+
+  for (const parking of newParkings) {
     const latitude = Number(parking.Latitude);
     const longitude = Number(parking.Longitude);
     const location_id = locationIdByKey.get(`${latitude},${longitude}`);
 
-    return {
+    if (location_id == null) {
+      continue;
+    }
+
+    const normalized = {
       source_id: Number(parking._id),
       location_id,
       rpa_code: parking.CODE_RPA,
@@ -177,29 +184,24 @@ export async function getParkings() {
       sign_rpa_id: parking.PANNEAU_ID_RPA,
       borough: parking.NOM_ARROND,
     };
-  });
 
-  const dedupedParkings = Array.from(
-    new Map(
-      normalizedParkings
-        .filter((parking) => parking.location_id != null)
-        .map((parking) => {
-          const key = [
-            parking.location_id,
-            parking.post_id ?? "",
-            parking.sign_id ?? "",
-            parking.sign_rpa_id ?? "",
-            parking.rpa_code ?? "",
-          ].join("|");
-          return [key, parking] as const;
-        }),
-    ).values(),
-  );
+    const key = [
+      normalized.location_id,
+      normalized.post_id ?? "",
+      normalized.sign_id ?? "",
+      normalized.sign_rpa_id ?? "",
+      normalized.rpa_code ?? "",
+    ].join("|");
 
-  if (dedupedParkings.length > 0) {
+    processedParkings.set(key, normalized);
+  }
+
+  const finalParkings = Array.from(processedParkings.values());
+
+  if (finalParkings.length > 0) {
     await db
       .insert(parkings)
-      .values(dedupedParkings)
+      .values(finalParkings)
       .onConflictDoUpdate({
         target: [
           parkings.location_id,
