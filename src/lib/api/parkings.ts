@@ -65,6 +65,31 @@ export async function fetchMapboxAddress(
   return data.features[0]?.properties?.name;
 }
 
+const locationKey = (latitude: number, longitude: number) =>
+  `${latitude},${longitude}`;
+
+async function runWithConcurrency<T>(
+  items: T[],
+  limit: number,
+  worker: (item: T) => Promise<void>,
+) {
+  if (items.length === 0) return;
+
+  const queue = items.slice();
+  const workers = Array.from(
+    { length: Math.min(limit, items.length) },
+    async () => {
+      while (queue.length > 0) {
+        const next = queue.shift();
+        if (!next) return;
+        await worker(next);
+      }
+    },
+  );
+
+  await Promise.all(workers);
+}
+
 export async function getParkings() {
   const newParkings = await fetchMontrealParkings();
 
@@ -80,31 +105,56 @@ export async function getParkings() {
 
   const uniqueLocations = Array.from(uniqueLocationsMap.values());
 
-  if (uniqueLocations.length > 0) {
-    await db.insert(locations).values(uniqueLocations).onConflictDoNothing();
-  }
+  const insertedLocations =
+    uniqueLocations.length > 0
+      ? await db
+          .insert(locations)
+          .values(uniqueLocations)
+          .onConflictDoNothing()
+          .returning({
+            id: locations.id,
+            latitude: locations.latitude,
+            longitude: locations.longitude,
+          })
+      : [];
 
-  let locationRows: { id: number; latitude: number; longitude: number }[] = [];
-  if (uniqueLocations.length > 0) {
-    const locationFilters = uniqueLocations.map((loc) =>
-      and(
-        eq(locations.latitude, loc.latitude),
-        eq(locations.longitude, loc.longitude),
-      ),
-    );
+  const insertedLocationKeys = new Set(
+    insertedLocations.map((row) => locationKey(row.latitude, row.longitude)),
+  );
 
-    locationRows = await db
-      .select({
-        id: locations.id,
-        latitude: locations.latitude,
-        longitude: locations.longitude,
-      })
-      .from(locations)
-      .where(or(...locationFilters));
-  }
+  const remainingLocations = uniqueLocations.filter(
+    (loc) =>
+      !insertedLocationKeys.has(locationKey(loc.latitude, loc.longitude)),
+  );
+
+  const existingLocations =
+    remainingLocations.length > 0
+      ? await db
+          .select({
+            id: locations.id,
+            latitude: locations.latitude,
+            longitude: locations.longitude,
+          })
+          .from(locations)
+          .where(
+            or(
+              ...remainingLocations.map((loc) =>
+                and(
+                  eq(locations.latitude, loc.latitude),
+                  eq(locations.longitude, loc.longitude),
+                ),
+              ),
+            ),
+          )
+      : [];
+
+  const locationRows = [...insertedLocations, ...existingLocations];
 
   const locationIdByKey = new Map(
-    locationRows.map((row) => [`${row.latitude},${row.longitude}`, row.id]),
+    locationRows.map((row) => [
+      locationKey(row.latitude, row.longitude),
+      row.id,
+    ]),
   );
 
   const normalizedParkings = newParkings.map((parking) => {
@@ -189,19 +239,35 @@ export async function getParkings() {
         ),
       );
 
-    for (const location of staleOrMissing) {
-      if (!location.locationId || !location.latitude || !location.longitude)
-        continue;
+    const addressTargets = staleOrMissing.filter(
+      (location) =>
+        location.locationId && location.latitude && location.longitude,
+    );
 
-      const address = await fetchMapboxAddress(
-        location.latitude,
-        location.longitude,
+    const MAPBOX_CONCURRENCY = 4;
+
+    const addressUpdates: { id: number; address: string | null }[] = [];
+
+    await runWithConcurrency(
+      addressTargets,
+      MAPBOX_CONCURRENCY,
+      async (loc) => {
+        const address = await fetchMapboxAddress(loc.latitude!, loc.longitude!);
+        addressUpdates.push({ id: loc.locationId!, address });
+      },
+    );
+
+    if (addressUpdates.length > 0) {
+      const values = addressUpdates.map(
+        ({ id, address }) => sql`(${id}::int, ${address})`,
       );
 
-      await db
-        .update(locations)
-        .set({ address })
-        .where(eq(locations.id, location.locationId));
+      await db.execute(sql`
+        update ${locations} as l
+        set address = v.address
+        from (values ${sql.join(values, sql`, `)}) as v(id, address)
+        where l.id = v.id
+      `);
     }
   }
 
