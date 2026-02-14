@@ -73,10 +73,6 @@ export function ParkingMap({ parkings }: Props) {
     setLaunchParkingSpotId(searchParking.id);
   }, [setLaunchParkingSpotId, mapLoaded, searchParking]);
 
-  useEffect(() => {
-    console.log("Parking zone count: ", parkings.length);
-  }, [parkings]);
-
   return (
     <div className="flex-1">
       <div className="absolute flex justify-center w-screen z-10">

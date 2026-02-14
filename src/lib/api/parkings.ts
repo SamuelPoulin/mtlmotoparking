@@ -129,8 +129,47 @@ export async function getParkings() {
     };
   });
 
-  if (newParkings.length > 0) {
-    await db.insert(parkings).values(normalizedParkings);
+  const dedupedParkings = Array.from(
+    new Map(
+      normalizedParkings
+        .filter((parking) => parking.location_id != null)
+        .map((parking) => {
+          const key = [
+            parking.location_id,
+            parking.post_id ?? "",
+            parking.sign_id ?? "",
+            parking.sign_rpa_id ?? "",
+            parking.rpa_code ?? "",
+          ].join("|");
+          return [key, parking] as const;
+        }),
+    ).values(),
+  );
+
+  if (dedupedParkings.length > 0) {
+    await db
+      .insert(parkings)
+      .values(dedupedParkings)
+      .onConflictDoUpdate({
+        target: [
+          parkings.location_id,
+          parkings.post_id,
+          parkings.sign_id,
+          parkings.sign_rpa_id,
+          parkings.rpa_code,
+        ],
+        set: {
+          source_id: sql`excluded.source_id`,
+          rpa_description: sql`excluded.rpa_description`,
+          rep_description: sql`excluded.rep_description`,
+          rac_description: sql`excluded.rac_description`,
+          cat_description: sql`excluded.cat_description`,
+          post_version: sql`excluded.post_version`,
+          post_conception_date: sql`excluded.post_conception_date`,
+          borough: sql`excluded.borough`,
+          updatedAt: sql`CURRENT_TIMESTAMP`,
+        },
+      });
 
     const staleOrMissing = await db
       .select({

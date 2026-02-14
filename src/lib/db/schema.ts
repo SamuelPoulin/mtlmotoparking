@@ -21,23 +21,35 @@ const timestamps = {
     .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
 };
 
-export const parkings = pgTable("parkings", {
-  id: serial().primaryKey(),
-  source_id: integer(),
-  rpa_code: text(),
-  rpa_description: text(),
-  rep_description: text(),
-  rac_description: text(),
-  cat_description: text(),
-  post_id: text(),
-  post_version: text(),
-  post_conception_date: text(),
-  sign_id: text(),
-  sign_rpa_id: text(),
-  borough: text(),
-  location_id: integer().references(() => locations.id),
-  ...timestamps,
-});
+export const parkings = pgTable(
+  "parkings",
+  {
+    id: serial().primaryKey(),
+    source_id: integer(),
+    rpa_code: text(),
+    rpa_description: text(),
+    rep_description: text(),
+    rac_description: text(),
+    cat_description: text(),
+    post_id: text(),
+    post_version: text(),
+    post_conception_date: text(),
+    sign_id: text(),
+    sign_rpa_id: text(),
+    borough: text(),
+    location_id: integer().references(() => locations.id),
+    ...timestamps,
+  },
+  (table) => [
+    unique("parkings_location_post_sign_unique").on(
+      table.location_id,
+      table.post_id,
+      table.sign_id,
+      table.sign_rpa_id,
+      table.rpa_code,
+    ),
+  ],
+);
 
 export const locations = pgTable(
   "locations",

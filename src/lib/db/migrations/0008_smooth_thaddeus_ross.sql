@@ -1,0 +1,1 @@
+ALTER TABLE "parkings" ADD CONSTRAINT "parkings_location_post_sign_unique" UNIQUE("location_id","post_id","sign_id","sign_rpa_id","rpa_code");
