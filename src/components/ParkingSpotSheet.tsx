@@ -41,6 +41,7 @@ import {
 import { useStore } from "@/src/lib/zustand/store";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import { FaApple, FaGoogle, FaWaze } from "react-icons/fa";
 
 const PulsateMarkerButton = styled.button<{ $pulsate: boolean }>`
   position: relative;
@@ -191,7 +192,7 @@ export function ParkingSpotSheet({ parking }: Props) {
                 )
               }
             >
-              <Navigation className="size-4" />
+              <FaWaze className="size-4" />
               Waze
             </Button>
             <Button
@@ -204,8 +205,8 @@ export function ParkingSpotSheet({ parking }: Props) {
                 )
               }
             >
-              <MapIcon className="size-4" />
-              Google
+              <FaGoogle className="size-4" />
+              Google Maps
             </Button>
             <Button
               variant="secondary"
@@ -217,8 +218,8 @@ export function ParkingSpotSheet({ parking }: Props) {
                 )
               }
             >
-              <Apple className="size-4" />
-              Apple
+              <FaApple className="size-4" />
+              Apple Maps
             </Button>
           </div>
         </div>
