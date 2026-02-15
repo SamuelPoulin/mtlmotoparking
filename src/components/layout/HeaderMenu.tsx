@@ -1,8 +1,8 @@
 "use client";
 
-import { LogOut, Menu } from "lucide-react";
+import { Loader2, LogOut, Menu } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 import { FeedbackLink } from "@/src/components/layout/FeedbackLink";
 import { MadeWithLove } from "@/src/components/layout/MadeWithLove";
@@ -22,6 +22,7 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { Skeleton } from "../ui/skeleton";
+import { Spinner } from "../ui/spinner";
 
 const UserSkeleton = () => {
   return (
@@ -37,7 +38,15 @@ const UserSkeleton = () => {
 
 export function HeaderMenu() {
   const [open, setOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isNavigatingToSignIn, startSignInTransition] = useTransition();
   const { data: session, isPending: isSessionPending } = useSession();
+
+  const handleSignout = async () => {
+    setIsSigningOut(true);
+    await signOut();
+    setIsSigningOut(false);
+  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -65,9 +74,11 @@ export function HeaderMenu() {
               variant="outline"
               asChild
               className="w-full"
-              onClick={() => setOpen(false)}
+              onClick={() => startSignInTransition(() => setOpen(false))}
             >
-              <Link href="/sign-in">Sign in</Link>
+              <Link href="/sign-in">
+                {isNavigatingToSignIn ? <Spinner /> : "Sign in"}
+              </Link>
             </Button>
           )}
           {!isSessionPending && session && (
@@ -90,10 +101,10 @@ export function HeaderMenu() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={async () => await signOut()}
+                onClick={handleSignout}
                 aria-label="Toggle menu"
               >
-                <LogOut />
+                {isSigningOut ? <Spinner /> : <LogOut />}
               </Button>
             </>
           )}
