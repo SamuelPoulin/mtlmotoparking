@@ -27,11 +27,11 @@ import { useTranslations } from "next-intl";
 
 const UserSkeleton = () => {
   return (
-    <div className="flex items-center p-5 gap-4">
+    <div className="flex flex-1 items-center p-5 gap-4">
       <Skeleton className="h-10 w-10 rounded-full" />
-      <div className="flex flex-col gap-2">
-        <Skeleton className="h-4 w-48" />
-        <Skeleton className="h-4 w-48" />
+      <div className="flex flex-col gap-2 flex-1">
+        <Skeleton className="w-full h-4" />
+        <Skeleton className="w-2/3 h-4" />
       </div>
     </div>
   );
