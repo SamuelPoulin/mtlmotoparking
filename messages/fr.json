@@ -29,6 +29,16 @@
       "description": "Contribuez en partageant des images et descriptions des zones de stationnement pour aider les autres utilisateurs de mtlmotoparking."
     }
   },
+  "SignInPage": {
+    "title": "Se connecter à mtlmotoparking",
+    "continueWith": "Continuer avec"
+  },
+  "Menu": {
+    "signIn": {
+      "button": "Se connecter",
+      "description": "Connectez-vous pour contribuer à la communauté et partager des mises à jour sur les stationnements!"
+    }
+  },
   "madeWith": "Fait avec",
   "fromMontreal": "à Montréal",
   "share": "Partager",

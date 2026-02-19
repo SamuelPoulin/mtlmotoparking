@@ -8,8 +8,10 @@ import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { Spinner } from "./ui/spinner";
 import { FaFacebookF, FaGoogle } from "react-icons/fa";
+import { useTranslations } from "next-intl";
 
 export function SignInClient() {
+  const t = useTranslations();
   const { data: session, isPending, isRefetching } = useSession();
 
   const handleSignIn = async (provider: string) => {
@@ -36,7 +38,7 @@ export function SignInClient() {
         </div>
 
         <h1 className="text-4xl font-bold tracking-tight text-foreground mb-6 text-balance">
-          Sign in to mtlmotoparking
+          {t("SignInPage.title")}
         </h1>
 
         <Separator className="mb-6" />
@@ -45,13 +47,13 @@ export function SignInClient() {
           <div className="flex flex-col gap-2">
             <Button onClick={() => handleSignIn("google")}>
               <FaGoogle className="mr-2" />
-              Continue with Google
+              {t("SignInPage.continueWith")} Google
             </Button>
             <div className="w-full mt-4">
               <div className="relative flex items-center gap-2">
                 <Separator className="flex-1" />
                 <div className="flex gap-2 text-muted-foreground text-nowrap animate-pulse">
-                  Coming soon
+                  {t("comingSoon")}
                   <Construction />
                 </div>
                 <Separator className="flex-1" />
@@ -59,7 +61,7 @@ export function SignInClient() {
             </div>
             <Button disabled>
               <FaFacebookF className="mr-2" />
-              Continue with Facebook
+              {t("SignInPage.continueWith")} Facebook
             </Button>
           </div>
         )}

@@ -23,6 +23,7 @@ import {
 } from "../ui/sheet";
 import { Skeleton } from "../ui/skeleton";
 import { Spinner } from "../ui/spinner";
+import { useTranslations } from "next-intl";
 
 const UserSkeleton = () => {
   return (
@@ -39,6 +40,8 @@ const UserSkeleton = () => {
 export function HeaderMenu() {
   const [open, setOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const t = useTranslations("Menu");
   const [isNavigatingToSignIn, startSignInTransition] = useTransition();
   const { data: session, isPending: isSessionPending } = useSession();
 
@@ -70,16 +73,21 @@ export function HeaderMenu() {
         <div className="flex items-center justify-between px-4">
           {isSessionPending && <UserSkeleton />}
           {!isSessionPending && !session && (
-            <Button
-              variant="outline"
-              asChild
-              className="w-full"
-              onClick={() => startSignInTransition(() => setOpen(false))}
-            >
-              <Link href="/sign-in">
-                {isNavigatingToSignIn ? <Spinner /> : "Sign in"}
-              </Link>
-            </Button>
+            <div className="flex flex-col items-center gap-3 w-full">
+              <Button
+                variant="outline"
+                asChild
+                className="w-full"
+                onClick={() => startSignInTransition(() => setOpen(false))}
+              >
+                <Link href="/sign-in">
+                  {isNavigatingToSignIn ? <Spinner /> : t("signIn.button")}
+                </Link>
+              </Button>
+              <p className="text-xs text-muted-foreground text-center px-2">
+                {t("signIn.description")}
+              </p>
+            </div>
           )}
           {!isSessionPending && session && (
             <>

@@ -29,6 +29,16 @@
       "description": "Upload pictures and descriptions of parking zones to help other users of mtlmotoparking."
     }
   },
+  "SignInPage": {
+    "title": "Sign in to mtlmotoparking",
+    "continueWith": "Continue with"
+  },
+  "Menu": {
+    "signIn": {
+      "button": "Sign In",
+      "description": "Sign in to contribute to the community and share parking spot updates!"
+    }
+  },
   "madeWith": "Made with",
   "fromMontreal": "in Montreal",
   "share": "Share",
