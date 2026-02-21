@@ -55,6 +55,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const DESCRIPTION_MAX_LENGTH = 280;
+    if (description && description.length > DESCRIPTION_MAX_LENGTH) {
+      return NextResponse.json(
+        { error: `Description must be ${DESCRIPTION_MAX_LENGTH} characters or less` },
+        { status: 400 },
+      );
+    }
+
     const existingCount = await getUserContributionCountForParkingToday(
       session.user.id,
       Number(parking_id),

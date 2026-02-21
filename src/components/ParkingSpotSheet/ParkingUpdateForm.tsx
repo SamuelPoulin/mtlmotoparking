@@ -34,6 +34,8 @@ export function ParkingUpdateForm({ parkingId }: Props) {
   const [description, setDescription] = useState("");
   const { setShowContributeView, setHasTransitioned } = useStore();
 
+  const DESCRIPTION_MAX_LENGTH = 280;
+
   const { data: cloudinaryParams } = useQuery<CloudinarySignature>({
     queryKey: ["cloudinary-signature"],
     queryFn: async () => {
@@ -199,13 +201,19 @@ export function ParkingUpdateForm({ parkingId }: Props) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium">
-          {t("descriptionTextbox.label")}
-        </label>
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium">
+            {t("descriptionTextbox.label")}
+          </label>
+          <span className="text-xs text-muted-foreground">
+            {description.length}/{DESCRIPTION_MAX_LENGTH}
+          </span>
+        </div>
         <Textarea
           placeholder={t("descriptionTextbox.placeholder")}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          maxLength={DESCRIPTION_MAX_LENGTH}
           rows={3}
           className="resize-none"
         />
