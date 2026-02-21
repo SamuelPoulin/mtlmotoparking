@@ -2,10 +2,21 @@
 
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useState } from "react";
 
 import { Skeleton } from "@/src/components/ui/skeleton";
 import type { ContributionWithUser } from "@/src/lib/api/contributions";
-import { useSession } from "@/src/lib/auth-client";
+import { useSession, type SessionUser } from "@/src/lib/auth-client";
+import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import { Trash2 } from "lucide-react";
 
 function formatRelativeTime(date: Date): string {
   const now = new Date();
@@ -24,10 +35,16 @@ function formatRelativeTime(date: Date): string {
 export function ContributionCard({
   contribution,
   labels,
+  onDelete,
 }: {
   contribution: ContributionWithUser;
   labels: ReturnType<typeof useTranslations<"MapPage.community">>;
+  onDelete?: (contributionId: number) => void;
 }) {
+  const session = useSession();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const fullnessColor = (() => {
     if (contribution.fullness <= 20)
       return "bg-green-500/20 text-green-700 dark:text-green-400";
@@ -47,6 +64,29 @@ export function ContributionCard({
     if (contribution.fullness <= 80) return labels("busy");
     return labels("full");
   })();
+
+  const isAdmin =
+    (session?.data?.user as SessionUser | undefined)?.isAdmin === true;
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/contributions/${contribution.id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete contribution");
+      }
+
+      onDelete?.(contribution.id);
+    } catch (error) {
+      console.error("Error deleting contribution:", error);
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteDialog(false);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-3 p-3 bg-card border border-border rounded-lg">
@@ -88,6 +128,42 @@ export function ContributionCard({
           {contribution.description}
         </p>
       )}
+      {isAdmin && (
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => setShowDeleteDialog(true)}
+        >
+          Delete
+        </Button>
+      )}
+
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Contribution</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this contribution?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteDialog(false)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

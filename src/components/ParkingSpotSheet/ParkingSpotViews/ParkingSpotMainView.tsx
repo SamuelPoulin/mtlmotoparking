@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Camera, Construction, Locate, MapPin } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
@@ -46,6 +46,7 @@ export function ParkingSpotMainView({ parking }: Props) {
   const { hasTransitioned, setShowContributeView, setHasTransitioned } =
     useStore();
   const { data: session } = useSession();
+  const queryClient = useQueryClient();
 
   const { data: contributionsData, isLoading } = useQuery<{
     contributions: ContributionWithUser[];
@@ -59,6 +60,20 @@ export function ParkingSpotMainView({ parking }: Props) {
   });
 
   const contributions = contributionsData?.contributions ?? [];
+
+  const handleContributionDelete = (contributionId: number) => {
+    queryClient.setQueryData<{ contributions: ContributionWithUser[] }>(
+      ["contributions", parking.id],
+      (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          contributions: oldData.contributions.filter(
+            (c) => c.id !== contributionId,
+          ),
+        };
+      },
+    );
+  };
 
   const parkingUrl = useMemo(() => {
     const url = new URL(window.location.href);
@@ -215,6 +230,7 @@ export function ParkingSpotMainView({ parking }: Props) {
                 key={contribution.id}
                 contribution={contribution}
                 labels={tCommunity}
+                onDelete={handleContributionDelete}
               />
             ))}
           </div>
