@@ -31,7 +31,6 @@ export function ParkingSpotContributeView({
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: "100%", opacity: 0 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      layout="position"
       className="flex flex-col w-full"
     >
       <SheetHeader className="pl-0">

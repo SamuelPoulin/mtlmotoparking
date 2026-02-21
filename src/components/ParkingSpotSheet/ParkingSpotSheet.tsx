@@ -1,7 +1,7 @@
 "use client";
 
 import { Motorbike } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import posthog from "posthog-js";
 import { useEffect, useState } from "react";
 import { Marker } from "react-map-gl/maplibre";
@@ -126,7 +126,7 @@ export function ParkingSpotSheet({ parking }: Props) {
         side="bottom"
         className="flex flex-col px-8 pb-8 rounded-t-2xl overflow-hidden"
       >
-        <motion.div layout className="flex flex-col w-full">
+        <div className="flex flex-col w-full">
           <AnimatePresence mode="wait">
             {showContributeView ? (
               <ParkingSpotContributeView
@@ -142,7 +142,7 @@ export function ParkingSpotSheet({ parking }: Props) {
               />
             )}
           </AnimatePresence>
-        </motion.div>
+        </div>
       </SheetContent>
     </Sheet>
   );
