@@ -27,7 +27,12 @@
     "community": {
       "title": "Communauté",
       "description": "Contribuez en partageant des images et descriptions des zones de stationnement pour aider les autres utilisateurs de mtlmotoparking.",
-      "update": "Contribuer",
+      "signInDescription": "Connectez-vous pour contribuer en partageant des images et descriptions des zones de stationnement pour aider les autres utilisateurs de mtlmotoparking.",
+      "emptyCommunity": {
+        "title": "Aucune contribution de la communauté pour cette place de stationnement.",
+        "description": "Contribuez la première!"
+      },
+      "contribute": "Contribuer",
       "updateTitle": "Contribuer",
       "photo": "Photo",
       "tapToUpload": "Appuyez pour ajouter une photo",

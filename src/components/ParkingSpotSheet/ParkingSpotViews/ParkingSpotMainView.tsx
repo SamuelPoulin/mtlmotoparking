@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, Locate, MapPin } from "lucide-react";
+import { Camera, Construction, Locate, MapPin } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
@@ -24,23 +24,24 @@ import {
   ItemTitle,
 } from "@/src/components/ui/item";
 import { SheetHeader, SheetTitle } from "@/src/components/ui/sheet";
+import { useSession } from "@/src/lib/auth-client";
+import { useStore } from "@/src/lib/zustand/store";
+
+import { Separator } from "@/src/components/ui/separator";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
 type Props = {
   parking: ParkingWithLocation;
-  hasTransitioned: boolean;
-  setHasTransitionedAction: (hasTransitioned: boolean) => void;
-  setShowContributeViewAction: (showContributeView: boolean) => void;
 };
 
-export function ParkingSpotMainView({
-  parking,
-  hasTransitioned,
-  setHasTransitionedAction: setHasTransitionedAction,
-  setShowContributeViewAction: setShowUpdateView,
-}: Props) {
+export function ParkingSpotMainView({ parking }: Props) {
   const t = useTranslations();
+  const { hasTransitioned, setShowContributeView, setHasTransitioned } =
+    useStore();
+  const { data: session } = useSession();
+
+  console.log({ session });
 
   const parkingUrl = useMemo(() => {
     const url = new URL(window.location.href);
@@ -161,26 +162,45 @@ export function ParkingSpotMainView({
         </AccordionItem>
       </Accordion>
 
-      <div className="flex flex-col gap-4 relative border-2 border-secondary p-4 rounded-lg">
+      <Separator />
+
+      <div className="relative flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <h3 className="text-md font-bold text-primary">
             {t("MapPage.community.title")}
           </h3>
           <div className="flex gap-2">
             <Button
+              disabled={!session}
               onClick={() => {
-                setHasTransitionedAction(true);
-                setShowUpdateView(true);
+                setHasTransitioned(true);
+                setShowContributeView(true);
               }}
             >
-              {t("MapPage.community.update")}
+              {t("MapPage.community.contribute")}
               <Camera />
             </Button>
           </div>
         </div>
         <p className="text-sm text-muted-foreground">
-          {t("MapPage.community.description")}
+          {!session && t("MapPage.community.signInDescription")}
+          {session && t("MapPage.community.description")}
         </p>
+        <div className="flex gap-4 p-4 text-sm justify-center bg-card border border-border w-full rounded-lg">
+          <div className="flex items-center">
+            <div className="bg-muted p-4 flex justify-center rounded-full">
+              <Construction className="animate-pulse" />
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <span className="text-md">
+              {t("MapPage.community.emptyCommunity.title")}
+            </span>
+            <span className="text-sm text-muted-foreground">
+              {t("MapPage.community.emptyCommunity.description")}
+            </span>
+          </div>
+        </div>
       </div>
     </motion.div>
   );

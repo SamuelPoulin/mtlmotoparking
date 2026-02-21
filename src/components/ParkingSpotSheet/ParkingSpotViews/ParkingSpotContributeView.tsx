@@ -2,27 +2,16 @@
 
 import { ArrowLeft } from "lucide-react";
 import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
 
 import { ParkingUpdateForm } from "@/src/components/ParkingSpotSheet/ParkingUpdateForm";
 import { SheetHeader, SheetTitle } from "@/src/components/ui/sheet";
-import { useTranslations } from "next-intl";
+import { useStore } from "@/src/lib/zustand/store";
 
-export type ContributionData = {
-  photoUrl: string | null;
-  fullness: number;
-  description: string;
-};
-
-type Props = {
-  setShowContributeViewAction: (showContributeView: boolean) => void;
-  handleUpdateSubmitAction: (data: ContributionData) => void;
-};
-
-export function ParkingSpotContributeView({
-  setShowContributeViewAction,
-  handleUpdateSubmitAction,
-}: Props) {
+export function ParkingSpotContributeView() {
   const t = useTranslations();
+
+  const { setShowContributeView, submitParkingSpotUpdate } = useStore();
 
   return (
     <motion.div
@@ -36,7 +25,7 @@ export function ParkingSpotContributeView({
       <SheetHeader className="pl-0">
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setShowContributeViewAction(false)}
+            onClick={() => setShowContributeView(false)}
             className="p-1 hover:bg-muted rounded-md transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
@@ -45,8 +34,8 @@ export function ParkingSpotContributeView({
         </div>
       </SheetHeader>
       <ParkingUpdateForm
-        onCancelAction={() => setShowContributeViewAction(false)}
-        onSubmitAction={handleUpdateSubmitAction}
+        onCancelAction={() => setShowContributeView(false)}
+        onSubmitAction={submitParkingSpotUpdate}
       />
     </motion.div>
   );

@@ -11,12 +11,10 @@ import { ParkingWithLocation } from "@/src/components/ParkingMap";
 import { ParkingSpotMainView } from "@/src/components/ParkingSpotSheet/ParkingSpotViews/ParkingSpotMainView";
 import { Sheet, SheetContent } from "@/src/components/ui/sheet";
 import { useStore } from "@/src/lib/zustand/store";
-import {
-  ContributionData,
-  ParkingSpotContributeView,
-} from "@/src/components/ParkingSpotSheet/ParkingSpotViews/ParkingSpotContributeView";
+import { ParkingSpotContributeView } from "@/src/components/ParkingSpotSheet/ParkingSpotViews/ParkingSpotContributeView";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import { useMediaQuery } from "@/src/hooks/useMediaQuery";
 
 const PulsateMarkerButton = styled.button<{ $pulsate: boolean }>`
   position: relative;
@@ -64,8 +62,10 @@ type Props = {
 
 export function ParkingSpotSheet({ parking }: Props) {
   const [delayedOpen, setDelayedOpen] = useState(false);
-  const [showContributeView, setShowContributeView] = useState(false);
-  const [hasTransitioned, setHasTransitioned] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
+  const { showContributeView, setShowContributeView, setHasTransitioned } =
+    useStore();
 
   const {
     launchParkingSpotId,
@@ -94,11 +94,6 @@ export function ParkingSpotSheet({ parking }: Props) {
 
   const open = delayedOpen || selectedParkingSpotId === parking.id;
 
-  const handleUpdateSubmit = (data: ContributionData) => {
-    console.log({ data });
-    setShowContributeView(false);
-  };
-
   return (
     <Sheet key={parking.id} open={open} onOpenChange={handleClose}>
       <Marker
@@ -123,23 +118,15 @@ export function ParkingSpotSheet({ parking }: Props) {
         </PulsateMarkerButton>
       </Marker>
       <SheetContent
-        side="bottom"
-        className="flex flex-col px-8 pb-8 rounded-t-2xl overflow-hidden"
+        side={isMobile ? "bottom" : "right"}
+        className="flex flex-col px-8 pb-8 rounded-t-2xl md:rounded-t-none overflow-hidden"
       >
         <div className="flex flex-col w-full">
           <AnimatePresence mode="wait">
             {showContributeView ? (
-              <ParkingSpotContributeView
-                setShowContributeViewAction={setShowContributeView}
-                handleUpdateSubmitAction={handleUpdateSubmit}
-              />
+              <ParkingSpotContributeView />
             ) : (
-              <ParkingSpotMainView
-                parking={parking}
-                hasTransitioned={hasTransitioned}
-                setHasTransitionedAction={setHasTransitioned}
-                setShowContributeViewAction={setShowContributeView}
-              />
+              <ParkingSpotMainView parking={parking} />
             )}
           </AnimatePresence>
         </div>

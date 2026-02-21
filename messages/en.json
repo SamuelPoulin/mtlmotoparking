@@ -27,10 +27,15 @@
     "community": {
       "title": "Community",
       "description": "Upload pictures and descriptions of parking zones to help other users of mtlmotoparking.",
-      "update": "Contribute",
+      "signInDescription": "Sign in to upload pictures and descriptions of parking zones to help other users of mtlmotoparking.",
+      "emptyCommunity": {
+        "title": "This parking spot doesn't have any community updates yet.",
+        "description": "Be the first to add one!"
+      },
+      "contribute": "Contribute",
       "updateTitle": "Contribute",
       "photo": "Photo",
-      "tapToUpload": "Tap to upload a photo",
+      "tapToUpload": "Tap to add a photo",
       "howFull": "How full is it?",
       "empty": "Empty",
       "quiet": "Quiet",
