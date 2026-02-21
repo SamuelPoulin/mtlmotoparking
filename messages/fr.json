@@ -48,7 +48,8 @@
       "descriptionPlaceholder": "Ajoutez des détails sur ce stationnement...",
       "cancel": "Annuler",
       "submit": "Soumettre",
-      "submitting": "Patienter..."
+      "submitting": "Patienter...",
+      "submitError": "Échec. Veuillez réessayer."
     }
   },
   "SignInPage": {

@@ -124,7 +124,7 @@ export function ParkingSpotSheet({ parking }: Props) {
         <div className="flex flex-col w-full">
           <AnimatePresence mode="wait">
             {showContributeView ? (
-              <ParkingSpotContributeView />
+              <ParkingSpotContributeView parkingId={parking.id} />
             ) : (
               <ParkingSpotMainView parking={parking} />
             )}

@@ -71,6 +71,7 @@ export const user = pgTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
+  isAdmin: boolean("is_admin").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
@@ -137,9 +138,32 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+export const parking_spot_contributions = pgTable(
+  "parking_spot_contributions",
+  {
+    id: serial().primaryKey(),
+    parking_id: integer()
+      .notNull()
+      .references(() => parkings.id, { onDelete: "cascade" }),
+    user_id: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    cloudinary_public_id: text().notNull(),
+    cloudinary_url: text().notNull(),
+    fullness: integer().notNull(),
+    description: text(),
+    ...timestamps,
+  },
+  (table) => [
+    index("contributions_parking_id_idx").on(table.parking_id),
+    index("contributions_user_id_idx").on(table.user_id),
+  ],
+);
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  contributions: many(parking_spot_contributions),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -155,6 +179,20 @@ export const accountRelations = relations(account, ({ one }) => ({
     references: [user.id],
   }),
 }));
+
+export const parking_spot_contributionsRelations = relations(
+  parking_spot_contributions,
+  ({ one }) => ({
+    parking: one(parkings, {
+      fields: [parking_spot_contributions.parking_id],
+      references: [parkings.id],
+    }),
+    user: one(user, {
+      fields: [parking_spot_contributions.user_id],
+      references: [user.id],
+    }),
+  }),
+);
 
 export type APIParking = {
   _id: string;
@@ -174,3 +212,8 @@ export type APIParking = {
 };
 
 export type Parking = typeof parkings.$inferSelect;
+
+export type ParkingSpotContribution =
+  typeof parking_spot_contributions.$inferSelect;
+export type NewParkingSpotContribution =
+  typeof parking_spot_contributions.$inferInsert;

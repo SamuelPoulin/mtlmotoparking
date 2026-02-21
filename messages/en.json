@@ -47,7 +47,8 @@
       },
       "cancel": "Cancel",
       "submit": "Submit",
-      "submitting": "Submitting..."
+      "submitting": "Submitting...",
+      "submitError": "Failed to submit. Please try again."
     }
   },
   "SignInPage": {
