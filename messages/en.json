@@ -26,7 +26,23 @@
     "address": "Address",
     "community": {
       "title": "Community",
-      "description": "Upload pictures and descriptions of parking zones to help other users of mtlmotoparking."
+      "description": "Upload pictures and descriptions of parking zones to help other users of mtlmotoparking.",
+      "update": "Contribute",
+      "updateTitle": "Contribute",
+      "photo": "Photo",
+      "tapToUpload": "Tap to upload a photo",
+      "howFull": "How full is it?",
+      "empty": "Empty",
+      "quiet": "Quiet",
+      "moderate": "Moderate",
+      "busy": "Busy",
+      "full": "Full",
+      "descriptionTextbox": {
+        "label": "Description",
+        "placeholder": "Something noteworthy..."
+      },
+      "cancel": "Cancel",
+      "submit": "Submit"
     }
   },
   "SignInPage": {

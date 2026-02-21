@@ -26,7 +26,24 @@
     "address": "Addresse",
     "community": {
       "title": "Communauté",
-      "description": "Contribuez en partageant des images et descriptions des zones de stationnement pour aider les autres utilisateurs de mtlmotoparking."
+      "description": "Contribuez en partageant des images et descriptions des zones de stationnement pour aider les autres utilisateurs de mtlmotoparking.",
+      "update": "Contribuer",
+      "updateTitle": "Contribuer",
+      "photo": "Photo",
+      "tapToUpload": "Appuyez pour ajouter une photo",
+      "howFull": "Taux d'occupation?",
+      "empty": "Vide",
+      "quiet": "Peu occupé",
+      "moderate": "Modéré",
+      "busy": "Achalandé",
+      "full": "Complet",
+      "descriptionTextbox": {
+        "label": "Description",
+        "placeholder": "Quelque chose à signaler..."
+      },
+      "descriptionPlaceholder": "Ajoutez des détails sur ce stationnement...",
+      "cancel": "Annuler",
+      "submit": "Soumettre"
     }
   },
   "SignInPage": {

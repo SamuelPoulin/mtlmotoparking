@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, LogOut, Menu } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 
@@ -12,6 +12,7 @@ import { Button } from "@/src/components/ui/button";
 import { DrawerTitle } from "@/src/components/ui/drawer";
 import { LocaleSwitch } from "@/src/i18n/LocaleSwitch";
 import { signOut, useSession } from "@/src/lib/auth-client";
+import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Separator } from "../ui/separator";
 import {
@@ -23,7 +24,6 @@ import {
 } from "../ui/sheet";
 import { Skeleton } from "../ui/skeleton";
 import { Spinner } from "../ui/spinner";
-import { useTranslations } from "next-intl";
 
 const UserSkeleton = () => {
   return (
