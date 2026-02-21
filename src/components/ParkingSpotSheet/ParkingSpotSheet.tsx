@@ -119,7 +119,7 @@ export function ParkingSpotSheet({ parking }: Props) {
       </Marker>
       <SheetContent
         side={isMobile ? "bottom" : "right"}
-        className="flex flex-col px-8 pb-8 rounded-t-2xl md:rounded-t-none overflow-hidden"
+        className="flex flex-col px-8 pb-8 rounded-t-2xl max-h-[75vh] md:max-h-none md:rounded-t-none overflow-hidden overflow-y-auto"
       >
         <div className="flex flex-col w-full">
           <AnimatePresence mode="wait">
