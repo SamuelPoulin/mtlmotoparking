@@ -8,25 +8,16 @@ import { useRef, useState } from "react";
 import { Button } from "@/src/components/ui/button";
 import { FullnessSlider } from "@/src/components/ParkingSpotSheet/FullnessSlider";
 import { Textarea } from "@/src/components/ui/textarea";
+import { useStore } from "@/src/lib/zustand/store";
+import { Spinner } from "@/src/components/ui/spinner";
 
-type ParkingUpdateFormProps = {
-  onCancelAction: () => void;
-  onSubmitAction: (data: {
-    photoUrl: string | null;
-    fullness: number;
-    description: string;
-  }) => void;
-};
-
-export function ParkingUpdateForm({
-  onCancelAction: onCancel,
-  onSubmitAction: onSubmit,
-}: ParkingUpdateFormProps) {
+export function ParkingUpdateForm() {
   const t = useTranslations("MapPage.community");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [fullness, setFullness] = useState(0);
   const [description, setDescription] = useState("");
+  const { submitParkingSpotUpdate, isSubmitting } = useStore();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -44,7 +35,7 @@ export function ParkingUpdateForm({
   };
 
   const handleSubmit = () => {
-    onSubmit({ photoUrl, fullness, description });
+    submitParkingSpotUpdate({ photoUrl, fullness, description });
   };
 
   return (
@@ -118,14 +109,14 @@ export function ParkingUpdateForm({
         />
       </div>
 
-      <div className="flex gap-2 pt-2">
-        <Button variant="outline" className="flex-1" onClick={onCancel}>
-          {t("cancel")}
-        </Button>
-        <Button className="flex-1" onClick={handleSubmit}>
-          {t("submit")}
-        </Button>
-      </div>
+      <Button
+        className="flex flex-1 mt-3 p-4 text-md font-semibold"
+        disabled={isSubmitting}
+        onClick={handleSubmit}
+      >
+        {isSubmitting && <Spinner className="size-4" />}
+        {isSubmitting ? t("submitting") : t("submit")}
+      </Button>
     </div>
   );
 }

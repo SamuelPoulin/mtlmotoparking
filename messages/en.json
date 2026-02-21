@@ -33,7 +33,6 @@
         "description": "Be the first to add one!"
       },
       "contribute": "Contribute",
-      "updateTitle": "Contribute",
       "photo": "Photo",
       "tapToUpload": "Tap to add a photo",
       "howFull": "How full is it?",
@@ -47,7 +46,8 @@
         "placeholder": "Something noteworthy..."
       },
       "cancel": "Cancel",
-      "submit": "Submit"
+      "submit": "Submit",
+      "submitting": "Submitting..."
     }
   },
   "SignInPage": {

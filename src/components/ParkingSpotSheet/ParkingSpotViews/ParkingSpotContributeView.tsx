@@ -1,17 +1,13 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 
 import { ParkingUpdateForm } from "@/src/components/ParkingSpotSheet/ParkingUpdateForm";
 import { SheetHeader, SheetTitle } from "@/src/components/ui/sheet";
-import { useStore } from "@/src/lib/zustand/store";
 
 export function ParkingSpotContributeView() {
   const t = useTranslations();
-
-  const { setShowContributeView, submitParkingSpotUpdate } = useStore();
 
   return (
     <motion.div
@@ -24,19 +20,10 @@ export function ParkingSpotContributeView() {
     >
       <SheetHeader className="pl-0">
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowContributeView(false)}
-            className="p-1 hover:bg-muted rounded-md transition-colors"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-          <SheetTitle>{t("MapPage.community.updateTitle")}</SheetTitle>
+          <SheetTitle>{t("MapPage.community.contribute")}</SheetTitle>
         </div>
       </SheetHeader>
-      <ParkingUpdateForm
-        onCancelAction={() => setShowContributeView(false)}
-        onSubmitAction={submitParkingSpotUpdate}
-      />
+      <ParkingUpdateForm />
     </motion.div>
   );
 }

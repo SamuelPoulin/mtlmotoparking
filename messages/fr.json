@@ -33,7 +33,6 @@
         "description": "Contribuez la première!"
       },
       "contribute": "Contribuer",
-      "updateTitle": "Contribuer",
       "photo": "Photo",
       "tapToUpload": "Appuyez pour ajouter une photo",
       "howFull": "Taux d'occupation?",
@@ -48,7 +47,8 @@
       },
       "descriptionPlaceholder": "Ajoutez des détails sur ce stationnement...",
       "cancel": "Annuler",
-      "submit": "Soumettre"
+      "submit": "Soumettre",
+      "submitting": "Patienter..."
     }
   },
   "SignInPage": {
