@@ -55,6 +55,8 @@ export function ContributionCard({
     return labels("full");
   })();
 
+  const relativeTimeT = useTranslations("MapPage.community.relativeTime");
+
   function formatRelativeTime(date: Date): string {
     const now = new Date();
     const diffMs = now.getTime() - new Date(date).getTime();
@@ -62,12 +64,14 @@ export function ContributionCard({
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return "Just now";
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
+    if (diffMins < 1) return relativeTimeT("justNow");
+    if (diffMins < 60) return relativeTimeT("minutesAgo", { count: diffMins });
+    if (diffHours < 24) return relativeTimeT("hoursAgo", { count: diffHours });
+    if (diffDays < 7) return relativeTimeT("daysAgo", { count: diffDays });
     return new Date(date).toLocaleDateString();
   }
+
+  const firstName = contribution.user?.name?.split(" ")[0] || "Anonymous";
 
   const isAdmin = session?.data?.user?.role === "admin";
   const isOwner = session?.data?.user?.id === contribution.user_id;
@@ -132,7 +136,7 @@ export function ContributionCard({
           {contribution.user?.image ? (
             <Image
               src={contribution.user.image}
-              alt={contribution.user.name || "User"}
+              alt={firstName}
               width={24}
               height={24}
               className="rounded-full"
@@ -140,9 +144,7 @@ export function ContributionCard({
           ) : (
             <div className="w-6 h-6 rounded-full bg-muted" />
           )}
-          <span className="text-sm font-medium">
-            {contribution.user?.name || "Anonymous"}
-          </span>
+          <span className="text-sm font-medium">{firstName}</span>
         </div>
         <span
           className={`flex text-xs px-2 py-1 rounded-full gap-1 ${fullnessColor}`}
@@ -166,7 +168,7 @@ export function ContributionCard({
           {t("delete")}
         </Button>
       )}
-      {isAdmin && (
+      {isAdmin && !isOwner && (
         <Button
           variant="destructive"
           size="sm"

@@ -64,7 +64,13 @@
       "deleting": "Deleting...",
       "banning": "Banning...",
       "submitError": "Failed to submit. Please try again.",
-      "dailyLimitReached": "You can only submit one contribution per parking spot per day."
+      "dailyLimitReached": "You can only submit one contribution per parking spot per day.",
+      "relativeTime": {
+        "justNow": "Just now",
+        "minutesAgo": "{count}m ago",
+        "hoursAgo": "{count}h ago",
+        "daysAgo": "{count}d ago"
+      }
     }
   },
   "SignInPage": {

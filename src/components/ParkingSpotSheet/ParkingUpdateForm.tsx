@@ -163,7 +163,7 @@ export function ParkingUpdateForm({ parkingId }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      {!canContributeData?.canContribute && (
+      {!isCheckingContribution && !canContributeData?.canContribute && (
         <p className="text-sm text-destructive">{t("dailyLimitReached")}</p>
       )}
 

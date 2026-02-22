@@ -64,7 +64,13 @@
       "deleting": "Patienter...",
       "banning": "Patienter...",
       "submitError": "Échec. Veuillez réessayer.",
-      "dailyLimitReached": "Vous ne pouvez soumettre qu'une contribution par stationnement par jour."
+      "dailyLimitReached": "Vous ne pouvez soumettre qu'une contribution par stationnement par jour.",
+      "relativeTime": {
+        "justNow": "À l'instant",
+        "minutesAgo": "Il y a {count}m",
+        "hoursAgo": "Il y a {count}h",
+        "daysAgo": "Il y a {count}j"
+      }
     }
   },
   "SignInPage": {
