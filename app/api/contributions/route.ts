@@ -33,6 +33,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const isAdmin = session?.user?.role === "admin";
+
   try {
     const body = await request.json();
     const {
@@ -58,7 +60,9 @@ export async function POST(request: NextRequest) {
     const DESCRIPTION_MAX_LENGTH = 280;
     if (description && description.length > DESCRIPTION_MAX_LENGTH) {
       return NextResponse.json(
-        { error: `Description must be ${DESCRIPTION_MAX_LENGTH} characters or less` },
+        {
+          error: `Description must be ${DESCRIPTION_MAX_LENGTH} characters or less`,
+        },
         { status: 400 },
       );
     }
@@ -68,7 +72,7 @@ export async function POST(request: NextRequest) {
       Number(parking_id),
     );
 
-    if (existingCount >= 1) {
+    if (!isAdmin && existingCount >= 1) {
       return NextResponse.json(
         {
           error:

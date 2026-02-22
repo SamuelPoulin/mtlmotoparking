@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
 
   const searchParams = request.nextUrl.searchParams;
   const parkingId = searchParams.get("parking_id");
+  const isAdmin = session?.user?.role === "admin";
 
   if (!parkingId) {
     return NextResponse.json(
@@ -27,8 +28,14 @@ export async function GET(request: NextRequest) {
     Number(parkingId),
   );
 
+  let reason = null;
+
+  if (!isAdmin && count >= 1) {
+    reason = "limit_reached";
+  }
+
   return NextResponse.json({
-    canContribute: count < 1,
-    reason: count >= 1 ? "limit_reached" : null,
+    canContribute: isAdmin ? true : count < 1,
+    reason,
   });
 }
