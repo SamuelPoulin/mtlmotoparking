@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Camera, X } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import posthog from "posthog-js";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -123,6 +124,9 @@ export function ParkingUpdateForm({ parkingId }: Props) {
       });
       queryClient.invalidateQueries({
         queryKey: ["can-contribute", parkingId],
+      });
+      posthog.capture("contribution_submitted", {
+        parking_id: parkingId,
       });
       toast.success(t("contributeSuccess"));
       setShowContributeView(false);

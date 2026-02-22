@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { FaApple, FaGoogle, FaWaze } from "react-icons/fa";
+import posthog from "posthog-js";
 
 import { CopyButton } from "@/src/components/CopyButton";
 import { ParkingWithLocation } from "@/src/components/ParkingMap";
@@ -208,6 +209,9 @@ export function ParkingSpotMainView({ parking }: Props) {
             <Button
               disabled={!session}
               onClick={() => {
+                posthog.capture("contribute_view_opened", {
+                  parking_id: parking.id,
+                });
                 setHasTransitioned(true);
                 setShowContributeView(true);
               }}

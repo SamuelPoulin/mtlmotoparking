@@ -1,5 +1,6 @@
 "use client";
 
+import posthog from "posthog-js";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
@@ -86,6 +87,11 @@ export function ContributionCard({
       if (!response.ok) {
         throw new Error("Failed to delete contribution");
       }
+
+      posthog.capture("contribution_deleted", {
+        contribution_id: contribution.id,
+        parking_id: contribution.parking_id,
+      });
 
       onDelete?.(contribution.id);
     } catch (error) {

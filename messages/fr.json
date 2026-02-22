@@ -2,7 +2,7 @@
   "HomePage": {
     "title": "mtlmotoparking",
     "description": "Trouver des stationnements pour motos à Montréal",
-    "communityContributions": "Nouveauté: contribuez à la communauté!",
+    "communityContributions": "Nouveauté : Contributions à la communauté!",
     "openMapButton": "Consulter la carte",
     "findParkingTip": {
       "title": "Trouver du stationnement",
@@ -14,12 +14,12 @@
     }
   },
   "Footer": {
-    "giveFeedback": "Donnez-moi votre avis"
+    "giveFeedback": "Me donner votre avis"
   },
   "MapPage": {
     "searchAnAddress": "Rechercher une adresse",
     "motorcycleParking": "Stationnement moto",
-    "navigateWith": "Se rendre avec:",
+    "navigateWith": "Se rendre avec :",
     "results": "Résultats",
     "noResults": "Aucun résultat",
     "additionalDetails": "Plus de détails",
@@ -27,7 +27,7 @@
     "address": "Adresse",
     "community": {
       "title": "Communauté",
-      "description": "Contribuez en partageant des images et descriptions des zones de stationnement pour aider les autres utilisateurs de mtlmotoparking.",
+      "description": "Contribuer des images et descriptions des zones de stationnement pour aider les autres utilisateurs de mtlmotoparking.",
       "signInDescription": "Connectez-vous pour contribuer en partageant des images et descriptions des zones de stationnement pour aider les autres utilisateurs de mtlmotoparking.",
       "emptyCommunity": {
         "title": "Aucune contribution de la communauté pour cette place de stationnement.",
@@ -38,7 +38,7 @@
       "banSuccess": "Succès!",
       "deleteSuccess": "Succès!",
       "photo": "Photo",
-      "tapToUpload": "Appuyez pour ajouter une photo",
+      "tapToUpload": "Appuyer pour ajouter une photo",
       "howFull": "Taux d'occupation?",
       "empty": "Vide",
       "quiet": "Peu occupé",
