@@ -34,7 +34,8 @@ export async function getContributionsForParking(
     .from(parking_spot_contributions)
     .leftJoin(user, eq(parking_spot_contributions.user_id, user.id))
     .where(eq(parking_spot_contributions.parking_id, parkingId))
-    .orderBy(desc(parking_spot_contributions.createdAt));
+    .orderBy(desc(parking_spot_contributions.createdAt))
+    .limit(5);
 }
 
 export async function getUserContributionCountForParkingToday(
