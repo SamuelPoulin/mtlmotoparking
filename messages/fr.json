@@ -33,6 +33,9 @@
         "description": "Contribuez la première!"
       },
       "contribute": "Contribuer",
+      "contributeSuccess": "Contribution partagée!",
+      "banSuccess": "Succès!",
+      "deleteSuccess": "Succès!",
       "photo": "Photo",
       "tapToUpload": "Appuyez pour ajouter une photo",
       "howFull": "Taux d'occupation?",

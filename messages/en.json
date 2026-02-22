@@ -33,6 +33,9 @@
         "description": "Be the first to add one!"
       },
       "contribute": "Contribute",
+      "contributeSuccess": "Contribution submitted!",
+      "banSuccess": "Success!",
+      "deleteSuccess": "Contrution deleted!",
       "photo": "Photo",
       "tapToUpload": "Tap to add a photo",
       "howFull": "How full is it?",

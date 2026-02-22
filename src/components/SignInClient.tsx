@@ -9,6 +9,8 @@ import { Separator } from "./ui/separator";
 import { Spinner } from "./ui/spinner";
 import { FaFacebookF, FaGoogle } from "react-icons/fa";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
+import { redirect } from "next/navigation";
 
 export function SignInClient() {
   const t = useTranslations();
@@ -21,6 +23,12 @@ export function SignInClient() {
   const handleSignOut = async () => {
     await signOut();
   };
+
+  useEffect(() => {
+    if (session) {
+      redirect("/");
+    }
+  }, [session]);
 
   if (isPending || isRefetching) {
     return (

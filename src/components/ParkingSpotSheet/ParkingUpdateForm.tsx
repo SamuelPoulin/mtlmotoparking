@@ -5,6 +5,7 @@ import { Camera, X } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { FullnessSlider } from "@/src/components/ParkingSpotSheet/FullnessSlider";
 import { Button } from "@/src/components/ui/button";
@@ -123,6 +124,7 @@ export function ParkingUpdateForm({ parkingId }: Props) {
       queryClient.invalidateQueries({
         queryKey: ["can-contribute", parkingId],
       });
+      toast.success(t("contributeSuccess"));
       setShowContributeView(false);
     },
   });

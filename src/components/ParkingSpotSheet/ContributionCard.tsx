@@ -4,11 +4,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 
-import { Skeleton } from "@/src/components/ui/skeleton";
-import { Spinner } from "@/src/components/ui/spinner";
-import type { ContributionWithUser } from "@/src/lib/api/contributions";
-import { useSession } from "@/src/lib/auth-client";
-import { Button } from "../ui/button";
+import { Button } from "@/src/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -16,21 +12,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
-
-function formatRelativeTime(date: Date): string {
-  const now = new Date();
-  const diffMs = now.getTime() - new Date(date).getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMs / 3600000);
-  const diffDays = Math.floor(diffMs / 86400000);
-
-  if (diffMins < 1) return "Just now";
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return new Date(date).toLocaleDateString();
-}
+} from "@/src/components/ui/dialog";
+import { Skeleton } from "@/src/components/ui/skeleton";
+import { Spinner } from "@/src/components/ui/spinner";
+import type { ContributionWithUser } from "@/src/lib/api/contributions";
+import { useSession } from "@/src/lib/auth-client";
+import { toast } from "sonner";
 
 export function ContributionCard({
   contribution,
@@ -68,6 +55,20 @@ export function ContributionCard({
     return labels("full");
   })();
 
+  function formatRelativeTime(date: Date): string {
+    const now = new Date();
+    const diffMs = now.getTime() - new Date(date).getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return "Just now";
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return new Date(date).toLocaleDateString();
+  }
+
   const isAdmin = session?.data?.user?.role === "admin";
   const isOwner = session?.data?.user?.id === contribution.user_id;
 
@@ -86,6 +87,7 @@ export function ContributionCard({
     } catch (error) {
       console.error("Error deleting contribution:", error);
     } finally {
+      toast.success(t("deleteSuccess"));
       setIsDeleting(false);
       setShowDeleteDialog(false);
     }
@@ -108,6 +110,7 @@ export function ContributionCard({
     } catch (error) {
       console.error("Error banning user:", error);
     } finally {
+      toast.success(t("banSuccess"));
       setIsBanning(false);
       setShowBanDialog(false);
     }
