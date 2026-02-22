@@ -34,11 +34,11 @@ function formatRelativeTime(date: Date): string {
 export function ContributionCard({
   contribution,
   labels,
-  onDelete,
+  onDeleteAction: onDelete,
 }: {
   contribution: ContributionWithUser;
   labels: ReturnType<typeof useTranslations<"MapPage.community">>;
-  onDelete?: (contributionId: number) => void;
+  onDeleteAction?: (contributionId: number) => void;
 }) {
   const session = useSession();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -66,8 +66,7 @@ export function ContributionCard({
 
   const isAdmin =
     (session?.data?.user as SessionUser | undefined)?.isAdmin === true;
-  const isOwner =
-    session?.data?.user?.id === contribution.user_id;
+  const isOwner = session?.data?.user?.id === contribution.user_id;
 
   const handleDelete = async () => {
     setIsDeleting(true);

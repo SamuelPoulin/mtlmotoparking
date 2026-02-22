@@ -230,7 +230,7 @@ export function ParkingSpotMainView({ parking }: Props) {
                 key={contribution.id}
                 contribution={contribution}
                 labels={tCommunity}
-                onDelete={handleContributionDelete}
+                onDeleteAction={handleContributionDelete}
               />
             ))}
           </div>
