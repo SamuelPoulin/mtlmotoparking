@@ -4,10 +4,10 @@ import { ArrowLeft } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 
-import { ParkingUpdateForm } from "@/src/components/ParkingSpotSheet/ParkingUpdateForm";
+import { ParkingUpdateForm } from "@/src/components/ParkingSpotDrawer/ParkingUpdateForm";
 import { Button } from "@/src/components/ui/button";
-import { SheetHeader, SheetTitle } from "@/src/components/ui/sheet";
 import { useStore } from "@/src/lib/zustand/store";
+import { DrawerHeader, DrawerTitle } from "@/src/components/ui/drawer";
 
 type Props = {
   parkingId: number;
@@ -30,7 +30,7 @@ export function ParkingSpotContributeView({ parkingId }: Props) {
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className="flex flex-col w-full"
     >
-      <SheetHeader className="pl-0">
+      <DrawerHeader className="pl-0">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
@@ -40,9 +40,9 @@ export function ParkingSpotContributeView({ parkingId }: Props) {
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <SheetTitle>{t("MapPage.community.contribute")}</SheetTitle>
+          <DrawerTitle>{t("MapPage.community.contribute")}</DrawerTitle>
         </div>
-      </SheetHeader>
+      </DrawerHeader>
       <ParkingUpdateForm parkingId={parkingId} />
     </motion.div>
   );

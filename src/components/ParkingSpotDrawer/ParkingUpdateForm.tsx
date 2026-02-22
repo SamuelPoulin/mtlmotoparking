@@ -8,7 +8,7 @@ import posthog from "posthog-js";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { FullnessSlider } from "@/src/components/ParkingSpotSheet/FullnessSlider";
+import { FullnessSlider } from "@/src/components/ParkingSpotDrawer/FullnessSlider";
 import { Button } from "@/src/components/ui/button";
 import { Spinner } from "@/src/components/ui/spinner";
 import { Textarea } from "@/src/components/ui/textarea";

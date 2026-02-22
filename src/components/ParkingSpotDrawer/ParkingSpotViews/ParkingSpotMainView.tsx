@@ -4,16 +4,16 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Camera, Construction, Locate, MapPin } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
+import posthog from "posthog-js";
 import { useMemo } from "react";
 import { FaApple, FaGoogle, FaWaze } from "react-icons/fa";
-import posthog from "posthog-js";
 
 import { CopyButton } from "@/src/components/CopyButton";
 import { ParkingWithLocation } from "@/src/components/ParkingMap";
 import {
   ContributionCard,
   ContributionSkeleton,
-} from "@/src/components/ParkingSpotSheet/ContributionCard";
+} from "@/src/components/ParkingSpotDrawer/ContributionCard";
 import {
   Accordion,
   AccordionContent,
@@ -30,10 +30,10 @@ import {
   ItemTitle,
 } from "@/src/components/ui/item";
 import { Separator } from "@/src/components/ui/separator";
-import { SheetHeader, SheetTitle } from "@/src/components/ui/sheet";
 import type { ContributionWithUser } from "@/src/lib/api/contributions";
 import { useSession } from "@/src/lib/auth-client";
 import { useStore } from "@/src/lib/zustand/store";
+import { DrawerHeader, DrawerTitle } from "@/src/components/ui/drawer";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -96,8 +96,8 @@ export function ParkingSpotMainView({ parking }: Props) {
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className="flex flex-col w-full gap-4"
     >
-      <SheetHeader className="pl-0">
-        <SheetTitle className="text-nowrap">
+      <DrawerHeader className="pl-0">
+        <DrawerTitle className="text-nowrap">
           <div className="flex items-center justify-between">
             {t("MapPage.motorcycleParking")}
             <CopyButton
@@ -106,8 +106,8 @@ export function ParkingSpotMainView({ parking }: Props) {
               content={parkingUrl}
             />
           </div>
-        </SheetTitle>
-      </SheetHeader>
+        </DrawerTitle>
+      </DrawerHeader>
 
       {parking.address && (
         <Item variant="muted" size="sm">

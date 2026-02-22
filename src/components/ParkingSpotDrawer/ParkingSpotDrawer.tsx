@@ -8,13 +8,13 @@ import { Marker } from "react-map-gl/maplibre";
 import styled, { css } from "styled-components";
 
 import { ParkingWithLocation } from "@/src/components/ParkingMap";
-import { ParkingSpotMainView } from "@/src/components/ParkingSpotSheet/ParkingSpotViews/ParkingSpotMainView";
-import { Sheet, SheetContent } from "@/src/components/ui/sheet";
+import { ParkingSpotMainView } from "@/src/components/ParkingSpotDrawer/ParkingSpotViews/ParkingSpotMainView";
 import { useStore } from "@/src/lib/zustand/store";
-import { ParkingSpotContributeView } from "@/src/components/ParkingSpotSheet/ParkingSpotViews/ParkingSpotContributeView";
+import { ParkingSpotContributeView } from "@/src/components/ParkingSpotDrawer/ParkingSpotViews/ParkingSpotContributeView";
+import { useMediaQuery } from "@/src/hooks/useMediaQuery";
+import { Drawer, DrawerContent } from "@/src/components/ui/drawer";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useMediaQuery } from "@/src/hooks/useMediaQuery";
 
 const PulsateMarkerButton = styled.button<{ $pulsate: boolean }>`
   position: relative;
@@ -60,7 +60,7 @@ type Props = {
   parking: ParkingWithLocation;
 };
 
-export function ParkingSpotSheet({ parking }: Props) {
+export function ParkingSpotDrawer({ parking }: Props) {
   const [delayedOpen, setDelayedOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -95,7 +95,13 @@ export function ParkingSpotSheet({ parking }: Props) {
   const open = delayedOpen || selectedParkingSpotId === parking.id;
 
   return (
-    <Sheet key={parking.id} open={open} onOpenChange={handleClose}>
+    <Drawer
+      key={parking.id}
+      open={open}
+      onOpenChange={handleClose}
+      direction={isMobile ? "bottom" : "right"}
+      snapPoints={["375px", "750px"]}
+    >
       <Marker
         key={parking.id}
         latitude={Number(parking.latitude)}
@@ -117,10 +123,7 @@ export function ParkingSpotSheet({ parking }: Props) {
           <Motorbike className="h-4 w-4 text-foreground" />
         </PulsateMarkerButton>
       </Marker>
-      <SheetContent
-        side={isMobile ? "bottom" : "right"}
-        className="flex flex-col px-8 pb-8 rounded-t-2xl max-h-[75vh] md:max-h-none md:rounded-t-none overflow-hidden overflow-y-auto"
-      >
+      <DrawerContent className="flex flex-col px-8 pb-8 rounded-t-2xl md:rounded-t-none">
         <div className="flex flex-col w-full">
           <AnimatePresence mode="wait">
             {showContributeView ? (
@@ -130,7 +133,7 @@ export function ParkingSpotSheet({ parking }: Props) {
             )}
           </AnimatePresence>
         </div>
-      </SheetContent>
-    </Sheet>
+      </DrawerContent>
+    </Drawer>
   );
 }
