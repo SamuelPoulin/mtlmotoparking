@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { Spinner } from "@/src/components/ui/spinner";
 import type { ContributionWithUser } from "@/src/lib/api/contributions";
-import { useSession, type SessionUser } from "@/src/lib/auth-client";
+import { useSession } from "@/src/lib/auth-client";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -94,7 +94,7 @@ export function ContributionCard({
   const handleBan = async () => {
     setIsBanning(true);
     try {
-      const response = await fetch("/api/user/delete", {
+      const response = await fetch("/api/user/ban", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: contribution.user_id }),
