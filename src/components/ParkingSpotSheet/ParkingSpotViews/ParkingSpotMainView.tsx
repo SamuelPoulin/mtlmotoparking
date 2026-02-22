@@ -73,6 +73,9 @@ export function ParkingSpotMainView({ parking }: Props) {
         };
       },
     );
+    queryClient.invalidateQueries({
+      queryKey: ["can-contribute", parking.id],
+    });
   };
 
   const parkingUrl = useMemo(() => {

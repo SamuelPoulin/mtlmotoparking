@@ -36,17 +36,20 @@ export function ParkingUpdateForm({ parkingId }: Props) {
 
   const DESCRIPTION_MAX_LENGTH = 280;
 
-  const { data: canContributeData, isLoading: isCheckingContribution } = useQuery<{
-    canContribute: boolean;
-    reason: string | null;
-  }>({
-    queryKey: ["can-contribute", parkingId],
-    queryFn: async () => {
-      const res = await fetch(`/api/contributions/check?parking_id=${parkingId}`);
-      if (!res.ok) return { canContribute: false, reason: "error" };
-      return res.json();
-    },
-  });
+  const { data: canContributeData, isLoading: isCheckingContribution } =
+    useQuery<{
+      canContribute: boolean;
+      reason: string | null;
+    }>({
+      queryKey: ["can-contribute", parkingId],
+      queryFn: async () => {
+        const res = await fetch(
+          `/api/contributions/check?parking_id=${parkingId}`,
+        );
+        if (!res.ok) return { canContribute: false, reason: "error" };
+        return res.json();
+      },
+    });
 
   const canContribute = canContributeData?.canContribute ?? true;
 
@@ -121,7 +124,6 @@ export function ParkingUpdateForm({ parkingId }: Props) {
         queryKey: ["can-contribute", parkingId],
       });
       setShowContributeView(false);
-      setHasTransitioned(false);
     },
   });
 
@@ -246,7 +248,12 @@ export function ParkingUpdateForm({ parkingId }: Props) {
 
       <Button
         className="flex flex-1 mt-3 p-4 text-md font-semibold"
-        disabled={isSubmitting || !selectedFile || !canContribute || isCheckingContribution}
+        disabled={
+          isSubmitting ||
+          !selectedFile ||
+          !canContribute ||
+          isCheckingContribution
+        }
         onClick={handleSubmit}
       >
         {isSubmitting && <Spinner className="size-4" />}
