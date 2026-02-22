@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 
 import { Footer } from "@/src/components/layout/Footer";
 import { Header } from "@/src/components/layout/Header";
+import { PostHogIdentify } from "@/src/components/PostHogIdentify";
 import { ThemeProvider } from "@/src/components/ThemeProvider";
 import { QueryProvider } from "@/src/lib/api/QueryProvider";
 import StyledComponentsRegistry from "@/src/lib/registry";
@@ -31,6 +32,7 @@ export default function RootLayout({
                 defaultTheme="system"
                 enableSystem
               >
+                <PostHogIdentify />
                 <Toaster richColors />
                 <Header />
                 <main className="flex flex-1">{children}</main>

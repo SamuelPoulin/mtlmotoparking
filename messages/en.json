@@ -2,6 +2,7 @@
   "HomePage": {
     "title": "mtlmotoparking",
     "description": "Find and navigate to motorcycle parking spots in Montreal",
+    "communityContributions": "Community contributions are here!",
     "openMapButton": "Open Map",
     "findParkingTip": {
       "title": "Find Parking",

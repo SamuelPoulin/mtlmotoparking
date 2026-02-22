@@ -2,6 +2,7 @@
   "HomePage": {
     "title": "mtlmotoparking",
     "description": "Trouver des stationnements pour motos à Montréal",
+    "communityContributions": "Nouveauté: contribuez à la communauté!",
     "openMapButton": "Consulter la carte",
     "findParkingTip": {
       "title": "Trouver du stationnement",
