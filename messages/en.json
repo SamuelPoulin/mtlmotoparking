@@ -45,9 +45,21 @@
         "label": "Description",
         "placeholder": "Something noteworthy..."
       },
+      "banModal": {
+        "title": "Ban user",
+        "description": "Are you sure you want to ban this user? This will delete their account and all contributions."
+      },
+      "deleteModal": {
+        "title": "Delete contribution",
+        "description": "Are you sure you want to delete this contribution?"
+      },
       "cancel": "Cancel",
       "submit": "Submit",
+      "delete": "Delete",
+      "ban": "Ban",
       "submitting": "Submitting...",
+      "deleting": "Deleting...",
+      "banning": "Banning...",
       "submitError": "Failed to submit. Please try again.",
       "dailyLimitReached": "You can only submit one contribution per parking spot per day."
     }

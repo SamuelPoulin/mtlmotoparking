@@ -45,10 +45,21 @@
         "label": "Description",
         "placeholder": "Quelque chose à signaler..."
       },
-      "descriptionPlaceholder": "Ajoutez des détails sur ce stationnement...",
+      "banModal": {
+        "title": "Bannir",
+        "description": "Bannir ce utilisateur?"
+      },
+      "deleteModal": {
+        "title": "Supprimer",
+        "description": "Supprimer cette contribution?"
+      },
       "cancel": "Annuler",
       "submit": "Soumettre",
+      "delete": "Supprimer",
+      "ban": "Bannir",
       "submitting": "Patienter...",
+      "deleting": "Patienter...",
+      "banning": "Patienter...",
       "submitError": "Échec. Veuillez réessayer.",
       "dailyLimitReached": "Vous ne pouvez soumettre qu'une contribution par stationnement par jour."
     }

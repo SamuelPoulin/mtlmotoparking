@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { Skeleton } from "@/src/components/ui/skeleton";
+import { Spinner } from "@/src/components/ui/spinner";
 import type { ContributionWithUser } from "@/src/lib/api/contributions";
 import { useSession, type SessionUser } from "@/src/lib/auth-client";
 import { Button } from "../ui/button";
@@ -40,9 +41,12 @@ export function ContributionCard({
   labels: ReturnType<typeof useTranslations<"MapPage.community">>;
   onDeleteAction?: (contributionId: number) => void;
 }) {
+  const t = useTranslations("MapPage.community");
   const session = useSession();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showBanDialog, setShowBanDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isBanning, setIsBanning] = useState(false);
 
   const fullnessColor = (() => {
     if (contribution.fullness <= 20)
@@ -88,6 +92,28 @@ export function ContributionCard({
     }
   };
 
+  const handleBan = async () => {
+    setIsBanning(true);
+    try {
+      const response = await fetch("/api/user/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: contribution.user_id }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to ban user");
+      }
+
+      onDelete?.(contribution.id);
+    } catch (error) {
+      console.error("Error banning user:", error);
+    } finally {
+      setIsBanning(false);
+      setShowBanDialog(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-3 p-3 bg-card border border-border rounded-lg">
       <div className="relative w-full h-48 rounded-md overflow-hidden">
@@ -120,6 +146,7 @@ export function ContributionCard({
           className={`flex text-xs px-2 py-1 rounded-full gap-1 ${fullnessColor}`}
         >
           <span>{fullnessLabel}</span>
+          <span>-</span>
           <span>{formatRelativeTime(contribution.createdAt)}</span>
         </span>
       </div>
@@ -134,16 +161,25 @@ export function ContributionCard({
           size="sm"
           onClick={() => setShowDeleteDialog(true)}
         >
-          Delete
+          {t("delete")}
+        </Button>
+      )}
+      {isAdmin && (
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => setShowBanDialog(true)}
+        >
+          {t("ban")}
         </Button>
       )}
 
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Contribution</DialogTitle>
+            <DialogTitle>{t("deleteModal.title")}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this contribution?
+              {t("deleteModal.description")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -159,7 +195,34 @@ export function ContributionCard({
               onClick={handleDelete}
               disabled={isDeleting}
             >
-              {isDeleting ? "Deleting..." : "Delete"}
+              {isDeleting && <Spinner className="size-4" />}
+              {isDeleting ? t("deleting") : t("delete")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showBanDialog} onOpenChange={setShowBanDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("banModal.title")}</DialogTitle>
+            <DialogDescription>{t("banModal.description")}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowBanDialog(false)}
+              disabled={isBanning}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleBan}
+              disabled={isBanning}
+            >
+              {isBanning && <Spinner className="size-4" />}
+              {isBanning ? t("banning") : t("ban")}
             </Button>
           </DialogFooter>
         </DialogContent>

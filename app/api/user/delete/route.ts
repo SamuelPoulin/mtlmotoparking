@@ -1,18 +1,13 @@
-import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 import { auth } from "@/src/lib/auth";
-import { deleteCloudinaryImages } from "@/src/lib/api/cloudinary";
-import { getCloudinaryPublicIdsByUser } from "@/src/lib/api/contributions";
-import { db } from "@/src/lib/db/drizzle";
-import { user } from "@/src/lib/db/schema";
 
 export async function POST(request: NextRequest) {
-  const session = await auth.api.getSession({
+  const sessionData = await auth.api.getSession({
     headers: request.headers,
   });
 
-  if (!session) {
+  if (!sessionData) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -20,21 +15,20 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    targetUserId = body.userId ?? session.user.id;
+    targetUserId = body.userId ?? sessionData.user.id;
   } catch {
-    targetUserId = session.user.id;
+    targetUserId = sessionData.user.id;
   }
 
-  const isAdmin = (session.user as { isAdmin?: boolean }).isAdmin === true;
-
-  if (targetUserId !== session.user.id && !isAdmin) {
+  if (targetUserId !== sessionData.user.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   try {
-    const publicIds = await getCloudinaryPublicIdsByUser(targetUserId);
-    await deleteCloudinaryImages(publicIds);
-    await db.delete(user).where(eq(user.id, targetUserId));
+    await auth.api.deleteUser({
+      body: {},
+      headers: request.headers,
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

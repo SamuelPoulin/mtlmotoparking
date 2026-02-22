@@ -32,7 +32,7 @@ export function ParkingUpdateForm({ parkingId }: Props) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [fullness, setFullness] = useState(0);
   const [description, setDescription] = useState("");
-  const { setShowContributeView, setHasTransitioned } = useStore();
+  const { setShowContributeView } = useStore();
 
   const DESCRIPTION_MAX_LENGTH = 280;
 
