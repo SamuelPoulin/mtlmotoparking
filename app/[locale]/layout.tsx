@@ -3,10 +3,10 @@ import { NextIntlClientProvider } from "next-intl";
 
 import { Footer } from "@/src/components/layout/Footer";
 import { Header } from "@/src/components/layout/Header";
-import StyledComponentsRegistry from "@/src/lib/registry";
-
 import { ThemeProvider } from "@/src/components/ThemeProvider";
 import { QueryProvider } from "@/src/lib/api/QueryProvider";
+import StyledComponentsRegistry from "@/src/lib/registry";
+import { Toaster } from "@/src/components/ui/sonner";
 
 import "../globals.css";
 
@@ -31,6 +31,7 @@ export default function RootLayout({
                 defaultTheme="system"
                 enableSystem
               >
+                <Toaster richColors />
                 <Header />
                 <main className="flex flex-1">{children}</main>
                 <Footer />

@@ -11,7 +11,7 @@ import {
   type MapRef,
 } from "react-map-gl/maplibre";
 
-import { ParkingSpotSheet } from "@/src/components/ParkingSpotSheet";
+import { ParkingSpotSheet } from "@/src/components/ParkingSpotSheet/ParkingSpotSheet";
 import { SearchAddressButton } from "@/src/components/SearchAddressButton";
 import { Parking } from "@/src/lib/db/schema";
 import { useStore } from "@/src/lib/zustand/store";

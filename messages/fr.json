@@ -26,7 +26,51 @@
     "address": "Addresse",
     "community": {
       "title": "Communauté",
-      "description": "Contribuez en partageant des images et descriptions des zones de stationnement pour aider les autres utilisateurs de mtlmotoparking."
+      "description": "Contribuez en partageant des images et descriptions des zones de stationnement pour aider les autres utilisateurs de mtlmotoparking.",
+      "signInDescription": "Connectez-vous pour contribuer en partageant des images et descriptions des zones de stationnement pour aider les autres utilisateurs de mtlmotoparking.",
+      "emptyCommunity": {
+        "title": "Aucune contribution de la communauté pour cette place de stationnement.",
+        "description": "Contribuez la première!"
+      },
+      "contribute": "Contribuer",
+      "contributeSuccess": "Contribution partagée!",
+      "banSuccess": "Succès!",
+      "deleteSuccess": "Succès!",
+      "photo": "Photo",
+      "tapToUpload": "Appuyez pour ajouter une photo",
+      "howFull": "Taux d'occupation?",
+      "empty": "Vide",
+      "quiet": "Peu occupé",
+      "moderate": "Modéré",
+      "busy": "Achalandé",
+      "full": "Complet",
+      "descriptionTextbox": {
+        "label": "Description",
+        "placeholder": "Quelque chose à signaler..."
+      },
+      "banModal": {
+        "title": "Bannir",
+        "description": "Bannir ce utilisateur?"
+      },
+      "deleteModal": {
+        "title": "Supprimer",
+        "description": "Supprimer cette contribution?"
+      },
+      "cancel": "Annuler",
+      "submit": "Soumettre",
+      "delete": "Supprimer",
+      "ban": "Bannir",
+      "submitting": "Patienter...",
+      "deleting": "Patienter...",
+      "banning": "Patienter...",
+      "submitError": "Échec. Veuillez réessayer.",
+      "dailyLimitReached": "Vous ne pouvez soumettre qu'une contribution par stationnement par jour.",
+      "relativeTime": {
+        "justNow": "À l'instant",
+        "minutesAgo": "Il y a {count}m",
+        "hoursAgo": "Il y a {count}h",
+        "daysAgo": "Il y a {count}j"
+      }
     }
   },
   "SignInPage": {
