@@ -113,7 +113,7 @@ export async function updateStaleOrMissingAddresses() {
       longitude: locations.longitude,
     })
     .from(parkings)
-    .leftJoin(locations, eq(parkings.location_id, locations.id))
+    .innerJoin(locations, eq(parkings.location_id, locations.id))
     .where(
       and(
         eq(parkings.rep_description, "Réel"),
@@ -151,7 +151,8 @@ export async function updateStaleOrMissingAddresses() {
 
     await db.execute(sql`
           update ${locations} as l
-          set address = v.address
+          set address = v.address,
+                updated_at = now()
           from (values ${sql.join(values, sql`, `)}) as v(id, address)
           where l.id = v.id
         `);
