@@ -15,7 +15,7 @@ export default function HomePage() {
           href="https://mtlmotoparking.userjot.com/updates/p/community-contributions"
           target="_blank"
           rel="noopener noreferrer"
-          className="w-fit inline-flex items-center gap-2 px-4 py-2 mb-12 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+          className="w-fit inline-flex items-center gap-2 px-4 py-2 mb-12 rounded-full bg-muted text-primary hover:bg-muted-foreground/15 transition-colors"
         >
           <span>🎉</span>
           <span className="font-medium">{t("communityContributions")}</span>
