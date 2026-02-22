@@ -36,6 +36,20 @@ export function ParkingUpdateForm({ parkingId }: Props) {
 
   const DESCRIPTION_MAX_LENGTH = 280;
 
+  const { data: canContributeData, isLoading: isCheckingContribution } = useQuery<{
+    canContribute: boolean;
+    reason: string | null;
+  }>({
+    queryKey: ["can-contribute", parkingId],
+    queryFn: async () => {
+      const res = await fetch(`/api/contributions/check?parking_id=${parkingId}`);
+      if (!res.ok) return { canContribute: false, reason: "error" };
+      return res.json();
+    },
+  });
+
+  const canContribute = canContributeData?.canContribute ?? true;
+
   const { data: cloudinaryParams } = useQuery<CloudinarySignature>({
     queryKey: ["cloudinary-signature"],
     queryFn: async () => {
@@ -103,6 +117,9 @@ export function ParkingUpdateForm({ parkingId }: Props) {
       queryClient.invalidateQueries({
         queryKey: ["contributions", parkingId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["can-contribute", parkingId],
+      });
       setShowContributeView(false);
       setHasTransitioned(false);
     },
@@ -125,18 +142,16 @@ export function ParkingUpdateForm({ parkingId }: Props) {
   };
 
   const handleSubmit = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile || !canContribute) return;
 
-    try {
-      const uploadResult = await uploadToCloudinary.mutateAsync(selectedFile);
+    const uploadResult = await uploadToCloudinary.mutateAsync(selectedFile);
 
-      await submitContribution.mutateAsync({
-        cloudinary_public_id: uploadResult.public_id,
-        cloudinary_url: uploadResult.secure_url,
-        fullness,
-        description,
-      });
-    } catch {}
+    await submitContribution.mutateAsync({
+      cloudinary_public_id: uploadResult.public_id,
+      cloudinary_url: uploadResult.secure_url,
+      fullness,
+      description,
+    });
   };
 
   const isSubmitting =
@@ -144,6 +159,10 @@ export function ParkingUpdateForm({ parkingId }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
+      {!canContributeData?.canContribute && (
+        <p className="text-sm text-destructive">{t("dailyLimitReached")}</p>
+      )}
+
       <div className="flex flex-col gap-2 pt-2">
         <div
           className="relative border-2 border-dashed border-muted-foreground/30 rounded-xl h-36 bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors overflow-hidden"
@@ -227,7 +246,7 @@ export function ParkingUpdateForm({ parkingId }: Props) {
 
       <Button
         className="flex flex-1 mt-3 p-4 text-md font-semibold"
-        disabled={isSubmitting || !selectedFile}
+        disabled={isSubmitting || !selectedFile || !canContribute || isCheckingContribution}
         onClick={handleSubmit}
       >
         {isSubmitting && <Spinner className="size-4" />}

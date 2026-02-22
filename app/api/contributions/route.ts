@@ -5,7 +5,7 @@ import {
   createContribution,
   getContributionWithUser,
   getContributionsForParking,
-  getUserContributionCountForParkingToday,
+  getUserContributionCountForParkingRecently,
 } from "@/src/lib/api/contributions";
 
 export async function GET(request: NextRequest) {
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existingCount = await getUserContributionCountForParkingToday(
+    const existingCount = await getUserContributionCountForParkingRecently(
       session.user.id,
       Number(parking_id),
     );

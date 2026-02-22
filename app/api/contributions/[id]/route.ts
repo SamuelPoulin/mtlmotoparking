@@ -20,10 +20,6 @@ export async function DELETE(
 
   const isAdmin = (session.user as { isAdmin?: boolean }).isAdmin === true;
 
-  if (!isAdmin) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
   const { id } = await params;
   const contributionId = Number(id);
 
@@ -46,6 +42,12 @@ export async function DELETE(
         { error: "Contribution not found" },
         { status: 404 },
       );
+    }
+
+    const isOwner = contribution.user_id === session.user.id;
+
+    if (!isAdmin && !isOwner) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     await deleteCloudinaryImages([contribution.cloudinary_public_id]);

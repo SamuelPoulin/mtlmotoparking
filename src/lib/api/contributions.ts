@@ -58,6 +58,27 @@ export async function getUserContributionCountForParkingToday(
   return result[0]?.count ?? 0;
 }
 
+export async function getUserContributionCountForParkingRecently(
+  userId: string,
+  parkingId: number,
+): Promise<number> {
+  const hoursAgo = new Date();
+  hoursAgo.setTime(hoursAgo.getTime() - 18 * 60 * 60 * 1000);
+
+  const result = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(parking_spot_contributions)
+    .where(
+      and(
+        eq(parking_spot_contributions.user_id, userId),
+        eq(parking_spot_contributions.parking_id, parkingId),
+        gt(parking_spot_contributions.createdAt, hoursAgo),
+      ),
+    );
+
+  return result[0]?.count ?? 0;
+}
+
 export async function createContribution(
   data: NewParkingSpotContribution,
 ): Promise<ParkingSpotContribution> {

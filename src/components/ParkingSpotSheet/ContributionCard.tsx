@@ -16,7 +16,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Trash2 } from "lucide-react";
 
 function formatRelativeTime(date: Date): string {
   const now = new Date();
@@ -67,6 +66,8 @@ export function ContributionCard({
 
   const isAdmin =
     (session?.data?.user as SessionUser | undefined)?.isAdmin === true;
+  const isOwner =
+    session?.data?.user?.id === contribution.user_id;
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -128,7 +129,7 @@ export function ContributionCard({
           {contribution.description}
         </p>
       )}
-      {isAdmin && (
+      {(isAdmin || isOwner) && (
         <Button
           variant="destructive"
           size="sm"

@@ -49,7 +49,8 @@
       "cancel": "Annuler",
       "submit": "Soumettre",
       "submitting": "Patienter...",
-      "submitError": "Échec. Veuillez réessayer."
+      "submitError": "Échec. Veuillez réessayer.",
+      "dailyLimitReached": "Vous ne pouvez soumettre qu'une contribution par stationnement par jour."
     }
   },
   "SignInPage": {
