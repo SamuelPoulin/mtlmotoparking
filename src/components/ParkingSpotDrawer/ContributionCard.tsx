@@ -165,24 +165,32 @@ export function ContributionCard({
           {contribution.description}
         </p>
       )}
-      {(isAdmin || isOwner) && (
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => setShowDeleteDialog(true)}
-        >
-          {t("delete")}
-        </Button>
-      )}
-      {isAdmin && !isOwner && (
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => setShowBanDialog(true)}
-        >
-          {t("ban")}
-        </Button>
-      )}
+      <div className="flex gap-2">
+        {isAdmin && !isOwner && (
+          <div className="basis-1/5 grow">
+            <Button
+              className="w-full"
+              variant="destructive"
+              size="sm"
+              onClick={() => setShowBanDialog(true)}
+            >
+              {t("ban")}
+            </Button>
+          </div>
+        )}
+        {(isAdmin || isOwner) && (
+          <div className="basis-4/5 grow">
+            <Button
+              className="w-full"
+              variant="destructive"
+              size="sm"
+              onClick={() => setShowDeleteDialog(true)}
+            >
+              {t("delete")}
+            </Button>
+          </div>
+        )}
+      </div>
 
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
