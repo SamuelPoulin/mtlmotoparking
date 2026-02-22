@@ -100,7 +100,7 @@ export function ParkingSpotDrawer({ parking }: Props) {
       open={open}
       onOpenChange={handleClose}
       direction={isMobile ? "bottom" : "right"}
-      snapPoints={[0.5, 1]}
+      snapPoints={isMobile ? [0.5, 1] : undefined}
     >
       <Marker
         key={parking.id}

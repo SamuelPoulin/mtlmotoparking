@@ -240,22 +240,6 @@ export function ParkingSpotMainView({ parking }: Props) {
                 onDeleteAction={handleContributionDelete}
               />
             ))}
-            {contributions.map((contribution) => (
-              <ContributionCard
-                key={contribution.id}
-                contribution={contribution}
-                labels={tCommunity}
-                onDeleteAction={handleContributionDelete}
-              />
-            ))}
-            {contributions.map((contribution) => (
-              <ContributionCard
-                key={contribution.id}
-                contribution={contribution}
-                labels={tCommunity}
-                onDeleteAction={handleContributionDelete}
-              />
-            ))}
           </div>
         ) : (
           <div className="flex gap-4 p-4 text-sm justify-center bg-card border border-border w-full rounded-lg">
