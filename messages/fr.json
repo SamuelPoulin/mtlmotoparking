@@ -1,20 +1,20 @@
 {
   "HomePage": {
     "title": "mtlmotoparking",
-    "description": "Trouver des stationnements pour motos à Montréal",
-    "communityContributions": "Nouveauté : Contributions à la communauté!",
-    "openMapButton": "Consulter la carte",
+    "description": "Trouvez des stationnements pour motos à Montréal",
+    "communityContributions": "Contribuez à la communauté!",
+    "openMapButton": "Consultez la carte",
     "findParkingTip": {
-      "title": "Trouver du stationnement",
+      "title": "Trouvez du stationnement",
       "description": "Données officielles de Montréal, mises à jour régulièrement"
     },
     "navigateTip": {
-      "title": "Naviguer",
-      "description": "Itinéraire ouvert directement dans votre application de navigation préférée"
+      "title": "Naviguez",
+      "description": "Itinéraire ouvert directement dans votre application de navigation"
     }
   },
   "Footer": {
-    "giveFeedback": "Me donner votre avis"
+    "giveFeedback": "Donnez-moi votre avis"
   },
   "MapPage": {
     "searchAnAddress": "Rechercher une adresse",

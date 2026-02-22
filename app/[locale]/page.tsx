@@ -47,7 +47,7 @@ export default function HomePage() {
             <div className="shrink-0 w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
               <MapPin className="h-6 w-6 text-foreground" />
             </div>
-            <div className="text-left">
+            <div className="flex flex-col gap-2 text-left ">
               <h3 className="font-semibold text-foreground">
                 {t("findParkingTip.title")}
               </h3>
@@ -61,7 +61,7 @@ export default function HomePage() {
             <div className="shrink-0 w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
               <Navigation className="h-6 w-6 text-foreground" />
             </div>
-            <div className="text-left">
+            <div className="flex flex-col gap-2 text-left">
               <h3 className="font-semibold text-foreground">
                 {t("navigateTip.title")}
               </h3>
