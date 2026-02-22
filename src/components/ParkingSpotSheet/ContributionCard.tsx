@@ -68,8 +68,7 @@ export function ContributionCard({
     return labels("full");
   })();
 
-  const isAdmin =
-    (session?.data?.user as SessionUser | undefined)?.isAdmin === true;
+  const isAdmin = session?.data?.user?.role === "admin";
   const isOwner = session?.data?.user?.id === contribution.user_id;
 
   const handleDelete = async () => {

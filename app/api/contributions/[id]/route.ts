@@ -18,7 +18,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const isAdmin = (session.user as { isAdmin?: boolean }).isAdmin === true;
+  const isAdmin = session?.user?.role === "admin";
 
   const { id } = await params;
   const contributionId = Number(id);

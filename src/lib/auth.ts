@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { admin } from "better-auth/plugins";
 
 import { db } from "@/src/lib/db/drizzle";
 import * as schema from "./db/schema";
@@ -10,6 +11,7 @@ export const auth = betterAuth({
     provider: "pg",
     schema,
   }),
+  plugins: [admin()],
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -18,15 +20,6 @@ export const auth = betterAuth({
     facebook: {
       clientId: process.env.FACEBOOK_CLIENT_ID as string,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
-    },
-  },
-  user: {
-    additionalFields: {
-      isAdmin: {
-        type: "boolean",
-        required: false,
-        defaultValue: false,
-      },
     },
   },
 });
