@@ -96,7 +96,7 @@ export function ParkingSpotMainView({ parking }: Props) {
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className="flex flex-col w-full gap-4"
     >
-      <DrawerHeader className="pl-0">
+      <DrawerHeader className="px-0">
         <DrawerTitle className="text-nowrap">
           <div className="flex items-center justify-between">
             {t("MapPage.motorcycleParking")}
@@ -232,6 +232,22 @@ export function ParkingSpotMainView({ parking }: Props) {
           </div>
         ) : contributions.length > 0 ? (
           <div className="flex flex-col gap-3">
+            {contributions.map((contribution) => (
+              <ContributionCard
+                key={contribution.id}
+                contribution={contribution}
+                labels={tCommunity}
+                onDeleteAction={handleContributionDelete}
+              />
+            ))}
+            {contributions.map((contribution) => (
+              <ContributionCard
+                key={contribution.id}
+                contribution={contribution}
+                labels={tCommunity}
+                onDeleteAction={handleContributionDelete}
+              />
+            ))}
             {contributions.map((contribution) => (
               <ContributionCard
                 key={contribution.id}

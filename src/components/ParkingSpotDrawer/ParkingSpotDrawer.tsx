@@ -100,7 +100,7 @@ export function ParkingSpotDrawer({ parking }: Props) {
       open={open}
       onOpenChange={handleClose}
       direction={isMobile ? "bottom" : "right"}
-      snapPoints={["375px", "750px"]}
+      snapPoints={[0.5, 1]}
     >
       <Marker
         key={parking.id}
@@ -123,8 +123,8 @@ export function ParkingSpotDrawer({ parking }: Props) {
           <Motorbike className="h-4 w-4 text-foreground" />
         </PulsateMarkerButton>
       </Marker>
-      <DrawerContent className="flex flex-col px-8 pb-8 rounded-t-2xl md:rounded-t-none">
-        <div className="flex flex-col w-full">
+      <DrawerContent className="flex flex-col rounded-t-2xl md:rounded-t-none outline-none [&>*:first-child]:my-4">
+        <div className="flex flex-col px-8 pb-8 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <AnimatePresence mode="wait">
             {showContributeView ? (
               <ParkingSpotContributeView parkingId={parking.id} />
