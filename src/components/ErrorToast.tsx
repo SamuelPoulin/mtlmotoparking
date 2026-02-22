@@ -11,7 +11,7 @@ export function ErrorToast() {
 
   useEffect(() => {
     if (errorDescription) {
-      toast(errorDescription);
+      toast.error(errorDescription);
     }
   }, [errorDescription]);
 
