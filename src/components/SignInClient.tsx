@@ -3,8 +3,9 @@
 import { Construction } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { redirect } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaFacebookF, FaGoogle } from "react-icons/fa";
+import { motion } from "motion/react";
 
 import MotorcycleScene from "@/src/components/MotorcycleScene";
 import {
@@ -20,8 +21,10 @@ import { signIn, signOut, useSession } from "@/src/lib/auth-client";
 export function SignInClient() {
   const t = useTranslations();
   const { data: session, isPending, isRefetching } = useSession();
+  const [isSigningIn, setIsSigningIn] = useState<string | null>(null);
 
   const handleSignIn = async (provider: string) => {
+    setIsSigningIn(provider);
     await signIn.social({ provider });
   };
 
@@ -58,10 +61,26 @@ export function SignInClient() {
 
         {!session && (
           <div className="flex flex-col gap-2">
-            <Button onClick={() => handleSignIn("google")}>
-              <FaGoogle className="mr-2" />
-              {t("SignInPage.continueWith")} Google
-            </Button>
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full"
+            >
+              <Button
+                className="w-full"
+                onClick={() => handleSignIn("google")}
+                disabled={isSigningIn !== null}
+              >
+                {isSigningIn === "google" ? (
+                  <Spinner className="h-4 w-4" />
+                ) : (
+                  <>
+                    <FaGoogle className="mr-2" />
+                    {t("SignInPage.continueWith")} Google
+                  </>
+                )}
+              </Button>
+            </motion.div>
             <div className="w-full mt-4">
               <div className="relative flex items-center gap-2">
                 <Separator className="flex-1" />
@@ -72,10 +91,16 @@ export function SignInClient() {
                 <Separator className="flex-1" />
               </div>
             </div>
-            <Button disabled>
-              <FaFacebookF className="mr-2" />
-              {t("SignInPage.continueWith")} Facebook
-            </Button>
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full"
+            >
+              <Button disabled className="w-full">
+                <FaFacebookF className="mr-2" />
+                {t("SignInPage.continueWith")} Facebook
+              </Button>
+            </motion.div>
           </div>
         )}
         {session && (
