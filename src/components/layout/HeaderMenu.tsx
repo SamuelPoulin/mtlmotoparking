@@ -44,7 +44,9 @@ export function HeaderMenu() {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const pathname = usePathname();
 
-  const t = useTranslations("Menu");
+  const t = useTranslations();
+  const tMenu = useTranslations("Menu");
+
   const [isNavigatingToSignIn, startSignInTransition] = useTransition();
   const { data: session, isPending: isSessionPending } = useSession();
 
@@ -84,11 +86,11 @@ export function HeaderMenu() {
                 onClick={() => startSignInTransition(() => setOpen(false))}
               >
                 <Link href="/sign-in">
-                  {isNavigatingToSignIn ? <Spinner /> : t("signIn.button")}
+                  {isNavigatingToSignIn ? <Spinner /> : tMenu("signIn.button")}
                 </Link>
               </Button>
               <p className="text-xs text-muted-foreground text-center px-2">
-                {t("signIn.description")}
+                {tMenu("signIn.description")}
               </p>
             </div>
           )}
@@ -134,7 +136,7 @@ export function HeaderMenu() {
             onClick={() => setOpen(false)}
           >
             <Map />
-            Map
+            {t("MapPage.title")}
           </Link>
           {session && (
             <Link
@@ -148,7 +150,7 @@ export function HeaderMenu() {
               onClick={() => setOpen(false)}
             >
               <Cog />
-              Settings
+              {t("SettingsPage.title")}
             </Link>
           )}
         </div>

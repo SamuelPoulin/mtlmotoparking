@@ -21,8 +21,10 @@ import {
   DialogTrigger,
 } from "@/src/components/ui/dialog";
 import { useSession } from "@/src/lib/auth-client";
+import { useTranslations } from "next-intl";
 
 export default function SettingsClient() {
+  const t = useTranslations("SettingsPage");
   const { data: session, isPending: isSessionPending } = useSession();
 
   useEffect(() => {
@@ -34,9 +36,9 @@ export default function SettingsClient() {
   }, [isSessionPending, session]);
 
   return (
-    <div className="container mx-auto px-6 py-8">
+    <div className="container max-w-200 mx-auto px-6 py-8">
       <div className="flex flex-col gap-6">
-        <h1 className="text-3xl font-semibold">Settings</h1>
+        <h1 className="text-3xl font-semibold">{t("title")}</h1>
         <section className="flex flex-col gap-3">
           <Card>
             <CardContent className="px-5 py-1">
@@ -85,10 +87,9 @@ export default function SettingsClient() {
             <CardContent className="px-5 py-1">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex flex-col gap-1">
-                  <p className="text-sm">Delete Account</p>
+                  <p className="text-sm">{t("deleteAccount.title")}</p>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Permanently removes your account and all contributions.
-                    Cannot be undone.
+                    {t("deleteAccount.description")}
                   </p>
                 </div>
                 <Dialog>
@@ -99,15 +100,14 @@ export default function SettingsClient() {
                       className="gap-2 shrink-0"
                     >
                       <Trash className="h-4 w-4" />
-                      Delete account
+                      {t("deleteAccount.title")}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Delete account?</DialogTitle>
+                      <DialogTitle>{t("deleteAccount.modalTitle")}</DialogTitle>
                       <DialogDescription>
-                        Permanently removes your account and all contributions.
-                        Cannot be undone.
+                        {t("deleteAccount.modalDescription")}
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>

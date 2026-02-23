@@ -13,6 +13,17 @@
       "description": "Open directions directly within your favorite navigation app"
     }
   },
+  "SettingsPage": {
+    "title": "Settings",
+    "deleteAccount": {
+      "title": "Delete Account",
+      "description": "Permanently delete your account and all contributions.",
+      "modalTitle": "Confirm Deletion",
+      "modalDescription": "Are you sure you want to delete your account and all contributions?",
+      "modalConfirm": "Delete",
+      "modalCancel": "Cancel"
+    }
+  },
   "Footer": {
     "giveFeedback": "Give me feedback"
   },

@@ -13,10 +13,22 @@
       "description": "Itinéraire ouvert directement dans votre application de navigation"
     }
   },
+  "SettingsPage": {
+    "title": "Paramètres",
+    "deleteAccount": {
+      "title": "Supprimer le compte",
+      "description": "Supprimer votre compte et toutes vos contributions.",
+      "modalTitle": "Confirmer la suppression",
+      "modalDescription": "Voulez-vous vraiment supprimer votre compte et toutes vos contributions?",
+      "modalConfirm": "Supprimer",
+      "modalCancel": "Annuler"
+    }
+  },
   "Footer": {
     "giveFeedback": "Donnez-moi votre avis"
   },
   "MapPage": {
+    "title": "Carte",
     "searchAnAddress": "Rechercher une adresse",
     "motorcycleParking": "Stationnement moto",
     "navigateWith": "Se rendre avec :",
