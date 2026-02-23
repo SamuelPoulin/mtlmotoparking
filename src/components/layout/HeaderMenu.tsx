@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, Menu } from "lucide-react";
+import { Cog, LogOut, Map, Menu, Star } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 
@@ -8,7 +8,7 @@ import { FeedbackLink } from "@/src/components/layout/FeedbackLink";
 import { MadeWithLove } from "@/src/components/layout/MadeWithLove";
 import { PortfolioLink } from "@/src/components/layout/PortfolioLink";
 import { ThemeSwitcher } from "@/src/components/layout/ThemeSwitcher";
-import { Button } from "@/src/components/ui/button";
+import { Button, buttonVariants } from "@/src/components/ui/button";
 import { DrawerTitle } from "@/src/components/ui/drawer";
 import { LocaleSwitch } from "@/src/i18n/LocaleSwitch";
 import { signOut, useSession } from "@/src/lib/auth-client";
@@ -24,6 +24,7 @@ import {
 } from "../ui/sheet";
 import { Skeleton } from "../ui/skeleton";
 import { Spinner } from "../ui/spinner";
+import { cn } from "@/src/lib/utils";
 
 const UserSkeleton = () => {
   return (
@@ -117,9 +118,55 @@ export function HeaderMenu() {
             </>
           )}
         </div>
-        <div className="flex flex-1 px-4">
+        <div className="flex px-4">
           <Separator />
         </div>
+        <div className="flex flex-col px-4 gap-2">
+          <Link
+            href="/map"
+            className={cn(
+              buttonVariants({ variant: "ghost" }),
+              "flex flex-1 justify-start font-medium text-md",
+            )}
+            onClick={() => {}}
+          >
+            <Map />
+            Map
+          </Link>
+          <Link
+            href="/settings"
+            className={cn(
+              buttonVariants({ variant: "ghost" }),
+              "flex flex-1 justify-start font-medium text-md",
+            )}
+            onClick={() => {}}
+          >
+            <Cog />
+            Settings
+          </Link>
+        </div>
+        <div className="flex px-4">
+          <Separator />
+        </div>
+        {/*<div className="flex flex-col pl-8 pr-4 gap-2">
+          <span className="text-sm text-muted-foreground">Favorites</span>
+          <Button
+            variant="ghost"
+            className="flex flex-1 justify-start font-normal text-sm"
+            onClick={() => {}}
+          >
+            <Star />
+            2000 rue Berri
+          </Button>
+          <Button
+            variant="ghost"
+            className="flex flex-1 justify-start font-normal text-sm"
+            onClick={() => {}}
+          >
+            <Star />
+            615 Rue Belmont
+          </Button>
+        </div>*/}
         <SheetFooter>
           <Separator />
           <div className="flex flex-col items-center justify-center pb-8 pt-2 gap-6">
