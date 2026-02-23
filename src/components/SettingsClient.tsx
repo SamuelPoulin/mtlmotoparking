@@ -88,7 +88,7 @@ export default function SettingsClient() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex flex-col gap-1">
                   <p className="text-sm">{t("deleteAccount.title")}</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground">
                     {t("deleteAccount.description")}
                   </p>
                 </div>
