@@ -1,7 +1,8 @@
 "use client";
 
-import { Cog, LogOut, Map, Menu, Star } from "lucide-react";
+import { Cog, LogOut, Map, Menu } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import { FeedbackLink } from "@/src/components/layout/FeedbackLink";
@@ -41,6 +42,7 @@ const UserSkeleton = () => {
 export function HeaderMenu() {
   const [open, setOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const pathname = usePathname();
 
   const t = useTranslations("Menu");
   const [isNavigatingToSignIn, startSignInTransition] = useTransition();
@@ -127,23 +129,28 @@ export function HeaderMenu() {
             className={cn(
               buttonVariants({ variant: "ghost" }),
               "flex flex-1 justify-start font-medium text-md",
+              pathname.endsWith("/map") && "bg-accent text-accent-foreground",
             )}
-            onClick={() => {}}
+            onClick={() => setOpen(false)}
           >
             <Map />
             Map
           </Link>
-          <Link
-            href="/settings"
-            className={cn(
-              buttonVariants({ variant: "ghost" }),
-              "flex flex-1 justify-start font-medium text-md",
-            )}
-            onClick={() => {}}
-          >
-            <Cog />
-            Settings
-          </Link>
+          {session && (
+            <Link
+              href="/settings"
+              className={cn(
+                buttonVariants({ variant: "ghost" }),
+                "flex flex-1 justify-start font-medium text-md",
+                pathname.endsWith("/settings") &&
+                  "bg-accent text-accent-foreground",
+              )}
+              onClick={() => setOpen(false)}
+            >
+              <Cog />
+              Settings
+            </Link>
+          )}
         </div>
         <div className="flex px-4">
           <Separator />
