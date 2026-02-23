@@ -3,7 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin } from "better-auth/plugins";
 
 import { db } from "@/src/lib/db/drizzle";
-import * as schema from "./db/schema";
+import * as schema from "@/src/lib/db/schema";
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
@@ -12,6 +12,11 @@ export const auth = betterAuth({
     schema,
   }),
   plugins: [admin()],
+  user: {
+    deleteUser: {
+      enabled: true,
+    },
+  },
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,

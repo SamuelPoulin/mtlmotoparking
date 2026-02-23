@@ -21,7 +21,10 @@
       "modalTitle": "Confirmer la suppression",
       "modalDescription": "Voulez-vous vraiment supprimer votre compte et toutes vos contributions?",
       "modalConfirm": "Supprimer",
-      "modalCancel": "Annuler"
+      "modalCancel": "Annuler",
+      "deleting": "Suppression...",
+      "success": "Compte supprimé avec succès. Au revoir!",
+      "error": "Échec de la suppression du compte. Veuillez réessayer."
     }
   },
   "Footer": {

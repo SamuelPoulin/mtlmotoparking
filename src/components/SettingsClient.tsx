@@ -1,8 +1,10 @@
 "use client";
 
 import { Trash } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { redirect } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import {
   Avatar,
@@ -20,12 +22,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/src/components/ui/dialog";
+import { Spinner } from "@/src/components/ui/spinner";
 import { useSession } from "@/src/lib/auth-client";
-import { useTranslations } from "next-intl";
 
 export default function SettingsClient() {
   const t = useTranslations("SettingsPage");
-  const { data: session, isPending: isSessionPending } = useSession();
+  const {
+    data: session,
+    isPending: isSessionPending,
+    refetch: refetchSession,
+  } = useSession();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (isSessionPending) return;
@@ -34,6 +42,28 @@ export default function SettingsClient() {
       redirect("/");
     }
   }, [isSessionPending, session]);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      const response = await fetch("/api/user/delete", {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete account");
+      }
+
+      toast.success(t("deleteAccount.success"));
+      refetchSession();
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      toast.error(t("deleteAccount.error"));
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteDialog(false);
+    }
+  };
 
   return (
     <div className="container max-w-200 mx-auto px-6 py-8">
@@ -92,7 +122,10 @@ export default function SettingsClient() {
                     {t("deleteAccount.description")}
                   </p>
                 </div>
-                <Dialog>
+                <Dialog
+                  open={showDeleteDialog}
+                  onOpenChange={setShowDeleteDialog}
+                >
                   <DialogTrigger asChild>
                     <Button
                       variant="destructive"
@@ -113,19 +146,20 @@ export default function SettingsClient() {
                     <DialogFooter>
                       <Button
                         variant="outline"
-                        // onClick={() => setShowDeleteDialog(false)}
-                        // disabled={isDeleting}
+                        onClick={() => setShowDeleteDialog(false)}
+                        disabled={isDeleting}
                       >
-                        Cancel
+                        {t("deleteAccount.modalCancel")}
                       </Button>
                       <Button
                         variant="destructive"
-                        // onClick={handleDelete}
-                        // disabled={isDeleting}
+                        onClick={handleDelete}
+                        disabled={isDeleting}
                       >
-                        {/*{isDeleting && <Spinner className="size-4" />}*/}
-                        {/*{isDeleting ? t("deleting") : t("delete")}*/}
-                        Delete
+                        {isDeleting && <Spinner className="size-4" />}
+                        {isDeleting
+                          ? t("deleteAccount.deleting")
+                          : t("deleteAccount.modalConfirm")}
                       </Button>
                     </DialogFooter>
                   </DialogContent>

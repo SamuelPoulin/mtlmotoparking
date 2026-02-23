@@ -21,13 +21,17 @@
       "modalTitle": "Confirm Deletion",
       "modalDescription": "Are you sure you want to delete your account and all contributions?",
       "modalConfirm": "Delete",
-      "modalCancel": "Cancel"
+      "modalCancel": "Cancel",
+      "deleting": "Deleting...",
+      "success": "Account deleted successfully. Seeya!",
+      "error": "Failed to delete account. Please try again."
     }
   },
   "Footer": {
     "giveFeedback": "Give me feedback"
   },
   "MapPage": {
+    "title": "Map",
     "searchAnAddress": "Search an address",
     "motorcycleParking": "Motorcycle parking",
     "navigateWith": "Navigate with:",

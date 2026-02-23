@@ -1,6 +1,7 @@
 "use client";
 
 import { Cog, LogOut, Map, Menu } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -9,22 +10,25 @@ import { FeedbackLink } from "@/src/components/layout/FeedbackLink";
 import { MadeWithLove } from "@/src/components/layout/MadeWithLove";
 import { PortfolioLink } from "@/src/components/layout/PortfolioLink";
 import { ThemeSwitcher } from "@/src/components/layout/ThemeSwitcher";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/src/components/ui/avatar";
 import { Button, buttonVariants } from "@/src/components/ui/button";
 import { DrawerTitle } from "@/src/components/ui/drawer";
-import { LocaleSwitch } from "@/src/i18n/LocaleSwitch";
-import { signOut, useSession } from "@/src/lib/auth-client";
-import { useTranslations } from "next-intl";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/src/components/ui/separator";
 import {
   Sheet,
   SheetContent,
   SheetFooter,
   SheetHeader,
   SheetTrigger,
-} from "../ui/sheet";
-import { Skeleton } from "../ui/skeleton";
-import { Spinner } from "../ui/spinner";
+} from "@/src/components/ui/sheet";
+import { Skeleton } from "@/src/components/ui/skeleton";
+import { Spinner } from "@/src/components/ui/spinner";
+import { LocaleSwitch } from "@/src/i18n/LocaleSwitch";
+import { signOut, useSession } from "@/src/lib/auth-client";
 import { cn } from "@/src/lib/utils";
 
 const UserSkeleton = () => {

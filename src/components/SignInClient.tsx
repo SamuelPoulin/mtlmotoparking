@@ -1,16 +1,21 @@
 "use client";
 
 import { Construction } from "lucide-react";
-import { signIn, signOut, useSession } from "../lib/auth-client";
-import MotorcycleScene from "./MotorcycleScene";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Button } from "./ui/button";
-import { Separator } from "./ui/separator";
-import { Spinner } from "./ui/spinner";
-import { FaFacebookF, FaGoogle } from "react-icons/fa";
 import { useTranslations } from "next-intl";
-import { useEffect } from "react";
 import { redirect } from "next/navigation";
+import { useEffect } from "react";
+import { FaFacebookF, FaGoogle } from "react-icons/fa";
+
+import MotorcycleScene from "@/src/components/MotorcycleScene";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/src/components/ui/avatar";
+import { Button } from "@/src/components/ui/button";
+import { Separator } from "@/src/components/ui/separator";
+import { Spinner } from "@/src/components/ui/spinner";
+import { signIn, signOut, useSession } from "@/src/lib/auth-client";
 
 export function SignInClient() {
   const t = useTranslations();
