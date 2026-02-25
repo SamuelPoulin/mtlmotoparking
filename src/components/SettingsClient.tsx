@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { redirect } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-import { FaWaze } from "react-icons/fa";
+import { FaApple, FaGoogle, FaWaze } from "react-icons/fa";
 import { toast } from "sonner";
 
 import {
@@ -136,13 +136,13 @@ export default function SettingsClient() {
     {
       name: "Google",
       value: "google",
-      icon: <FaWaze className="size-5" />,
+      icon: <FaGoogle className="size-5" />,
     },
 
     {
       name: "Apple",
       value: "apple",
-      icon: <FaWaze className="size-5" />,
+      icon: <FaApple className="size-5" />,
     },
   ];
 
