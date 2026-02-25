@@ -1,5 +1,6 @@
 "use client";
 
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Circle, CircleCheck, Map, Trash } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
@@ -26,6 +27,7 @@ import {
 } from "@/src/components/ui/dialog";
 import { Spinner } from "@/src/components/ui/spinner";
 import { useSession } from "@/src/lib/auth-client";
+import type { UserSettingsResponse } from "@/app/api/user/settings/route";
 
 type NavigationAppProps = {
   name: string;
@@ -33,6 +35,7 @@ type NavigationAppProps = {
   icon?: ReactNode;
   selected: boolean;
   setSelected: (name: string | null) => void;
+  disabled?: boolean;
 };
 
 const NavigationAppButton = ({
@@ -41,6 +44,7 @@ const NavigationAppButton = ({
   selected,
   icon,
   setSelected,
+  disabled,
 }: NavigationAppProps) => {
   return (
     <motion.div
@@ -52,6 +56,7 @@ const NavigationAppButton = ({
         variant="outline"
         className="flex justify-between w-full py-6"
         onClick={() => setSelected(value)}
+        disabled={disabled}
       >
         <div className="flex items-center gap-3">
           {icon}
@@ -69,6 +74,7 @@ const NavigationAppButton = ({
 
 export default function SettingsClient() {
   const t = useTranslations("SettingsPage");
+  const queryClient = useQueryClient();
   const {
     data: session,
     isPending: isSessionPending,
@@ -76,7 +82,45 @@ export default function SettingsClient() {
   } = useSession();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [navigationApp, setNavigationApp] = useState<string | null>("waze");
+
+  const { data, isLoading: isLoadingSettings } = useQuery<UserSettingsResponse>(
+    {
+      queryKey: ["user-settings"],
+      queryFn: async () => {
+        const res = await fetch("/api/user/settings");
+        if (!res.ok) throw new Error("Failed to fetch settings");
+        return res.json();
+      },
+      enabled: !!session,
+    },
+  );
+
+  console.log(data?.contributions);
+
+  const updateNavigationApp = useMutation({
+    mutationFn: async (navigationApp: string | null) => {
+      const res = await fetch("/api/user/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ navigationApp }),
+      });
+      if (!res.ok) throw new Error("Failed to update");
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ["user-settings"],
+        (old: UserSettingsResponse | undefined) => ({
+          ...old,
+          navigationApp: data.navigationApp,
+        }),
+      );
+      toast.success(t("navigationApp.saved"));
+    },
+    onError: () => {
+      toast.error(t("navigationApp.error"));
+    },
+  });
 
   const NAVIGATION_APPS = [
     {
@@ -151,26 +195,11 @@ export default function SettingsClient() {
                     </AvatarFallback>
                   </Avatar>
                 )}
-                {/*<Button
-                  // onClick={() => fileInputRef.current?.click()}
-                  className="absolute bottom-0 right-0 h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"
-                  aria-label="Change profile picture"
-                >
-                  <Camera className="h-3 w-3" />
-                </Button>*/}
                 <div className="flex flex-col flex-1 gap-1">
                   <p className="text-base">{session?.user?.name}</p>
                   <p className="text-sm text-muted-foreground truncate">
                     {session?.user?.email}
                   </p>
-                  {/*<Button
-                  variant="outline"
-                  size="sm"
-                  className="mt-3 text-xs"
-                  // onClick={() => fileInputRef.current?.click()}
-                >
-                  Change photo
-                </Button>*/}
                 </div>
               </div>
             </CardContent>
@@ -252,8 +281,9 @@ export default function SettingsClient() {
               name={name}
               value={value}
               icon={icon}
-              selected={navigationApp === value}
-              setSelected={setNavigationApp}
+              selected={data?.navigationApp === value}
+              setSelected={updateNavigationApp.mutate}
+              disabled={isLoadingSettings || updateNavigationApp.isPending}
             />
           ))}
         </section>

@@ -112,3 +112,4 @@ See `.env.template` for placeholders.
 - No test suite detected (no `*.test.*` / `*.spec.*` files).
 - App uses both Tailwind and styled-components (see `ParkingSpotSheet.tsx`).
 - Avoid modifying `.env` values; use `.env.template` for docs.
+- Generate migrations with `bun x drizzle-kit generate`, but NEVER push/migrate the database. Leave that to the user.

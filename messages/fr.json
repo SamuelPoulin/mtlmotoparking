@@ -29,7 +29,9 @@
     "navigationApp": {
       "title": "Application de navigation",
       "description": "Choisissez quelle application ouvrir lorsque vous appuyez sur l'un de vos stationnements favoris.",
-      "none": "Aucune"
+      "none": "Aucune",
+      "saved": "Préférence enregistrée!",
+      "error": "Échec de l'enregistrement. Veuillez réessayer."
     }
   },
   "Footer": {

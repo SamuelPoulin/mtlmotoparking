@@ -125,6 +125,9 @@ export function ParkingUpdateForm({ parkingId }: Props) {
       queryClient.invalidateQueries({
         queryKey: ["can-contribute", parkingId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["user-settings"],
+      });
       posthog.capture("contribution_submitted", {
         parking_id: parkingId,
       });

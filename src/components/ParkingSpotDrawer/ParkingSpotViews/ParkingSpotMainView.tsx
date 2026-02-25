@@ -77,6 +77,9 @@ export function ParkingSpotMainView({ parking }: Props) {
     queryClient.invalidateQueries({
       queryKey: ["can-contribute", parking.id],
     });
+    queryClient.invalidateQueries({
+      queryKey: ["user-settings"],
+    });
   };
 
   const parkingUrl = useMemo(() => {
