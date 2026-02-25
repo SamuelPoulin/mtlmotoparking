@@ -30,7 +30,7 @@
       "title": "Navigation app",
       "description": "Pick which app to open when you tap on one of your favorite parking spots.",
       "none": "None",
-      "saved": "Preference saved!",
+      "saved": "Settings saved!",
       "error": "Failed to save. Please try again."
     }
   },
