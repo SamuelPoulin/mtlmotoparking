@@ -1,9 +1,11 @@
 "use client";
 
-import { Trash } from "lucide-react";
+import { Circle, CircleCheck, Map, Trash } from "lucide-react";
+import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { FaWaze } from "react-icons/fa";
 import { toast } from "sonner";
 
 import {
@@ -25,6 +27,46 @@ import {
 import { Spinner } from "@/src/components/ui/spinner";
 import { useSession } from "@/src/lib/auth-client";
 
+type NavigationAppProps = {
+  name: string;
+  value: string | null;
+  icon?: ReactNode;
+  selected: boolean;
+  setSelected: (name: string | null) => void;
+};
+
+const NavigationAppButton = ({
+  name,
+  value,
+  selected,
+  icon,
+  setSelected,
+}: NavigationAppProps) => {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className="w-full"
+    >
+      <Button
+        variant="outline"
+        className="flex justify-between w-full py-6"
+        onClick={() => setSelected(value)}
+      >
+        <div className="flex items-center gap-3">
+          {icon}
+          {name}
+        </div>
+        {selected ? (
+          <CircleCheck className="size-5" />
+        ) : (
+          <Circle className="size-5" />
+        )}
+      </Button>
+    </motion.div>
+  );
+};
+
 export default function SettingsClient() {
   const t = useTranslations("SettingsPage");
   const {
@@ -34,6 +76,31 @@ export default function SettingsClient() {
   } = useSession();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [navigationApp, setNavigationApp] = useState<string | null>("waze");
+
+  const NAVIGATION_APPS = [
+    {
+      name: t("navigationApp.none"),
+      value: null,
+    },
+    {
+      name: "Waze",
+      value: "waze",
+      icon: <FaWaze className="size-5" />,
+    },
+
+    {
+      name: "Google",
+      value: "google",
+      icon: <FaWaze className="size-5" />,
+    },
+
+    {
+      name: "Apple",
+      value: "apple",
+      icon: <FaWaze className="size-5" />,
+    },
+  ];
 
   useEffect(() => {
     if (isSessionPending) return;
@@ -72,27 +139,25 @@ export default function SettingsClient() {
         <section className="flex flex-col gap-3">
           <Card>
             <CardContent className="px-5 py-1">
-              <div className="flex items-center gap-5">
-                <div className="relative shrink-0">
-                  {!isSessionPending && session && (
-                    <Avatar className="h-20 w-20">
-                      <AvatarImage
-                        src={session?.user.image ?? ""}
-                        alt={session?.user.name}
-                      />
-                      <AvatarFallback className="text-xl">
-                        {session?.user.name[0]}
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
-                  {/*<Button
+              <div className="flex items-center gap-3">
+                {!isSessionPending && session && (
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage
+                      src={session?.user.image ?? ""}
+                      alt={session?.user.name}
+                    />
+                    <AvatarFallback className="text-xl">
+                      {session?.user.name[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                )}
+                {/*<Button
                   // onClick={() => fileInputRef.current?.click()}
                   className="absolute bottom-0 right-0 h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"
                   aria-label="Change profile picture"
                 >
                   <Camera className="h-3 w-3" />
                 </Button>*/}
-                </div>
                 <div className="flex flex-col flex-1 gap-1">
                   <p className="text-base">{session?.user?.name}</p>
                   <p className="text-sm text-muted-foreground truncate">
@@ -113,7 +178,7 @@ export default function SettingsClient() {
         </section>
 
         <section className="flex flex-col gap-3">
-          <Card className="border-destructive/25">
+          <Card className="border-destructive/20">
             <CardContent className="px-5 py-1">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex flex-col gap-1">
@@ -168,6 +233,33 @@ export default function SettingsClient() {
             </CardContent>
           </Card>
         </section>
+
+        <h1 className="flex flex-col justify-center gap-2">
+          <div className="flex items-center gap-2 text-xl font-semibold">
+            <div className="flex items-center justify-center p-3 bg-muted rounded-full">
+              <Map className="size-4" />
+            </div>
+            {t("navigationApp.title")}
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {t("navigationApp.description")}
+          </p>
+        </h1>
+        <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          {NAVIGATION_APPS.map(({ name, value, icon }) => (
+            <NavigationAppButton
+              key={value}
+              name={name}
+              value={value}
+              icon={icon}
+              selected={navigationApp === value}
+              setSelected={setNavigationApp}
+            />
+          ))}
+        </section>
+
+        {/*<h1 className="text-xl font-semibold">Contributions</h1>
+        <section className="flex flex-col gap-3"></section>*/}
       </div>
     </div>
   );

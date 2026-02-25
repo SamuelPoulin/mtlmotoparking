@@ -25,6 +25,11 @@
       "deleting": "Suppression...",
       "success": "Compte supprimé avec succès. Au revoir!",
       "error": "Échec de la suppression du compte. Veuillez réessayer."
+    },
+    "navigationApp": {
+      "title": "Application de navigation",
+      "description": "Choisissez quelle application ouvrir lorsque vous appuyez sur l'un de vos stationnements favoris.",
+      "none": "Aucune"
     }
   },
   "Footer": {

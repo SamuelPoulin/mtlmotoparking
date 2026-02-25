@@ -25,6 +25,11 @@
       "deleting": "Deleting...",
       "success": "Account deleted successfully. Seeya!",
       "error": "Failed to delete account. Please try again."
+    },
+    "navigationApp": {
+      "title": "Navigation app",
+      "description": "Pick which app to open when you tap on one of your favorite parking spots.",
+      "none": "None"
     }
   },
   "Footer": {
