@@ -30,7 +30,7 @@
       "title": "Application de navigation",
       "description": "Choisissez quelle application ouvrir lorsque vous appuyez sur l'un de vos stationnements favoris.",
       "none": "Aucune",
-      "saved": "Préférences enregistrées!",
+      "saved": "Paramètres enregistrés!",
       "error": "Échec de l'enregistrement. Veuillez réessayer."
     }
   },
