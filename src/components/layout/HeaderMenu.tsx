@@ -136,7 +136,7 @@ export function HeaderMenu() {
               buttonVariants({ variant: "ghost" }),
               "flex flex-1 justify-start font-medium text-md",
               pathname.endsWith("/map") &&
-                "bg-accent text-accent-foreground  hover:bg-accent",
+                "bg-accent text-accent-foreground dark:hover:bg-accent",
             )}
             onClick={() => setOpen(false)}
           >
@@ -150,7 +150,7 @@ export function HeaderMenu() {
                 buttonVariants({ variant: "ghost" }),
                 "flex flex-1 justify-start font-medium text-md",
                 pathname.endsWith("/settings") &&
-                  "bg-accent text-accent-foreground hover:bg-accent",
+                  "bg-accent text-accent-foreground dark:hover:bg-accent",
               )}
               onClick={() => setOpen(false)}
             >
