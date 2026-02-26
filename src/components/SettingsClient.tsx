@@ -1,7 +1,14 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Circle, CircleCheck, Construction, Map, Trash } from "lucide-react";
+import {
+  Circle,
+  CircleCheck,
+  Construction,
+  Map,
+  Star,
+  Trash,
+} from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { redirect } from "next/navigation";
@@ -30,6 +37,7 @@ import { useSession } from "@/src/lib/auth-client";
 import type { UserSettingsResponse } from "@/app/api/user/settings/route";
 import { ContributionCard } from "@/src/components/ParkingSpotDrawer/ContributionCard";
 import { ContributionWithUser } from "../lib/api/contributions";
+import { Badge } from "./ui/badge";
 
 type NavigationAppProps = {
   name: string;
@@ -311,7 +319,13 @@ export default function SettingsClient() {
           ))}
         </section>
 
-        <h1 className="text-xl font-semibold">Contributions</h1>
+        <div className="flex justify-between">
+          <h1 className="text-xl font-semibold">{t("contributions.title")}</h1>
+          <Badge className="bg-green-700 text-white font-semibold">
+            <Star strokeWidth={3} className="size-4" />{" "}
+            {data?.contributions?.length ?? 0} {t("contributions.total")}
+          </Badge>
+        </div>
         <section className="flex flex-col gap-3">
           {data?.contributions?.length === 0 && (
             <div className="flex gap-4 p-4 text-sm justify-center bg-card border border-border w-full rounded-lg">

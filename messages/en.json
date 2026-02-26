@@ -34,8 +34,10 @@
       "error": "Failed to save. Please try again."
     },
     "contributions": {
+      "title": "Contributions",
       "emptyTitle": "No contributions to show here yet.",
-      "emptyDescription": "Head to the map and add your first one!"
+      "emptyDescription": "Head to the map and add your first one!",
+      "total": "total"
     }
   },
   "Footer": {

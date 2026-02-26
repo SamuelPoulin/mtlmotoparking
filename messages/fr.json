@@ -34,8 +34,10 @@
       "error": "Échec de l'enregistrement. Veuillez réessayer."
     },
     "contributions": {
+      "title": "Contributions",
       "emptyTitle": "Aucune contribution pour l'instant.",
-      "emptyDescription": "Visitez la carte pour faire votre première!"
+      "emptyDescription": "Visitez la carte pour faire votre première!",
+      "total": "au total"
     }
   },
   "Footer": {
