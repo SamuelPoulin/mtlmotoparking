@@ -41,6 +41,7 @@ import {
 } from "@/src/components/ParkingSpotDrawer/ContributionCard";
 import { ContributionWithUser } from "../lib/api/contributions";
 import { Badge } from "./ui/badge";
+import { Skeleton } from "./ui/skeleton";
 
 type NavigationAppProps = {
   name: string;
@@ -82,6 +83,18 @@ const NavigationAppButton = ({
         )}
       </Button>
     </motion.div>
+  );
+};
+
+const UserSkeleton = () => {
+  return (
+    <div className="flex flex-1 items-center p-2 gap-4">
+      <Skeleton className="h-16 w-16 rounded-full" />
+      <div className="flex flex-col gap-2 flex-1">
+        <Skeleton className="w-1/3 h-4" />
+        <Skeleton className="w-2/3 h-4" />
+      </div>
+    </div>
   );
 };
 
@@ -138,7 +151,7 @@ export default function SettingsClient() {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(
-        ["user-settings"],
+        ["user-settings", offset],
         (old: UserSettingsResponse | undefined) => ({
           ...old,
           navigationApp: data.navigationApp,
@@ -240,7 +253,8 @@ export default function SettingsClient() {
         <section className="flex flex-col gap-3">
           <Card>
             <CardContent className="px-5 py-1">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center p-2 gap-3">
+                {isSessionPending && !session && <UserSkeleton />}
                 {!isSessionPending && session && (
                   <Avatar className="h-16 w-16">
                     <AvatarImage
