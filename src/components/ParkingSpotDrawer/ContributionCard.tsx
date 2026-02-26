@@ -20,14 +20,28 @@ import type { ContributionWithUser } from "@/src/lib/api/contributions";
 import { useSession } from "@/src/lib/auth-client";
 import { toast } from "sonner";
 
+export function ContributionSkeleton() {
+  return (
+    <div className="flex flex-col gap-3 p-3 bg-card border border-border rounded-lg">
+      <Skeleton className="w-full h-32 rounded-md" />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Skeleton className="w-6 h-6 rounded-full" />
+          <Skeleton className="w-20 h-4" />
+        </div>
+        <Skeleton className="w-12 h-3" />
+      </div>
+      <Skeleton className="w-16 h-5 rounded-full" />
+    </div>
+  );
+}
+
 export function ContributionCard({
   contribution,
-  labels,
   onDeleteAction: onDelete,
 }: {
   contribution: ContributionWithUser;
-  labels: ReturnType<typeof useTranslations<"MapPage.community">>;
-  onDeleteAction?: (contributionId: number) => void;
+  onDeleteAction?: (contributionId: number, parkingId: number) => void;
 }) {
   const t = useTranslations("MapPage.community");
   const session = useSession();
@@ -49,11 +63,11 @@ export function ContributionCard({
   })();
 
   const fullnessLabel = (() => {
-    if (contribution.fullness <= 20) return labels("empty");
-    if (contribution.fullness <= 40) return labels("quiet");
-    if (contribution.fullness <= 60) return labels("moderate");
-    if (contribution.fullness <= 80) return labels("busy");
-    return labels("full");
+    if (contribution.fullness <= 20) return t("empty");
+    if (contribution.fullness <= 40) return t("quiet");
+    if (contribution.fullness <= 60) return t("moderate");
+    if (contribution.fullness <= 80) return t("busy");
+    return t("full");
   })();
 
   const relativeTimeT = useTranslations("MapPage.community.relativeTime");
@@ -93,7 +107,7 @@ export function ContributionCard({
         parking_id: contribution.parking_id,
       });
 
-      onDelete?.(contribution.id);
+      onDelete?.(contribution.id, contribution.parking_id);
     } catch (error) {
       console.error("Error deleting contribution:", error);
     } finally {
@@ -116,7 +130,7 @@ export function ContributionCard({
         throw new Error("Failed to ban user");
       }
 
-      onDelete?.(contribution.id);
+      onDelete?.(contribution.id, contribution.parking_id);
     } catch (error) {
       console.error("Error banning user:", error);
     } finally {
@@ -245,22 +259,6 @@ export function ContributionCard({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
-  );
-}
-
-export function ContributionSkeleton() {
-  return (
-    <div className="flex flex-col gap-3 p-3 bg-card border border-border rounded-lg">
-      <Skeleton className="w-full h-32 rounded-md" />
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Skeleton className="w-6 h-6 rounded-full" />
-          <Skeleton className="w-20 h-4" />
-        </div>
-        <Skeleton className="w-12 h-3" />
-      </div>
-      <Skeleton className="w-16 h-5 rounded-full" />
     </div>
   );
 }

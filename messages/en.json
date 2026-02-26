@@ -32,6 +32,10 @@
       "none": "None",
       "saved": "Settings saved!",
       "error": "Failed to save. Please try again."
+    },
+    "contributions": {
+      "emptyTitle": "No contributions to show here yet.",
+      "emptyDescription": "Head to the map and add your first one!"
     }
   },
   "Footer": {

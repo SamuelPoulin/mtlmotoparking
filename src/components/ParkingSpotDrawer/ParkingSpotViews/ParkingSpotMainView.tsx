@@ -43,7 +43,6 @@ type Props = {
 
 export function ParkingSpotMainView({ parking }: Props) {
   const t = useTranslations();
-  const tCommunity = useTranslations("MapPage.community");
   const { hasTransitioned, setShowContributeView, setHasTransitioned } =
     useStore();
   const { data: session } = useSession();
@@ -62,9 +61,12 @@ export function ParkingSpotMainView({ parking }: Props) {
 
   const contributions = contributionsData?.contributions ?? [];
 
-  const handleContributionDelete = (contributionId: number) => {
+  const handleContributionDelete = (
+    contributionId: number,
+    parkingId: number,
+  ) => {
     queryClient.setQueryData<{ contributions: ContributionWithUser[] }>(
-      ["contributions", parking.id],
+      ["contributions", parkingId],
       (oldData) => {
         if (!oldData) return oldData;
         return {
@@ -75,7 +77,7 @@ export function ParkingSpotMainView({ parking }: Props) {
       },
     );
     queryClient.invalidateQueries({
-      queryKey: ["can-contribute", parking.id],
+      queryKey: ["can-contribute", parkingId],
     });
     queryClient.invalidateQueries({
       queryKey: ["user-settings"],
@@ -239,7 +241,6 @@ export function ParkingSpotMainView({ parking }: Props) {
               <ContributionCard
                 key={contribution.id}
                 contribution={contribution}
-                labels={tCommunity}
                 onDeleteAction={handleContributionDelete}
               />
             ))}

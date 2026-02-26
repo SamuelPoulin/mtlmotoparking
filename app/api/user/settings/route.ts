@@ -12,13 +12,20 @@ import {
 
 export type ParkingSpotContributionWithLocation = {
   id: number;
-  parking_id: number;
   cloudinary_public_id: string;
   cloudinary_url: string;
   fullness: number;
   description: string | null;
   createdAt: Date;
   updatedAt: Date;
+  user_id: string;
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    image: string | null;
+  } | null;
+  parking_id: number;
   parking: {
     id: number | null;
     address: string | null;
@@ -51,13 +58,20 @@ export async function GET(request: NextRequest) {
     const contributions = await db
       .select({
         id: parking_spot_contributions.id,
-        parking_id: parking_spot_contributions.parking_id,
         cloudinary_public_id: parking_spot_contributions.cloudinary_public_id,
         cloudinary_url: parking_spot_contributions.cloudinary_url,
         fullness: parking_spot_contributions.fullness,
         description: parking_spot_contributions.description,
         createdAt: parking_spot_contributions.createdAt,
         updatedAt: parking_spot_contributions.updatedAt,
+        user_id: parking_spot_contributions.user_id,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          image: user.image,
+        },
+        parking_id: parking_spot_contributions.parking_id,
         parking: {
           id: parkings.id,
           address: locations.address,
@@ -71,6 +85,7 @@ export async function GET(request: NextRequest) {
         eq(parking_spot_contributions.parking_id, parkings.id),
       )
       .leftJoin(locations, eq(parkings.location_id, locations.id))
+      .leftJoin(user, eq(parking_spot_contributions.user_id, user.id))
       .where(eq(parking_spot_contributions.user_id, session.user.id))
       .orderBy(desc(parking_spot_contributions.createdAt));
 

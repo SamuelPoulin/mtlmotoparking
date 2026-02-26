@@ -32,6 +32,10 @@
       "none": "Aucune",
       "saved": "Paramètres enregistrés!",
       "error": "Échec de l'enregistrement. Veuillez réessayer."
+    },
+    "contributions": {
+      "emptyTitle": "Aucune contribution pour l'instant.",
+      "emptyDescription": "Visitez la carte pour faire votre première!"
     }
   },
   "Footer": {

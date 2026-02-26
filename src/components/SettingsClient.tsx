@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Circle, CircleCheck, Map, Trash } from "lucide-react";
+import { Circle, CircleCheck, Construction, Map, Trash } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { redirect } from "next/navigation";
@@ -28,6 +28,8 @@ import {
 import { Spinner } from "@/src/components/ui/spinner";
 import { useSession } from "@/src/lib/auth-client";
 import type { UserSettingsResponse } from "@/app/api/user/settings/route";
+import { ContributionCard } from "@/src/components/ParkingSpotDrawer/ContributionCard";
+import { ContributionWithUser } from "../lib/api/contributions";
 
 type NavigationAppProps = {
   name: string;
@@ -94,8 +96,6 @@ export default function SettingsClient() {
       enabled: !!session,
     },
   );
-
-  console.log(data?.contributions);
 
   const updateNavigationApp = useMutation({
     mutationFn: async (navigationApp: string | null) => {
@@ -174,6 +174,29 @@ export default function SettingsClient() {
       setIsDeleting(false);
       setShowDeleteDialog(false);
     }
+  };
+
+  const handleContributionDelete = (
+    contributionId: number,
+    parkingId: number,
+  ) => {
+    queryClient.setQueryData<{ contributions: ContributionWithUser[] }>(
+      ["contributions", parkingId],
+      (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          contributions: oldData.contributions.filter(
+            (c) => c.id !== contributionId,
+          ),
+        };
+      },
+    );
+    queryClient.invalidateQueries({
+      queryKey: ["can-contribute", parkingId],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["user-settings"],
+    });
   };
 
   return (
@@ -288,8 +311,31 @@ export default function SettingsClient() {
           ))}
         </section>
 
-        {/*<h1 className="text-xl font-semibold">Contributions</h1>
-        <section className="flex flex-col gap-3"></section>*/}
+        <h1 className="text-xl font-semibold">Contributions</h1>
+        <section className="flex flex-col gap-3">
+          {data?.contributions?.length === 0 && (
+            <div className="flex gap-4 p-4 text-sm justify-center bg-card border border-border w-full rounded-lg">
+              <div className="flex items-center">
+                <div className="bg-muted p-4 flex justify-center rounded-full">
+                  <Construction className="animate-pulse" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-md">{t("contributions.emptyTitle")}</span>
+                <span className="text-sm text-muted-foreground">
+                  {t("contributions.emptyDescription")}
+                </span>
+              </div>
+            </div>
+          )}
+          {data?.contributions.map((contribution) => (
+            <ContributionCard
+              key={contribution.id}
+              contribution={contribution}
+              onDeleteAction={handleContributionDelete}
+            />
+          ))}
+        </section>
       </div>
     </div>
   );
