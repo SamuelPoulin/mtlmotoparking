@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { desc, eq } from "drizzle-orm";
+import { count, desc, eq } from "drizzle-orm";
 
 import { auth } from "@/src/lib/auth";
 import { db } from "@/src/lib/db/drizzle";
@@ -37,6 +37,7 @@ export type ParkingSpotContributionWithLocation = {
 export type UserSettingsResponse = {
   navigationApp: string | null;
   contributions: ParkingSpotContributionWithLocation[];
+  total: number;
 };
 
 export async function GET(request: NextRequest) {
@@ -49,11 +50,19 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const limit = 5;
+    const offset = parseInt(request.nextUrl.searchParams.get("offset") || "0");
+
     const [userData] = await db
       .select({ navigationApp: user.navigationApp })
       .from(user)
       .where(eq(user.id, session.user.id))
       .limit(1);
+
+    const [{ total }] = await db
+      .select({ total: count() })
+      .from(parking_spot_contributions)
+      .where(eq(parking_spot_contributions.user_id, session.user.id));
 
     const contributions = await db
       .select({
@@ -87,11 +96,14 @@ export async function GET(request: NextRequest) {
       .leftJoin(locations, eq(parkings.location_id, locations.id))
       .leftJoin(user, eq(parking_spot_contributions.user_id, user.id))
       .where(eq(parking_spot_contributions.user_id, session.user.id))
-      .orderBy(desc(parking_spot_contributions.createdAt));
+      .orderBy(desc(parking_spot_contributions.createdAt))
+      .limit(limit)
+      .offset(offset);
 
     const response: UserSettingsResponse = {
       navigationApp: userData?.navigationApp ?? null,
       contributions,
+      total,
     };
 
     return NextResponse.json(response);

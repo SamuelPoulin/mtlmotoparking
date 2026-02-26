@@ -35,7 +35,10 @@ import {
 import { Spinner } from "@/src/components/ui/spinner";
 import { useSession } from "@/src/lib/auth-client";
 import type { UserSettingsResponse } from "@/app/api/user/settings/route";
-import { ContributionCard } from "@/src/components/ParkingSpotDrawer/ContributionCard";
+import {
+  ContributionCard,
+  ContributionSkeleton,
+} from "@/src/components/ParkingSpotDrawer/ContributionCard";
 import { ContributionWithUser } from "../lib/api/contributions";
 import { Badge } from "./ui/badge";
 
@@ -92,18 +95,36 @@ export default function SettingsClient() {
   } = useSession();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [allContributions, setAllContributions] = useState<
+    UserSettingsResponse["contributions"]
+  >([]);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [hasInitialLoad, setHasInitialLoad] = useState(false);
 
   const { data, isLoading: isLoadingSettings } = useQuery<UserSettingsResponse>(
     {
-      queryKey: ["user-settings"],
+      queryKey: ["user-settings", offset],
       queryFn: async () => {
-        const res = await fetch("/api/user/settings");
+        const res = await fetch(`/api/user/settings?offset=${offset}`);
         if (!res.ok) throw new Error("Failed to fetch settings");
         return res.json();
       },
       enabled: !!session,
     },
   );
+
+  useEffect(() => {
+    if (data?.contributions) {
+      if (offset === 0) {
+        setAllContributions(data.contributions);
+      } else {
+        setAllContributions((prev) => [...prev, ...data.contributions]);
+      }
+      setTotalCount(data.total);
+      setHasInitialLoad(true);
+    }
+  }, [data?.contributions, offset]);
 
   const updateNavigationApp = useMutation({
     mutationFn: async (navigationApp: string | null) => {
@@ -188,6 +209,7 @@ export default function SettingsClient() {
     contributionId: number,
     parkingId: number,
   ) => {
+    setAllContributions((prev) => prev.filter((c) => c.id !== contributionId));
     queryClient.setQueryData<{ contributions: ContributionWithUser[] }>(
       ["contributions", parkingId],
       (oldData) => {
@@ -205,6 +227,10 @@ export default function SettingsClient() {
     queryClient.invalidateQueries({
       queryKey: ["user-settings"],
     });
+  };
+
+  const handleLoadMore = () => {
+    setOffset((prev) => prev + 5);
   };
 
   return (
@@ -322,12 +348,13 @@ export default function SettingsClient() {
         <div className="flex justify-between">
           <h1 className="text-xl font-semibold">{t("contributions.title")}</h1>
           <Badge className="bg-green-700 text-white font-semibold">
-            <Star strokeWidth={3} className="size-4" />{" "}
-            {data?.contributions?.length ?? 0} {t("contributions.total")}
+            <Star strokeWidth={3} className="size-4" /> {totalCount}{" "}
+            {t("contributions.total")}
           </Badge>
         </div>
         <section className="flex flex-col gap-3">
-          {data?.contributions?.length === 0 && (
+          {!hasInitialLoad && <ContributionSkeleton />}
+          {hasInitialLoad && allContributions.length === 0 && (
             <div className="flex gap-4 p-4 text-sm justify-center bg-card border border-border w-full rounded-lg">
               <div className="flex items-center">
                 <div className="bg-muted p-4 flex justify-center rounded-full">
@@ -342,13 +369,35 @@ export default function SettingsClient() {
               </div>
             </div>
           )}
-          {data?.contributions.map((contribution) => (
-            <ContributionCard
-              key={contribution.id}
-              contribution={contribution}
-              onDeleteAction={handleContributionDelete}
-            />
-          ))}
+          {hasInitialLoad && allContributions.length > 0 && (
+            <>
+              {allContributions.map((contribution) => (
+                <ContributionCard
+                  key={contribution.id}
+                  contribution={contribution}
+                  onDeleteAction={handleContributionDelete}
+                />
+              ))}
+
+              {allContributions.length < totalCount && (
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full"
+                >
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleLoadMore}
+                    disabled={isLoadingSettings}
+                  >
+                    {isLoadingSettings && <Spinner className="size-4" />}
+                    {t("contributions.showMore")}
+                  </Button>
+                </motion.div>
+              )}
+            </>
+          )}
         </section>
       </div>
     </div>

@@ -37,7 +37,8 @@
       "title": "Contributions",
       "emptyTitle": "No contributions to show here yet.",
       "emptyDescription": "Head to the map and add your first one!",
-      "total": "total"
+      "total": "total",
+      "showMore": "Show more..."
     }
   },
   "Footer": {

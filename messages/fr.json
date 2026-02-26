@@ -37,7 +37,8 @@
       "title": "Contributions",
       "emptyTitle": "Aucune contribution pour l'instant.",
       "emptyDescription": "Visitez la carte pour faire votre première!",
-      "total": "au total"
+      "total": "au total",
+      "showMore": "En voir plus..."
     }
   },
   "Footer": {
