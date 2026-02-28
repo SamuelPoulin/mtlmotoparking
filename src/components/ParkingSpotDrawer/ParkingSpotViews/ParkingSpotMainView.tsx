@@ -126,9 +126,7 @@ export function ParkingSpotMainView({ parking }: Props) {
                 }
               >
                 <Star
-                  fill={favourite ? "yellow" : undefined}
-                  color={favourite ? "yellow" : undefined}
-                  strokeWidth="3"
+                  className={`size-5 drop-shadow ${favourite ? "text-yellow-400 fill-yellow-400" : ""}`}
                 />
               </Button>
             </div>
