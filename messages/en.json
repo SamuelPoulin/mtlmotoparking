@@ -116,6 +116,7 @@
   "Favourites": {
     "title": "Favourites",
     "empty": "Star parking spots on the map so they can show up here!",
+    "emptyLoggedOut": "Log in and head to the map to set favourites!",
     "unknownAddress": "Unknown address",
     "limitReached": "You can only favourite 5 parking spots.",
     "updateError": "Failed to update favourites. Please try again.",

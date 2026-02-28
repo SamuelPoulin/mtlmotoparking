@@ -116,6 +116,7 @@
   "Favourites": {
     "title": "Favoris",
     "empty": "Ajoutez des stationnements en favoris sur la carte pour les voir ici!",
+    "emptyLoggedOut": "Connectez-vous et rendez-vous sur la carte pour ajouter des favoris!",
     "unknownAddress": "Adresse inconnue",
     "limitReached": "Vous pouvez avoir jusqu'à 5 favoris.",
     "updateError": "Échec de la mise à jour des favoris. Veuillez réessayer.",

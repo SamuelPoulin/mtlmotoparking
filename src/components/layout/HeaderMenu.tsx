@@ -181,7 +181,12 @@ export function HeaderMenu() {
                 <Skeleton className="h-8 w-2/3" />
               </div>
             )}
-            {!isLoadingFavourites && favourites.length === 0 && (
+            {!session && (
+              <p className="text-muted-foreground text-xs mt-2">
+                {tFavourites("emptyLoggedOut")}
+              </p>
+            )}
+            {session && !isLoadingFavourites && favourites.length === 0 && (
               <p className="text-muted-foreground text-xs mt-2">
                 {tFavourites("empty")}
               </p>

@@ -110,25 +110,27 @@ export function ParkingSpotMainView({ parking }: Props) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {t("MapPage.motorcycleParking")}
-              <Button
-                variant="ghost"
-                size="icon-lg"
-                className="cursor-pointer"
-                disabled={!session || isToggling}
-                onClick={() =>
-                  toggleFavourite({
-                    parkingId: parking.id,
-                    address: parking.address ?? null,
-                  })
-                }
-                aria-label={
-                  favourite ? t("Favourites.remove") : t("Favourites.add")
-                }
-              >
-                <Star
-                  className={`size-5 drop-shadow ${favourite ? "text-yellow-400 fill-yellow-400" : ""}`}
-                />
-              </Button>
+              {session && (
+                <Button
+                  variant="ghost"
+                  size="icon-lg"
+                  className="cursor-pointer"
+                  disabled={isToggling}
+                  onClick={() =>
+                    toggleFavourite({
+                      parkingId: parking.id,
+                      address: parking.address ?? null,
+                    })
+                  }
+                  aria-label={
+                    favourite ? t("Favourites.remove") : t("Favourites.add")
+                  }
+                >
+                  <Star
+                    className={`size-5 drop-shadow ${favourite ? "text-yellow-400 fill-yellow-400" : ""}`}
+                  />
+                </Button>
+              )}
             </div>
             <CopyButton
               label={t("share")}
