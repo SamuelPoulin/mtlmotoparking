@@ -49,7 +49,37 @@ export function ParkingMap({ parkings }: Props) {
     return parkings.find((p) => p.id === searchParkingId);
   }, [searchParkingId, parkings]);
 
-  const { addressCoordinates } = useStore();
+  const { addressCoordinates, flyToParkingSpotId, setFlyToParkingSpotId } =
+    useStore();
+
+  useEffect(() => {
+    if (!mapLoaded || !flyToParkingSpotId) {
+      return;
+    }
+
+    const favouriteParking = parkings.find(
+      (parking) => parking.id === flyToParkingSpotId,
+    );
+
+    if (!favouriteParking?.latitude || !favouriteParking.longitude) {
+      return;
+    }
+
+    mapRef.current?.flyTo({
+      center: [favouriteParking.longitude, favouriteParking.latitude],
+      zoom: 15,
+      duration: 1000,
+    });
+
+    setLaunchParkingSpotId(favouriteParking.id);
+    setFlyToParkingSpotId(null);
+  }, [
+    mapLoaded,
+    flyToParkingSpotId,
+    parkings,
+    setLaunchParkingSpotId,
+    setFlyToParkingSpotId,
+  ]);
   useEffect(() => {
     if (
       !mapLoaded ||

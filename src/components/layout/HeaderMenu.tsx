@@ -30,6 +30,7 @@ import { Spinner } from "@/src/components/ui/spinner";
 import { LocaleSwitch } from "@/src/i18n/LocaleSwitch";
 import { signOut, useSession } from "@/src/lib/auth-client";
 import { useFavourites } from "@/src/lib/hooks/useFavourites";
+import { useStore } from "@/src/lib/zustand/store";
 import { cn } from "@/src/lib/utils";
 
 const UserSkeleton = () => {
@@ -58,6 +59,7 @@ export function HeaderMenu() {
   const { data: session, isPending: isSessionPending } = useSession();
 
   const { favourites, isLoading: isLoadingFavourites } = useFavourites();
+  const { setFlyToParkingSpotId } = useStore();
 
   const handleSignout = async () => {
     setIsSigningOut(true);
@@ -191,7 +193,10 @@ export function HeaderMenu() {
                   variant="ghost"
                   className="flex justify-start w-full p-2 cursor-pointer"
                   onClick={() => {
-                    router.push(`/map?parkingId=${favourite.parking_id}`);
+                    if (!pathname.endsWith("/map")) {
+                      router.push("/map");
+                    }
+                    setFlyToParkingSpotId(favourite.parking_id);
                     setOpen(false);
                   }}
                 >
