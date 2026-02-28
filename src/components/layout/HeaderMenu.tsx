@@ -1,6 +1,6 @@
 "use client";
 
-import { Cog, LogOut, Map, Menu } from "lucide-react";
+import { Cog, LogOut, Map, Menu, Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -53,6 +53,29 @@ export function HeaderMenu() {
 
   const [isNavigatingToSignIn, startSignInTransition] = useTransition();
   const { data: session, isPending: isSessionPending } = useSession();
+
+  const favourites = [
+    {
+      parking_id: 123,
+      address: "615 Rue Belmont",
+    },
+    {
+      parking_id: 456,
+      address: "123 Rue de la Paix",
+    },
+    {
+      parking_id: 789,
+      address: "456 Rue de la Liberté",
+    },
+    {
+      parking_id: 101112,
+      address: "789 Rue de la République de la Corée du Nord",
+    },
+    {
+      parking_id: 131415,
+      address: "1617 Rue de la Concorde",
+    },
+  ];
 
   const handleSignout = async () => {
     setIsSigningOut(true);
@@ -162,25 +185,29 @@ export function HeaderMenu() {
         <div className="flex px-4">
           <Separator />
         </div>
-        {/*<div className="flex flex-col pl-8 pr-4 gap-2">
-          <span className="text-sm text-muted-foreground">Favorites</span>
-          <Button
-            variant="ghost"
-            className="flex flex-1 justify-start font-normal text-sm"
-            onClick={() => {}}
-          >
-            <Star />
-            2000 rue Berri
-          </Button>
-          <Button
-            variant="ghost"
-            className="flex flex-1 justify-start font-normal text-sm"
-            onClick={() => {}}
-          >
-            <Star />
-            615 Rue Belmont
-          </Button>
-        </div>*/}
+        <div className="flex flex-col w-full pl-8 pr-4 gap-2">
+          <span className="text-sm text-muted-foreground">Favourites</span>
+          <div className="flex flex-col w-full justify-start items-start gap-1">
+            {favourites.length === 0 && (
+              <p className="text-muted-foreground text-xs mt-2">
+                Star parking spots on the map so they can show up here!
+              </p>
+            )}
+            {favourites.map((favourite) => (
+              <Button
+                key={favourite.parking_id}
+                variant="ghost"
+                className="flex justify-start w-full p-2 cursor-pointer"
+                onClick={() => {}}
+              >
+                <Star strokeWidth="3" color="yellow" fill="yellow" />
+                <span className="font-semibold text-sm truncate">
+                  {favourite.address}
+                </span>
+              </Button>
+            ))}
+          </div>
+        </div>
         <SheetFooter>
           <Separator />
           <div className="flex flex-col items-center justify-center pb-8 pt-2 gap-6">

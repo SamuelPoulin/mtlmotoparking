@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Camera, Construction, Locate, MapPin } from "lucide-react";
+import { Camera, Construction, Locate, MapPin, Star } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import posthog from "posthog-js";
@@ -61,6 +61,8 @@ export function ParkingSpotMainView({ parking }: Props) {
 
   const contributions = contributionsData?.contributions ?? [];
 
+  const isFavourite = true;
+
   const handleContributionDelete = (
     contributionId: number,
     parkingId: number,
@@ -104,7 +106,16 @@ export function ParkingSpotMainView({ parking }: Props) {
       <DrawerHeader className="px-0">
         <DrawerTitle className="text-nowrap">
           <div className="flex items-center justify-between">
-            {t("MapPage.motorcycleParking")}
+            <div className="flex items-center gap-2">
+              {t("MapPage.motorcycleParking")}
+              <Button variant="ghost" size="icon-lg" className="cursor-pointer">
+                <Star
+                  fill={isFavourite ? "yellow" : undefined}
+                  color={isFavourite ? "yellow" : undefined}
+                  strokeWidth="3"
+                />
+              </Button>
+            </div>
             <CopyButton
               label={t("share")}
               item="parking_spot_link"
