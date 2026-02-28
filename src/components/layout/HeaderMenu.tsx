@@ -184,22 +184,23 @@ export function HeaderMenu() {
                 {tFavourites("empty")}
               </p>
             )}
-            {!isLoadingFavourites && favourites.map((favourite) => (
-              <Button
-                key={favourite.parking_id}
-                variant="ghost"
-                className="flex justify-start w-full p-2 cursor-pointer"
-                onClick={() => {
-                  router.push(`/map?parkingId=${favourite.parking_id}`);
-                  setOpen(false);
-                }}
-              >
-                <Star strokeWidth="3" color="yellow" fill="yellow" />
-                <span className="font-semibold text-sm truncate">
-                  {favourite.address ?? tFavourites("unknownAddress")}
-                </span>
-              </Button>
-            ))}
+            {!isLoadingFavourites &&
+              favourites.map((favourite) => (
+                <Button
+                  key={favourite.parking_id}
+                  variant="ghost"
+                  className="flex justify-start w-full p-2 cursor-pointer"
+                  onClick={() => {
+                    router.push(`/map?parkingId=${favourite.parking_id}`);
+                    setOpen(false);
+                  }}
+                >
+                  <Star className="size-5 text-yellow-400 fill-yellow-400 drop-shadow" />
+                  <span className="font-semibold text-sm truncate">
+                    {favourite.address ?? tFavourites("unknownAddress")}
+                  </span>
+                </Button>
+              ))}
           </div>
         </div>
         <SheetFooter>
