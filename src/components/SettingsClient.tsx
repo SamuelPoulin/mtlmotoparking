@@ -137,7 +137,7 @@ export default function SettingsClient() {
       setTotalCount(data.total);
       setHasInitialLoad(true);
     }
-  }, [data?.contributions, offset]);
+  }, [data?.contributions, data?.total, offset]);
 
   const updateNavigationApp = useMutation({
     mutationFn: async (navigationApp: string | null) => {

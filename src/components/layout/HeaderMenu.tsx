@@ -3,7 +3,7 @@
 import { Cog, LogOut, Map, Menu, Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import { FeedbackLink } from "@/src/components/layout/FeedbackLink";
@@ -29,6 +29,7 @@ import { Skeleton } from "@/src/components/ui/skeleton";
 import { Spinner } from "@/src/components/ui/spinner";
 import { LocaleSwitch } from "@/src/i18n/LocaleSwitch";
 import { signOut, useSession } from "@/src/lib/auth-client";
+import { useFavourites } from "@/src/lib/hooks/useFavourites";
 import { cn } from "@/src/lib/utils";
 
 const UserSkeleton = () => {
@@ -47,35 +48,16 @@ export function HeaderMenu() {
   const [open, setOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const t = useTranslations();
   const tMenu = useTranslations("Menu");
+  const tFavourites = useTranslations("Favourites");
 
   const [isNavigatingToSignIn, startSignInTransition] = useTransition();
   const { data: session, isPending: isSessionPending } = useSession();
 
-  const favourites = [
-    {
-      parking_id: 123,
-      address: "615 Rue Belmont",
-    },
-    {
-      parking_id: 456,
-      address: "123 Rue de la Paix",
-    },
-    {
-      parking_id: 789,
-      address: "456 Rue de la Liberté",
-    },
-    {
-      parking_id: 101112,
-      address: "789 Rue de la République de la Corée du Nord",
-    },
-    {
-      parking_id: 131415,
-      address: "1617 Rue de la Concorde",
-    },
-  ];
+  const { favourites, isLoading: isLoadingFavourites } = useFavourites();
 
   const handleSignout = async () => {
     setIsSigningOut(true);
@@ -186,23 +168,35 @@ export function HeaderMenu() {
           <Separator />
         </div>
         <div className="flex flex-col w-full pl-8 pr-4 gap-2">
-          <span className="text-sm text-muted-foreground">Favourites</span>
+          <span className="text-sm text-muted-foreground">
+            {tFavourites("title")}
+          </span>
           <div className="flex flex-col w-full justify-start items-start gap-1">
-            {favourites.length === 0 && (
+            {session && isLoadingFavourites && (
+              <div className="flex flex-col w-full gap-2 mt-2">
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-2/3" />
+              </div>
+            )}
+            {!isLoadingFavourites && favourites.length === 0 && (
               <p className="text-muted-foreground text-xs mt-2">
-                Star parking spots on the map so they can show up here!
+                {tFavourites("empty")}
               </p>
             )}
-            {favourites.map((favourite) => (
+            {!isLoadingFavourites && favourites.map((favourite) => (
               <Button
                 key={favourite.parking_id}
                 variant="ghost"
                 className="flex justify-start w-full p-2 cursor-pointer"
-                onClick={() => {}}
+                onClick={() => {
+                  router.push(`/map?parkingId=${favourite.parking_id}`);
+                  setOpen(false);
+                }}
               >
                 <Star strokeWidth="3" color="yellow" fill="yellow" />
                 <span className="font-semibold text-sm truncate">
-                  {favourite.address}
+                  {favourite.address ?? tFavourites("unknownAddress")}
                 </span>
               </Button>
             ))}

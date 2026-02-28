@@ -113,6 +113,15 @@
       "description": "Sign in to contribute to the community and share parking spot updates!"
     }
   },
+  "Favourites": {
+    "title": "Favourites",
+    "empty": "Star parking spots on the map so they can show up here!",
+    "unknownAddress": "Unknown address",
+    "limitReached": "You can only favourite 5 parking spots.",
+    "updateError": "Failed to update favourites. Please try again.",
+    "add": "Add to favourites",
+    "remove": "Remove from favourites"
+  },
   "madeWith": "Made with",
   "fromMontreal": "in Montreal",
   "share": "Share",

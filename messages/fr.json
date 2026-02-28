@@ -113,6 +113,15 @@
       "description": "Connectez-vous pour contribuer à la communauté et partager des mises à jour sur les stationnements!"
     }
   },
+  "Favourites": {
+    "title": "Favoris",
+    "empty": "Ajoutez des stationnements en favoris sur la carte pour les voir ici!",
+    "unknownAddress": "Adresse inconnue",
+    "limitReached": "Vous pouvez avoir jusqu'à 5 favoris.",
+    "updateError": "Échec de la mise à jour des favoris. Veuillez réessayer.",
+    "add": "Ajouter aux favoris",
+    "remove": "Retirer des favoris"
+  },
   "madeWith": "Fait avec",
   "fromMontreal": "à Montréal",
   "share": "Partager",

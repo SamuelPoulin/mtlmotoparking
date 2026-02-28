@@ -165,10 +165,32 @@ export const parking_spot_contributions = pgTable(
   ],
 );
 
+export const parking_favourites = pgTable(
+  "parking_favourites",
+  {
+    id: serial().primaryKey(),
+    user_id: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    parking_id: integer()
+      .notNull()
+      .references(() => parkings.id, { onDelete: "cascade" }),
+    ...timestamps,
+  },
+  (table) => [
+    unique("favourites_user_parking_unique").on(
+      table.user_id,
+      table.parking_id,
+    ),
+    index("favourites_user_id_idx").on(table.user_id),
+  ],
+);
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
   contributions: many(parking_spot_contributions),
+  favourites: many(parking_favourites),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -199,6 +221,20 @@ export const parking_spot_contributionsRelations = relations(
   }),
 );
 
+export const parking_favouritesRelations = relations(
+  parking_favourites,
+  ({ one }) => ({
+    parking: one(parkings, {
+      fields: [parking_favourites.parking_id],
+      references: [parkings.id],
+    }),
+    user: one(user, {
+      fields: [parking_favourites.user_id],
+      references: [user.id],
+    }),
+  }),
+);
+
 export type APIParking = {
   _id: string;
   Latitude: string;
@@ -222,3 +258,5 @@ export type ParkingSpotContribution =
   typeof parking_spot_contributions.$inferSelect;
 export type NewParkingSpotContribution =
   typeof parking_spot_contributions.$inferInsert;
+export type ParkingFavourite = typeof parking_favourites.$inferSelect;
+export type NewParkingFavourite = typeof parking_favourites.$inferInsert;

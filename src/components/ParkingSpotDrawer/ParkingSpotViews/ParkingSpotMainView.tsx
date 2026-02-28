@@ -34,6 +34,7 @@ import type { ContributionWithUser } from "@/src/lib/api/contributions";
 import { useSession } from "@/src/lib/auth-client";
 import { useStore } from "@/src/lib/zustand/store";
 import { DrawerHeader, DrawerTitle } from "@/src/components/ui/drawer";
+import { useFavourites } from "@/src/lib/hooks/useFavourites";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -47,6 +48,7 @@ export function ParkingSpotMainView({ parking }: Props) {
     useStore();
   const { data: session } = useSession();
   const queryClient = useQueryClient();
+  const { isFavourite, toggleFavourite, isToggling } = useFavourites();
 
   const { data: contributionsData, isLoading } = useQuery<{
     contributions: ContributionWithUser[];
@@ -61,7 +63,7 @@ export function ParkingSpotMainView({ parking }: Props) {
 
   const contributions = contributionsData?.contributions ?? [];
 
-  const isFavourite = true;
+  const favourite = isFavourite(parking.id);
 
   const handleContributionDelete = (
     contributionId: number,
@@ -108,10 +110,24 @@ export function ParkingSpotMainView({ parking }: Props) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {t("MapPage.motorcycleParking")}
-              <Button variant="ghost" size="icon-lg" className="cursor-pointer">
+              <Button
+                variant="ghost"
+                size="icon-lg"
+                className="cursor-pointer"
+                disabled={!session || isToggling}
+                onClick={() =>
+                  toggleFavourite({
+                    parkingId: parking.id,
+                    address: parking.address ?? null,
+                  })
+                }
+                aria-label={
+                  favourite ? t("Favourites.remove") : t("Favourites.add")
+                }
+              >
                 <Star
-                  fill={isFavourite ? "yellow" : undefined}
-                  color={isFavourite ? "yellow" : undefined}
+                  fill={favourite ? "yellow" : undefined}
+                  color={favourite ? "yellow" : undefined}
                   strokeWidth="3"
                 />
               </Button>
