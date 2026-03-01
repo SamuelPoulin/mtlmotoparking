@@ -149,7 +149,7 @@ export function HeaderMenu() {
 
     if (longPressTriggeredRef.current && pendingNavigationUrlRef.current) {
       event.preventDefault();
-      window.open(pendingNavigationUrlRef.current, "_blank");
+      window.location.href = pendingNavigationUrlRef.current;
     }
 
     longPressTriggeredRef.current = false;
@@ -159,20 +159,12 @@ export function HeaderMenu() {
     setPressingFavouriteId(null);
   };
 
-  const handleLongPressCancel = (
-    event?: React.PointerEvent,
-    shouldNavigate = false,
-  ) => {
+  const handleLongPressCancel = () => {
     if (longPressActivationRef.current) {
       clearTimeout(longPressActivationRef.current);
       longPressActivationRef.current = null;
     }
-    if (shouldNavigate && pendingNavigationUrlRef.current) {
-      event?.preventDefault();
-      window.location.href = pendingNavigationUrlRef.current;
-    }
     longPressTriggeredRef.current = false;
-    suppressClickRef.current = false;
     pendingNavigationUrlRef.current = null;
     pointerStartRef.current = null;
     activePointerIdRef.current = null;
@@ -339,10 +331,8 @@ export function HeaderMenu() {
                       }
                       onPointerMove={handleLongPressMove}
                       onPointerUp={handleLongPressEnd}
-                      onPointerLeave={(event) => handleLongPressCancel(event)}
-                      onPointerCancel={(event) =>
-                        handleLongPressCancel(event, true)
-                      }
+                      onPointerLeave={handleLongPressCancel}
+                      onPointerCancel={handleLongPressCancel}
                     >
                       <motion.span
                         className="absolute bottom-0 left-0 h-0.5 bg-primary/60"
