@@ -52,12 +52,10 @@ export function HeaderMenu() {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
   const longPressActivationRef = useRef<NodeJS.Timeout | null>(null);
   const longPressTriggeredRef = useRef(false);
   const suppressClickRef = useRef(false);
   const pendingNavigationUrlRef = useRef<string | null>(null);
-  const navigationOpenedRef = useRef(false);
   const pointerStartRef = useRef<{ x: number; y: number } | null>(null);
   const activePointerIdRef = useRef<number | null>(null);
   const [pressingFavouriteId, setPressingFavouriteId] = useState<number | null>(
@@ -106,10 +104,6 @@ export function HeaderMenu() {
   ) => {
     if (!latitude || !longitude || !navigationApp) return;
 
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-      longPressTimerRef.current = null;
-    }
     if (longPressActivationRef.current) {
       clearTimeout(longPressActivationRef.current);
       longPressActivationRef.current = null;
@@ -118,7 +112,6 @@ export function HeaderMenu() {
     activePointerIdRef.current = event.pointerId;
     pointerStartRef.current = { x: event.clientX, y: event.clientY };
     longPressTriggeredRef.current = false;
-    navigationOpenedRef.current = false;
     suppressClickRef.current = false;
     pendingNavigationUrlRef.current = getNavigationUrl(
       latitude,
@@ -130,18 +123,6 @@ export function HeaderMenu() {
       longPressTriggeredRef.current = true;
       suppressClickRef.current = true;
       setPressingFavouriteId(parkingId);
-
-      longPressTimerRef.current = setTimeout(() => {
-        if (pendingNavigationUrlRef.current) {
-          const opened = window.open(
-            pendingNavigationUrlRef.current,
-            "_blank",
-          );
-          if (opened) {
-            navigationOpenedRef.current = true;
-          }
-        }
-      }, 500);
     }, 500);
   };
 
@@ -165,22 +146,13 @@ export function HeaderMenu() {
       clearTimeout(longPressActivationRef.current);
       longPressActivationRef.current = null;
     }
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-      longPressTimerRef.current = null;
-    }
 
-    if (
-      longPressTriggeredRef.current &&
-      pendingNavigationUrlRef.current &&
-      !navigationOpenedRef.current
-    ) {
+    if (longPressTriggeredRef.current && pendingNavigationUrlRef.current) {
       event.preventDefault();
       window.open(pendingNavigationUrlRef.current, "_blank");
     }
 
     longPressTriggeredRef.current = false;
-    navigationOpenedRef.current = false;
     pendingNavigationUrlRef.current = null;
     pointerStartRef.current = null;
     activePointerIdRef.current = null;
@@ -192,12 +164,7 @@ export function HeaderMenu() {
       clearTimeout(longPressActivationRef.current);
       longPressActivationRef.current = null;
     }
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-      longPressTimerRef.current = null;
-    }
     longPressTriggeredRef.current = false;
-    navigationOpenedRef.current = false;
     pendingNavigationUrlRef.current = null;
     pointerStartRef.current = null;
     activePointerIdRef.current = null;
