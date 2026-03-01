@@ -11,6 +11,8 @@ import {
 export type FavouriteWithLocation = {
   parking_id: number;
   address: string | null;
+  latitude: number | null;
+  longitude: number | null;
   createdAt: Date;
 };
 
@@ -21,6 +23,8 @@ export async function getUserFavourites(
     .select({
       parking_id: parking_favourites.parking_id,
       address: locations.address,
+      latitude: locations.latitude,
+      longitude: locations.longitude,
       createdAt: parking_favourites.createdAt,
     })
     .from(parking_favourites)

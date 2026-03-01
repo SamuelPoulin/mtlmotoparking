@@ -4,7 +4,7 @@ import { Cog, LogOut, Map, Menu, Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 
 import { FeedbackLink } from "@/src/components/layout/FeedbackLink";
 import { MadeWithLove } from "@/src/components/layout/MadeWithLove";
@@ -30,6 +30,7 @@ import { Spinner } from "@/src/components/ui/spinner";
 import { LocaleSwitch } from "@/src/i18n/LocaleSwitch";
 import { signOut, useSession } from "@/src/lib/auth-client";
 import { useFavourites } from "@/src/lib/hooks/useFavourites";
+import { useUserSettings } from "@/src/lib/hooks/useUserSettings";
 import { useStore } from "@/src/lib/zustand/store";
 import { cn } from "@/src/lib/utils";
 
@@ -50,6 +51,7 @@ export function HeaderMenu() {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const t = useTranslations();
   const tMenu = useTranslations("Menu");
@@ -59,12 +61,51 @@ export function HeaderMenu() {
   const { data: session, isPending: isSessionPending } = useSession();
 
   const { favourites, isLoading: isLoadingFavourites } = useFavourites();
+  const { navigationApp } = useUserSettings();
   const { setFlyToParkingSpotId } = useStore();
 
   const handleSignout = async () => {
     setIsSigningOut(true);
     await signOut();
     setIsSigningOut(false);
+  };
+
+  const getNavigationUrl = (
+    latitude: number,
+    longitude: number,
+    app: string,
+  ): string => {
+    switch (app) {
+      case "waze":
+        return `https://waze.com/ul?ll=${latitude},${longitude}&navigate=yes`;
+      case "google":
+        return `https://www.google.com/maps?q=${latitude},${longitude}`;
+      case "apple":
+        return `https://maps.apple.com/?daddr=${latitude},${longitude}`;
+      default:
+        return `https://www.google.com/maps?q=${latitude},${longitude}`;
+    }
+  };
+
+  const handleLongPressStart = (
+    latitude: number | null,
+    longitude: number | null,
+  ) => {
+    if (!latitude || !longitude || !navigationApp) return;
+
+    longPressTimerRef.current = setTimeout(() => {
+      window.open(
+        getNavigationUrl(latitude, longitude, navigationApp),
+        "_blank",
+      );
+    }, 500);
+  };
+
+  const handleLongPressEnd = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
   };
 
   return (
@@ -170,9 +211,13 @@ export function HeaderMenu() {
           <Separator />
         </div>
         <div className="flex flex-col w-full px-4 gap-2 flex-1 min-h-0">
-          <span className="text-sm text-muted-foreground">
-            {tFavourites("title")}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">
+              {tFavourites("title")}
+              {navigationApp && ` - ${tFavourites("holdHint")}`}
+            </span>
+            <span className="text-xs text-muted-foreground/60"></span>
+          </div>
           <div className="flex flex-col gap-1 overflow-y-auto min-h-0 flex-1">
             {session && isLoadingFavourites && (
               <div className="flex flex-col w-full gap-2 mt-2">
@@ -205,6 +250,21 @@ export function HeaderMenu() {
                       setFlyToParkingSpotId(favourite.parking_id);
                       setOpen(false);
                     }}
+                    onMouseDown={() =>
+                      handleLongPressStart(
+                        favourite.latitude,
+                        favourite.longitude,
+                      )
+                    }
+                    onMouseUp={handleLongPressEnd}
+                    onMouseLeave={handleLongPressEnd}
+                    onTouchStart={() =>
+                      handleLongPressStart(
+                        favourite.latitude,
+                        favourite.longitude,
+                      )
+                    }
+                    onTouchEnd={handleLongPressEnd}
                   >
                     <Star className="size-5 text-yellow-400 fill-yellow-400 drop-shadow" />
                     <span className="font-semibold text-sm truncate">

@@ -35,6 +35,7 @@ import { useSession } from "@/src/lib/auth-client";
 import { useStore } from "@/src/lib/zustand/store";
 import { DrawerHeader, DrawerTitle } from "@/src/components/ui/drawer";
 import { useFavourites } from "@/src/lib/hooks/useFavourites";
+import { useUserSettings } from "@/src/lib/hooks/useUserSettings";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -49,6 +50,7 @@ export function ParkingSpotMainView({ parking }: Props) {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const { isFavourite, toggleFavourite, isToggling } = useFavourites();
+  const { navigationApp } = useUserSettings();
 
   const { data: contributionsData, isLoading } = useQuery<{
     contributions: ContributionWithUser[];
@@ -93,6 +95,45 @@ export function ParkingSpotMainView({ parking }: Props) {
     url.searchParams.set("parkingId", String(parking.id));
     return url.toString();
   }, [parking]);
+
+  const getNavigationUrl = (app: string): string => {
+    switch (app) {
+      case "waze":
+        return `https://waze.com/ul?ll=${parking.latitude},${parking.longitude}&navigate=yes`;
+      case "google":
+        return `https://www.google.com/maps?q=${parking.latitude},${parking.longitude}`;
+      case "apple":
+        return `https://maps.apple.com/?daddr=${parking.latitude},${parking.longitude}`;
+      default:
+        return `https://www.google.com/maps?q=${parking.latitude},${parking.longitude}`;
+    }
+  };
+
+  const getNavigationIcon = (app: string) => {
+    switch (app) {
+      case "waze":
+        return <FaWaze className="size-6" />;
+      case "google":
+        return <FaGoogle className="size-6" />;
+      case "apple":
+        return <FaApple className="size-6" />;
+      default:
+        return <FaGoogle className="size-6" />;
+    }
+  };
+
+  const getNavigationLabel = (app: string): string => {
+    switch (app) {
+      case "waze":
+        return "Waze";
+      case "google":
+        return "Google Maps";
+      case "apple":
+        return "Apple Maps";
+      default:
+        return "Google Maps";
+    }
+  };
 
   return (
     <motion.div
@@ -160,47 +201,62 @@ export function ParkingSpotMainView({ parking }: Props) {
         <p className="text-muted-foreground text-sm">
           {t("MapPage.navigateWith")}
         </p>
-        <div className="flex flex-1 gap-2">
+        {navigationApp ? (
           <Button
             variant="secondary"
-            className="flex flex-1 flex-col p-10"
+            className="w-full flex py-12 gap-4"
             onClick={() =>
-              window.open(
-                `https://waze.com/ul?ll=${parking.latitude},${parking.longitude}&navigate=yes`,
-                "_blank",
-              )
+              window.open(getNavigationUrl(navigationApp), "_blank")
             }
           >
-            <FaWaze className="size-4" />
-            Waze
+            {getNavigationIcon(navigationApp)}
+            <span className="text-lg font-semibold">
+              {getNavigationLabel(navigationApp)}
+            </span>
           </Button>
-          <Button
-            variant="secondary"
-            className="flex flex-1 flex-col p-10"
-            onClick={() =>
-              window.open(
-                `https://www.google.com/maps?q=${parking.latitude},${parking.longitude}`,
-                "_blank",
-              )
-            }
-          >
-            <FaGoogle className="size-4" />
-            Google Maps
-          </Button>
-          <Button
-            variant="secondary"
-            className="flex flex-1 flex-col p-10"
-            onClick={() =>
-              window.open(
-                `https://maps.apple.com/?daddr=${parking.latitude},${parking.longitude}`,
-                "_blank",
-              )
-            }
-          >
-            <FaApple className="size-4" />
-            Apple Maps
-          </Button>
-        </div>
+        ) : (
+          <div className="flex flex-1 gap-2">
+            <Button
+              variant="secondary"
+              className="flex flex-1 flex-col p-10"
+              onClick={() =>
+                window.open(
+                  `https://waze.com/ul?ll=${parking.latitude},${parking.longitude}&navigate=yes`,
+                  "_blank",
+                )
+              }
+            >
+              <FaWaze className="size-4" />
+              Waze
+            </Button>
+            <Button
+              variant="secondary"
+              className="flex flex-1 flex-col p-10"
+              onClick={() =>
+                window.open(
+                  `https://www.google.com/maps?q=${parking.latitude},${parking.longitude}`,
+                  "_blank",
+                )
+              }
+            >
+              <FaGoogle className="size-4" />
+              Google Maps
+            </Button>
+            <Button
+              variant="secondary"
+              className="flex flex-1 flex-col p-10"
+              onClick={() =>
+                window.open(
+                  `https://maps.apple.com/?daddr=${parking.latitude},${parking.longitude}`,
+                  "_blank",
+                )
+              }
+            >
+              <FaApple className="size-4" />
+              Apple Maps
+            </Button>
+          </div>
+        )}
       </div>
 
       <Accordion type="single" collapsible>

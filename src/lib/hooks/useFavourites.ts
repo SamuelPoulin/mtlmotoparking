@@ -10,6 +10,8 @@ import { useSession } from "@/src/lib/auth-client";
 export type Favourite = {
   parking_id: number;
   address: string | null;
+  latitude: number | null;
+  longitude: number | null;
 };
 
 type FavouritesResponse = {
@@ -100,6 +102,8 @@ export function useFavourites() {
             {
               parking_id: input.parkingId,
               address: input.address ?? null,
+              latitude: null,
+              longitude: null,
             },
             ...previousFavourites,
           ];

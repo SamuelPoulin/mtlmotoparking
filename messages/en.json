@@ -115,6 +115,7 @@
   },
   "Favourites": {
     "title": "Favourites",
+    "holdHint": "hold for directions",
     "empty": "Star parking spots on the map so they can show up here!",
     "emptyLoggedOut": "Log in and head to the map to set favourites!",
     "unknownAddress": "Unknown address",
