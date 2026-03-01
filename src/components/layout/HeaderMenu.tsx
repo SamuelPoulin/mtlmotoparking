@@ -81,7 +81,7 @@ export function HeaderMenu() {
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="flex [&>button:first-of-type]:hidden"
+        className="flex flex-col [&>button:first-of-type]:hidden"
       >
         <SheetHeader className="flex justify-center p-5">
           <DrawerTitle className="text-xl">mtlmotoparking</DrawerTitle>
@@ -169,11 +169,11 @@ export function HeaderMenu() {
         <div className="flex px-4">
           <Separator />
         </div>
-        <div className="flex flex-col w-full pl-8 pr-4 gap-2">
+        <div className="flex flex-col w-full px-4 gap-2 flex-1 min-h-0">
           <span className="text-sm text-muted-foreground">
             {tFavourites("title")}
           </span>
-          <div className="flex flex-col w-full justify-start items-start gap-1">
+          <div className="flex flex-col gap-1 overflow-y-auto min-h-0 flex-1">
             {session && isLoadingFavourites && (
               <div className="flex flex-col w-full gap-2 mt-2">
                 <Skeleton className="h-8 w-full" />
@@ -191,33 +191,37 @@ export function HeaderMenu() {
                 {tFavourites("empty")}
               </p>
             )}
-            {!isLoadingFavourites &&
-              favourites.map((favourite) => (
-                <Button
-                  key={favourite.parking_id}
-                  variant="ghost"
-                  className="flex justify-start w-full p-2 cursor-pointer"
-                  onClick={() => {
-                    if (!pathname.endsWith("/map")) {
-                      router.push("/map");
-                    }
-                    setFlyToParkingSpotId(favourite.parking_id);
-                    setOpen(false);
-                  }}
-                >
-                  <Star className="size-5 text-yellow-400 fill-yellow-400 drop-shadow" />
-                  <span className="font-semibold text-sm truncate">
-                    {favourite.address ?? tFavourites("unknownAddress")}
-                  </span>
-                </Button>
-              ))}
+            <div className="flex flex-col gap-2 w-full">
+              {!isLoadingFavourites &&
+                favourites.map((favourite) => (
+                  <Button
+                    key={favourite.parking_id}
+                    variant="ghost"
+                    className="flex justify-start w-full p-2 cursor-pointer"
+                    onClick={() => {
+                      if (!pathname.endsWith("/map")) {
+                        router.push("/map");
+                      }
+                      setFlyToParkingSpotId(favourite.parking_id);
+                      setOpen(false);
+                    }}
+                  >
+                    <Star className="size-5 text-yellow-400 fill-yellow-400 drop-shadow" />
+                    <span className="font-semibold text-sm truncate">
+                      {favourite.address ?? tFavourites("unknownAddress")}
+                    </span>
+                  </Button>
+                ))}
+            </div>
           </div>
         </div>
-        <SheetFooter>
+        <SheetFooter className="pt-0 shrink-0">
           <Separator />
-          <div className="flex flex-col items-center justify-center pb-8 pt-2 gap-6">
-            <ThemeSwitcher />
-            <LocaleSwitch />
+          <div className="flex flex-col items-center justify-center pt-1 pb-4 gap-4">
+            <div className="flex gap-5">
+              <ThemeSwitcher />
+              <LocaleSwitch />
+            </div>
             <div className="flex flex-col gap-4 items-center">
               <FeedbackLink />
               <MadeWithLove />
