@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "motion/react";
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 
 import { FeedbackLink } from "@/src/components/layout/FeedbackLink";
 import { MadeWithLove } from "@/src/components/layout/MadeWithLove";
@@ -73,6 +73,12 @@ export function HeaderMenu() {
   const { navigationApp } = useUserSettings();
   const { setFlyToParkingSpotId } = useStore();
 
+  useEffect(() => {
+    if (!navigationApp) {
+      handleLongPressCancel();
+    }
+  }, [navigationApp]);
+
   const handleSignout = async () => {
     setIsSigningOut(true);
     await signOut();
@@ -96,12 +102,17 @@ export function HeaderMenu() {
     }
   };
 
+  const closeMenu = () => {
+    handleLongPressCancel();
+    setOpen(false);
+  };
+
   const flyToParkingSpot = (parkingId: number) => {
     if (!pathname.endsWith("/map")) {
       router.push("/map");
     }
     setFlyToParkingSpotId(parkingId);
-    setOpen(false);
+    closeMenu();
   };
 
   const openNavigationApp = (
@@ -111,7 +122,7 @@ export function HeaderMenu() {
     if (!latitude || !longitude || !navigationApp) return false;
     const navigationUrl = getNavigationUrl(latitude, longitude, navigationApp);
     window.open(navigationUrl, "_blank");
-    setOpen(false);
+    closeMenu();
     return true;
   };
 
@@ -130,6 +141,7 @@ export function HeaderMenu() {
     event: React.PointerEvent,
     parkingId: number,
   ) => {
+    if (!navigationApp) return;
     clearLongPressTimers();
 
     activePointerIdRef.current = event.pointerId;
@@ -350,13 +362,22 @@ export function HeaderMenu() {
                         }
                       }}
                       onContextMenu={(e) => e.preventDefault()}
-                      onPointerDown={(event) =>
-                        handleLongPressStart(event, favourite.parking_id)
+                      onPointerDown={
+                        navigationApp
+                          ? (event) =>
+                              handleLongPressStart(event, favourite.parking_id)
+                          : undefined
                       }
-                      onPointerMove={handleLongPressMove}
-                      onPointerUp={handleLongPressEnd}
-                      onPointerLeave={handleLongPressCancel}
-                      onPointerCancel={handleLongPressCancel}
+                      onPointerMove={
+                        navigationApp ? handleLongPressMove : undefined
+                      }
+                      onPointerUp={navigationApp ? handleLongPressEnd : undefined}
+                      onPointerLeave={
+                        navigationApp ? handleLongPressCancel : undefined
+                      }
+                      onPointerCancel={
+                        navigationApp ? handleLongPressCancel : undefined
+                      }
                     >
                       <motion.span
                         className="absolute bottom-0 left-0 h-0.5 w-full bg-primary/60"
