@@ -52,6 +52,7 @@ export function HeaderMenu() {
   const pathname = usePathname();
   const router = useRouter();
   const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const longPressTriggeredRef = useRef(false);
 
   const t = useTranslations();
   const tMenu = useTranslations("Menu");
@@ -88,12 +89,16 @@ export function HeaderMenu() {
   };
 
   const handleLongPressStart = (
+    e: React.TouchEvent | React.MouseEvent,
     latitude: number | null,
     longitude: number | null,
   ) => {
     if (!latitude || !longitude || !navigationApp) return;
 
+    longPressTriggeredRef.current = false;
     longPressTimerRef.current = setTimeout(() => {
+      longPressTriggeredRef.current = true;
+      e.preventDefault();
       window.open(
         getNavigationUrl(latitude, longitude, navigationApp),
         "_blank",
@@ -216,7 +221,6 @@ export function HeaderMenu() {
               {tFavourites("title")}
               {navigationApp && ` - ${tFavourites("holdHint")}`}
             </span>
-            <span className="text-xs text-muted-foreground/60"></span>
           </div>
           <div className="flex flex-col gap-1 overflow-y-auto min-h-0 flex-1">
             {session && isLoadingFavourites && (
@@ -242,24 +246,31 @@ export function HeaderMenu() {
                   <Button
                     key={favourite.parking_id}
                     variant="ghost"
-                    className="flex justify-start w-full p-2 cursor-pointer"
+                    className="flex justify-start w-full p-2 cursor-pointer select-none touch-manipulation"
                     onClick={() => {
+                      if (longPressTriggeredRef.current) {
+                        longPressTriggeredRef.current = false;
+                        return;
+                      }
                       if (!pathname.endsWith("/map")) {
                         router.push("/map");
                       }
                       setFlyToParkingSpotId(favourite.parking_id);
                       setOpen(false);
                     }}
-                    onMouseDown={() =>
+                    onContextMenu={(e) => e.preventDefault()}
+                    onMouseDown={(e) =>
                       handleLongPressStart(
+                        e,
                         favourite.latitude,
                         favourite.longitude,
                       )
                     }
                     onMouseUp={handleLongPressEnd}
                     onMouseLeave={handleLongPressEnd}
-                    onTouchStart={() =>
+                    onTouchStart={(e) =>
                       handleLongPressStart(
+                        e,
                         favourite.latitude,
                         favourite.longitude,
                       )
