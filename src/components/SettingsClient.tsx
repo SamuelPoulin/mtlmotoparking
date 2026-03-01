@@ -157,6 +157,13 @@ export default function SettingsClient() {
           navigationApp: data.navigationApp,
         }),
       );
+      queryClient.setQueryData(
+        ["user-settings"],
+        (old: UserSettingsResponse | undefined) => ({
+          ...old,
+          navigationApp: data.navigationApp,
+        }),
+      );
       toast.success(t("navigationApp.saved"));
     },
     onError: () => {
