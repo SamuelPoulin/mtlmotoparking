@@ -139,6 +139,15 @@ export function HeaderMenu() {
     }
   };
 
+  const openNavigationUrl = (url: string, sameTab: boolean) => {
+    if (sameTab) {
+      window.location.href = url;
+      return;
+    }
+
+    window.open(url, "_blank");
+  };
+
   const handleLongPressEnd = (event: React.PointerEvent) => {
     if (activePointerIdRef.current !== event.pointerId) return;
 
@@ -149,7 +158,7 @@ export function HeaderMenu() {
 
     if (longPressTriggeredRef.current && pendingNavigationUrlRef.current) {
       event.preventDefault();
-      window.open(pendingNavigationUrlRef.current, "_blank");
+      openNavigationUrl(pendingNavigationUrlRef.current, false);
     }
 
     longPressTriggeredRef.current = false;
@@ -159,11 +168,30 @@ export function HeaderMenu() {
     setPressingFavouriteId(null);
   };
 
-  const handleLongPressCancel = () => {
+  const handleLongPressCancel = (
+    event?: React.PointerEvent,
+    options?: { openIfTriggered?: boolean; sameTab?: boolean },
+  ) => {
+    if (event && activePointerIdRef.current !== event.pointerId) return;
+
     if (longPressActivationRef.current) {
       clearTimeout(longPressActivationRef.current);
       longPressActivationRef.current = null;
     }
+
+    if (
+      options?.openIfTriggered &&
+      longPressTriggeredRef.current &&
+      pendingNavigationUrlRef.current
+    ) {
+      event?.preventDefault();
+      openNavigationUrl(
+        pendingNavigationUrlRef.current,
+        options.sameTab ?? true,
+      );
+    }
+
+    suppressClickRef.current = false;
     longPressTriggeredRef.current = false;
     pendingNavigationUrlRef.current = null;
     pointerStartRef.current = null;
@@ -332,7 +360,12 @@ export function HeaderMenu() {
                       onPointerMove={handleLongPressMove}
                       onPointerUp={handleLongPressEnd}
                       onPointerLeave={handleLongPressCancel}
-                      onPointerCancel={handleLongPressCancel}
+                      onPointerCancel={(event) =>
+                        handleLongPressCancel(event, {
+                          openIfTriggered: true,
+                          sameTab: true,
+                        })
+                      }
                     >
                       <motion.span
                         className="absolute bottom-0 left-0 h-0.5 bg-primary/60"
