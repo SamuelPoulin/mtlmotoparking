@@ -1,6 +1,6 @@
 "use client";
 
-import { Cog, LogOut, Map, Menu, Star } from "lucide-react";
+import { Cog, LogOut, Map, Menu, Search, Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -53,9 +53,9 @@ export function HeaderMenu() {
   const pathname = usePathname();
   const router = useRouter();
   const longPressActivationRef = useRef<NodeJS.Timeout | null>(null);
+  const longPressActionRef = useRef<NodeJS.Timeout | null>(null);
   const longPressTriggeredRef = useRef(false);
   const suppressClickRef = useRef(false);
-  const pendingNavigationUrlRef = useRef<string | null>(null);
   const pointerStartRef = useRef<{ x: number; y: number } | null>(null);
   const activePointerIdRef = useRef<number | null>(null);
   const [pressingFavouriteId, setPressingFavouriteId] = useState<number | null>(
@@ -96,33 +96,56 @@ export function HeaderMenu() {
     }
   };
 
-  const handleLongPressStart = (
-    event: React.PointerEvent,
-    parkingId: number,
+  const flyToParkingSpot = (parkingId: number) => {
+    if (!pathname.endsWith("/map")) {
+      router.push("/map");
+    }
+    setFlyToParkingSpotId(parkingId);
+    setOpen(false);
+  };
+
+  const openNavigationApp = (
     latitude: number | null,
     longitude: number | null,
   ) => {
-    if (!latitude || !longitude || !navigationApp) return;
+    if (!latitude || !longitude || !navigationApp) return false;
+    const navigationUrl = getNavigationUrl(latitude, longitude, navigationApp);
+    window.open(navigationUrl, "_blank");
+    setOpen(false);
+    return true;
+  };
 
+  const clearLongPressTimers = () => {
     if (longPressActivationRef.current) {
       clearTimeout(longPressActivationRef.current);
       longPressActivationRef.current = null;
     }
+    if (longPressActionRef.current) {
+      clearTimeout(longPressActionRef.current);
+      longPressActionRef.current = null;
+    }
+  };
+
+  const handleLongPressStart = (
+    event: React.PointerEvent,
+    parkingId: number,
+  ) => {
+    clearLongPressTimers();
 
     activePointerIdRef.current = event.pointerId;
     pointerStartRef.current = { x: event.clientX, y: event.clientY };
     longPressTriggeredRef.current = false;
     suppressClickRef.current = false;
-    pendingNavigationUrlRef.current = getNavigationUrl(
-      latitude,
-      longitude,
-      navigationApp,
-    );
 
     longPressActivationRef.current = setTimeout(() => {
       longPressTriggeredRef.current = true;
       suppressClickRef.current = true;
       setPressingFavouriteId(parkingId);
+      longPressActionRef.current = setTimeout(() => {
+        if (longPressTriggeredRef.current) {
+          flyToParkingSpot(parkingId);
+        }
+      }, 500);
     }, 500);
   };
 
@@ -142,37 +165,35 @@ export function HeaderMenu() {
   const handleLongPressEnd = (event: React.PointerEvent) => {
     if (activePointerIdRef.current !== event.pointerId) return;
 
-    if (longPressActivationRef.current) {
-      clearTimeout(longPressActivationRef.current);
-      longPressActivationRef.current = null;
-    }
+    clearLongPressTimers();
 
-    if (longPressTriggeredRef.current && pendingNavigationUrlRef.current) {
+    if (longPressTriggeredRef.current) {
       event.preventDefault();
-      window.location.href = pendingNavigationUrlRef.current;
     }
 
     longPressTriggeredRef.current = false;
-    pendingNavigationUrlRef.current = null;
     pointerStartRef.current = null;
     activePointerIdRef.current = null;
     setPressingFavouriteId(null);
   };
 
   const handleLongPressCancel = () => {
-    if (longPressActivationRef.current) {
-      clearTimeout(longPressActivationRef.current);
-      longPressActivationRef.current = null;
-    }
+    clearLongPressTimers();
     longPressTriggeredRef.current = false;
-    pendingNavigationUrlRef.current = null;
     pointerStartRef.current = null;
     activePointerIdRef.current = null;
     setPressingFavouriteId(null);
   };
 
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      handleLongPressCancel();
+    }
+    setOpen(nextOpen);
+  };
+
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
         <Button
           variant="ghost"
@@ -275,10 +296,16 @@ export function HeaderMenu() {
         </div>
         <div className="flex flex-col w-full px-4 gap-2 flex-1 min-h-0">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">
+            <div className="flex text-sm text-muted-foreground gap-1">
               {tFavourites("title")}
-              {navigationApp && ` - ${tFavourites("holdHint")}`}
-            </span>
+              {navigationApp && (
+                <div className="flex items-center gap-1">
+                  <div>-</div>
+                  {tFavourites("holdHint")}
+                  <Search className="size-4" />
+                </div>
+              )}
+            </div>
           </div>
           <div className="flex flex-col gap-1 overflow-y-auto min-h-0 flex-1">
             {session && isLoadingFavourites && (
@@ -314,20 +341,17 @@ export function HeaderMenu() {
                           suppressClickRef.current = false;
                           return;
                         }
-                        if (!pathname.endsWith("/map")) {
-                          router.push("/map");
+                        const didOpenNavigation = openNavigationApp(
+                          favourite.latitude,
+                          favourite.longitude,
+                        );
+                        if (!didOpenNavigation) {
+                          flyToParkingSpot(favourite.parking_id);
                         }
-                        setFlyToParkingSpotId(favourite.parking_id);
-                        setOpen(false);
                       }}
                       onContextMenu={(e) => e.preventDefault()}
                       onPointerDown={(event) =>
-                        handleLongPressStart(
-                          event,
-                          favourite.parking_id,
-                          favourite.latitude,
-                          favourite.longitude,
-                        )
+                        handleLongPressStart(event, favourite.parking_id)
                       }
                       onPointerMove={handleLongPressMove}
                       onPointerUp={handleLongPressEnd}
@@ -335,14 +359,13 @@ export function HeaderMenu() {
                       onPointerCancel={handleLongPressCancel}
                     >
                       <motion.span
-                        className="absolute bottom-0 left-0 h-0.5 bg-primary/60"
-                        initial={false}
-                        animate={{
-                          width:
-                            pressingFavouriteId === favourite.parking_id
-                              ? "100%"
-                              : "0%",
-                        }}
+                        className="absolute bottom-0 left-0 h-0.5 w-full bg-primary/60"
+                        initial={{ x: "-100%" }}
+                        animate={
+                          pressingFavouriteId === favourite.parking_id
+                            ? { x: ["-100%", "0%"] }
+                            : { x: "-100%" }
+                        }
                         transition={{ duration: 0.5, ease: "linear" }}
                       />
                       <Star className="size-5 text-yellow-400 fill-yellow-400 drop-shadow" />
