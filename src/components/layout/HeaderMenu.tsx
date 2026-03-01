@@ -139,15 +139,6 @@ export function HeaderMenu() {
     }
   };
 
-  const openNavigationUrl = (url: string, sameTab: boolean) => {
-    if (sameTab) {
-      window.location.href = url;
-      return;
-    }
-
-    window.open(url, "_blank");
-  };
-
   const handleLongPressEnd = (event: React.PointerEvent) => {
     if (activePointerIdRef.current !== event.pointerId) return;
 
@@ -158,7 +149,7 @@ export function HeaderMenu() {
 
     if (longPressTriggeredRef.current && pendingNavigationUrlRef.current) {
       event.preventDefault();
-      openNavigationUrl(pendingNavigationUrlRef.current, false);
+      window.open(pendingNavigationUrlRef.current, "_blank");
     }
 
     longPressTriggeredRef.current = false;
@@ -170,29 +161,18 @@ export function HeaderMenu() {
 
   const handleLongPressCancel = (
     event?: React.PointerEvent,
-    options?: { openIfTriggered?: boolean; sameTab?: boolean },
+    shouldNavigate = false,
   ) => {
-    if (event && activePointerIdRef.current !== event.pointerId) return;
-
     if (longPressActivationRef.current) {
       clearTimeout(longPressActivationRef.current);
       longPressActivationRef.current = null;
     }
-
-    if (
-      options?.openIfTriggered &&
-      longPressTriggeredRef.current &&
-      pendingNavigationUrlRef.current
-    ) {
+    if (shouldNavigate && pendingNavigationUrlRef.current) {
       event?.preventDefault();
-      openNavigationUrl(
-        pendingNavigationUrlRef.current,
-        options.sameTab ?? true,
-      );
+      window.location.href = pendingNavigationUrlRef.current;
     }
-
-    suppressClickRef.current = false;
     longPressTriggeredRef.current = false;
+    suppressClickRef.current = false;
     pendingNavigationUrlRef.current = null;
     pointerStartRef.current = null;
     activePointerIdRef.current = null;
@@ -359,12 +339,9 @@ export function HeaderMenu() {
                       }
                       onPointerMove={handleLongPressMove}
                       onPointerUp={handleLongPressEnd}
-                      onPointerLeave={handleLongPressCancel}
+                      onPointerLeave={(event) => handleLongPressCancel(event)}
                       onPointerCancel={(event) =>
-                        handleLongPressCancel(event, {
-                          openIfTriggered: true,
-                          sameTab: true,
-                        })
+                        handleLongPressCancel(event, true)
                       }
                     >
                       <motion.span
