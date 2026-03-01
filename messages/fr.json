@@ -115,7 +115,7 @@
   },
   "Favourites": {
     "title": "Favoris",
-    "holdHint": "maintenir pour itinéraire",
+    "holdHint": "maintenir pour l'itinéraire",
     "empty": "Ajoutez des stationnements en favoris sur la carte pour les voir ici!",
     "emptyLoggedOut": "Connectez-vous et rendez-vous sur la carte pour ajouter des favoris!",
     "unknownAddress": "Adresse inconnue",
