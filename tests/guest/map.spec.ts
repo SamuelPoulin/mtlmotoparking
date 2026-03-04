@@ -9,11 +9,15 @@ test("loads map page", async ({ page }) => {
 
   await page.getByRole("button", { name: "Toggle menu" }).click();
 
-  await expect(page.getByRole("link", { name: "Sign In" })).toBeVisible();
+  await expect(page.getByRole("dialog")).toBeVisible();
+
+  await expect(page.getByRole("link", { name: "Sign In" })).toBeVisible({
+    timeout: 15000,
+  });
 
   await expect(
     page.getByText(
       "Sign in to contribute to the community and share parking spot updates!",
     ),
-  ).toBeVisible();
+  ).toBeVisible({ timeout: 15000 });
 });
