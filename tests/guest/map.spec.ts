@@ -9,9 +9,7 @@ test("loads map page", async ({ page }) => {
 
   await page.getByRole("button", { name: "Toggle menu" }).click();
 
-  await expect(
-    page.getByRole("button", { name: "Sign In" }),
-  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Sign In" })).toBeVisible();
 
   await expect(
     page.getByText(
