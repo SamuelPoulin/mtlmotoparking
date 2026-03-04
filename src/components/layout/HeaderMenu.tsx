@@ -5,7 +5,8 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "motion/react";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { FeedbackLink } from "@/src/components/layout/FeedbackLink";
 import { MadeWithLove } from "@/src/components/layout/MadeWithLove";
@@ -68,20 +69,50 @@ export function HeaderMenu() {
 
   const [isNavigatingToSignIn, startSignInTransition] = useTransition();
   const { data: session, isPending: isSessionPending } = useSession();
+  const queryClient = useQueryClient();
 
   const { favourites, isLoading: isLoadingFavourites } = useFavourites();
   const { navigationApp } = useUserSettings();
   const { setFlyToParkingSpotId } = useStore();
 
+  const clearLongPressTimers = () => {
+    if (longPressActivationRef.current) {
+      clearTimeout(longPressActivationRef.current);
+      longPressActivationRef.current = null;
+    }
+    if (longPressActionRef.current) {
+      clearTimeout(longPressActionRef.current);
+      longPressActionRef.current = null;
+    }
+  };
+
+  const handleLongPressCancel = useCallback(() => {
+    clearLongPressTimers();
+    longPressTriggeredRef.current = false;
+    pointerStartRef.current = null;
+    activePointerIdRef.current = null;
+    setPressingFavouriteId(null);
+  }, []);
+
+  const effectivePressingFavouriteId = navigationApp
+    ? pressingFavouriteId
+    : null;
+
   useEffect(() => {
     if (!navigationApp) {
-      handleLongPressCancel();
+      clearLongPressTimers();
+      longPressTriggeredRef.current = false;
+      pointerStartRef.current = null;
+      activePointerIdRef.current = null;
     }
   }, [navigationApp]);
 
   const handleSignout = async () => {
     setIsSigningOut(true);
     await signOut();
+    queryClient.invalidateQueries({
+      queryKey: ["user-settings"],
+    });
     setIsSigningOut(false);
   };
 
@@ -124,17 +155,6 @@ export function HeaderMenu() {
     window.open(navigationUrl, "_blank");
     closeMenu();
     return true;
-  };
-
-  const clearLongPressTimers = () => {
-    if (longPressActivationRef.current) {
-      clearTimeout(longPressActivationRef.current);
-      longPressActivationRef.current = null;
-    }
-    if (longPressActionRef.current) {
-      clearTimeout(longPressActionRef.current);
-      longPressActionRef.current = null;
-    }
   };
 
   const handleLongPressStart = (
@@ -183,14 +203,6 @@ export function HeaderMenu() {
       event.preventDefault();
     }
 
-    longPressTriggeredRef.current = false;
-    pointerStartRef.current = null;
-    activePointerIdRef.current = null;
-    setPressingFavouriteId(null);
-  };
-
-  const handleLongPressCancel = () => {
-    clearLongPressTimers();
     longPressTriggeredRef.current = false;
     pointerStartRef.current = null;
     activePointerIdRef.current = null;
@@ -371,7 +383,9 @@ export function HeaderMenu() {
                       onPointerMove={
                         navigationApp ? handleLongPressMove : undefined
                       }
-                      onPointerUp={navigationApp ? handleLongPressEnd : undefined}
+                      onPointerUp={
+                        navigationApp ? handleLongPressEnd : undefined
+                      }
                       onPointerLeave={
                         navigationApp ? handleLongPressCancel : undefined
                       }
@@ -383,7 +397,7 @@ export function HeaderMenu() {
                         className="absolute bottom-0 left-0 h-0.5 w-full bg-primary/60"
                         initial={{ x: "-100%" }}
                         animate={
-                          pressingFavouriteId === favourite.parking_id
+                          effectivePressingFavouriteId === favourite.parking_id
                             ? { x: ["-100%", "0%"] }
                             : { x: "-100%" }
                         }
