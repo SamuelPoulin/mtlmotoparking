@@ -11,9 +11,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [["list"], ["github"]],
+  reporter: [["list"], ["github"], ["html", { outputFolder: "tests/playwright-report" }]],
   use: {
     trace: "on-first-retry",
+    baseURL: "http://localhost:3000",
   },
 
   projects: [
