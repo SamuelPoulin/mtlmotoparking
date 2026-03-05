@@ -14,7 +14,7 @@ export function PortfolioLink() {
         className="underline underline-offset-4"
         onClick={() => posthog.capture("portfolio_link_clicked")}
       >
-        Samuel Poulin
+        Studio Poulin
       </Link>
     </div>
   );
