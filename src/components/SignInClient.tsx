@@ -4,7 +4,7 @@ import { Construction } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaFacebookF, FaGoogle } from "react-icons/fa";
+import { FaFacebook, FaFacebookF, FaGoogle } from "react-icons/fa";
 import { motion } from "motion/react";
 
 import MotorcycleScene from "@/src/components/MotorcycleScene";
@@ -60,7 +60,7 @@ export function SignInClient() {
         <Separator className="mb-6" />
 
         {!session && (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -81,24 +81,24 @@ export function SignInClient() {
                 )}
               </Button>
             </motion.div>
-            <div className="w-full mt-4">
-              <div className="relative flex items-center gap-2">
-                <Separator className="flex-1" />
-                <div className="flex gap-2 text-muted-foreground text-nowrap animate-pulse">
-                  {t("comingSoon")}
-                  <Construction />
-                </div>
-                <Separator className="flex-1" />
-              </div>
-            </div>
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full"
             >
-              <Button disabled className="w-full">
-                <FaFacebookF className="mr-2" />
-                {t("SignInPage.continueWith")} Facebook
+              <Button
+                className="w-full"
+                onClick={() => handleSignIn("facebook")}
+                disabled={isSigningIn !== null}
+              >
+                {isSigningIn === "facebook" ? (
+                  <Spinner className="h-4 w-4" />
+                ) : (
+                  <>
+                    <FaFacebookF className="mr-2" />
+                    {t("SignInPage.continueWith")} Facebook
+                  </>
+                )}
               </Button>
             </motion.div>
           </div>
