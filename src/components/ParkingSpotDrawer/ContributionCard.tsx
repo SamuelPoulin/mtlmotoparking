@@ -4,6 +4,7 @@ import posthog from "posthog-js";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
+import { CldImage } from "next-cloudinary";
 
 import { Button } from "@/src/components/ui/button";
 import {
@@ -143,12 +144,11 @@ export function ContributionCard({
   return (
     <div className="flex flex-col gap-3 p-3 bg-card border border-border rounded-lg">
       <div className="relative w-full h-48 rounded-md overflow-hidden">
-        <Image
+        <CldImage
+          className="object-cover"
           src={contribution.cloudinary_url}
           alt="Parking spot photo"
           fill
-          className="object-cover"
-          unoptimized
         />
       </div>
       <div className="flex items-center justify-between">
