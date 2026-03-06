@@ -1,10 +1,9 @@
 "use client";
 
-import { Construction } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaFacebook, FaFacebookF, FaGoogle } from "react-icons/fa";
+import { FaFacebookF, FaGoogle } from "react-icons/fa";
 import { motion } from "motion/react";
 
 import MotorcycleScene from "@/src/components/MotorcycleScene";
