@@ -105,7 +105,8 @@
   },
   "SignInPage": {
     "title": "Sign in to mtlmotoparking",
-    "continueWith": "Continue with"
+    "continueWith": "Continue with",
+    "socialError": "Something went wrong. Please try again."
   },
   "Menu": {
     "signIn": {

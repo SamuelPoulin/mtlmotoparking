@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaFacebookF, FaGoogle } from "react-icons/fa";
 import { motion } from "motion/react";
+import { toast } from "sonner";
 
 import MotorcycleScene from "@/src/components/MotorcycleScene";
 import {
@@ -24,7 +25,18 @@ export function SignInClient() {
 
   const handleSignIn = async (provider: string) => {
     setIsSigningIn(provider);
-    await signIn.social({ provider });
+    try {
+      const result = await signIn.social({ provider });
+
+      if (result?.error) {
+        toast.error(t("SignInPage.socialError"));
+        setIsSigningIn(null);
+      }
+    } catch (error) {
+      console.error("Error signing in:", error);
+      toast.error(t("SignInPage.socialError"));
+      setIsSigningIn(null);
+    }
   };
 
   const handleSignOut = async () => {
