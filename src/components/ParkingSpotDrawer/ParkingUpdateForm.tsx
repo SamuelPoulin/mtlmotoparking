@@ -20,6 +20,8 @@ type CloudinarySignature = {
   apiKey: string;
   cloudName: string;
   uploadPreset: string;
+  folder: string;
+  context: string;
 };
 
 type Props = {
@@ -78,6 +80,8 @@ export function ParkingUpdateForm({ parkingId }: Props) {
       formData.append("timestamp", String(cloudinaryParams.timestamp));
       formData.append("signature", cloudinaryParams.signature);
       formData.append("upload_preset", cloudinaryParams.uploadPreset);
+      formData.append("folder", cloudinaryParams.folder);
+      formData.append("context", cloudinaryParams.context);
 
       const res = await fetch(
         `https://api.cloudinary.com/v1_1/${cloudinaryParams.cloudName}/image/upload`,

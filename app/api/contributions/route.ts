@@ -7,6 +7,13 @@ import {
   getContributionsForParking,
   getUserContributionCountForParkingRecently,
 } from "@/src/lib/api/contributions";
+import { verifyContributionAssetOwnership } from "@/src/lib/api/cloudinary";
+import {
+  createContributionSchema,
+  DESCRIPTION_MAX_LENGTH,
+} from "@/src/lib/validation/contributions";
+
+
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -37,39 +44,54 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
+    const parsed = createContributionSchema.safeParse(body);
+
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0];
+
+      if (!firstIssue) {
+        return NextResponse.json({ error: "Invalid request payload" }, { status: 400 });
+      }
+
+      if (firstIssue.path[0] === "description") {
+        return NextResponse.json(
+          {
+            error: `Description must be ${DESCRIPTION_MAX_LENGTH} characters or less`,
+          },
+          { status: 400 },
+        );
+      }
+
+      return NextResponse.json(
+        { error: firstIssue.message },
+        { status: 400 },
+      );
+    }
+
     const {
       parking_id,
       cloudinary_public_id,
       cloudinary_url,
       fullness,
       description,
-    } = body;
+    } = parsed.data;
 
-    if (
-      !parking_id ||
-      !cloudinary_public_id ||
-      !cloudinary_url ||
-      fullness === undefined
-    ) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 },
-      );
-    }
+    const assetIsValid = await verifyContributionAssetOwnership({
+      publicId: cloudinary_public_id,
+      expectedOwnerUserId: session.user.id,
+      expectedSecureUrl: cloudinary_url,
+    });
 
-    const DESCRIPTION_MAX_LENGTH = 280;
-    if (description && description.length > DESCRIPTION_MAX_LENGTH) {
+    if (!assetIsValid) {
       return NextResponse.json(
-        {
-          error: `Description must be ${DESCRIPTION_MAX_LENGTH} characters or less`,
-        },
-        { status: 400 },
+        { error: "Uploaded asset could not be validated" },
+        { status: 403 },
       );
     }
 
     const existingCount = await getUserContributionCountForParkingRecently(
       session.user.id,
-      Number(parking_id),
+      parking_id,
     );
 
     if (!isAdmin && existingCount >= 1) {
@@ -83,11 +105,11 @@ export async function POST(request: NextRequest) {
     }
 
     const contribution = await createContribution({
-      parking_id: Number(parking_id),
+      parking_id,
       user_id: session.user.id,
       cloudinary_public_id,
       cloudinary_url,
-      fullness: Number(fullness),
+      fullness,
       description: description || null,
     });
 
