@@ -42,6 +42,10 @@ Then open [http://localhost:3000](http://localhost:3000).
 
 Parking data originates from Montreal's open data API and is normalized/upserted in the app. Address resolution uses Mapbox reverse geocoding.
 
+## Asset attribution
+
+- Motorcycle by Poly by Google [CC-BY](https://creativecommons.org/licenses/by/3.0/) via [Poly Pizza](https://poly.pizza/m/dse64pqMKAR)
+
 ## Contributing
 
 Issues and PRs are welcome. If you want to work on a feature, opening a quick issue first helps avoid duplicated work.
