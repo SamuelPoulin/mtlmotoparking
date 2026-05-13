@@ -1,6 +1,10 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   Circle,
   CircleCheck,
@@ -39,7 +43,6 @@ import {
   ContributionCard,
   ContributionSkeleton,
 } from "@/src/components/ParkingSpotDrawer/ContributionCard";
-import { ContributionWithUser } from "../lib/api/contributions";
 import { Badge } from "./ui/badge";
 import { Skeleton } from "./ui/skeleton";
 
@@ -108,36 +111,36 @@ export default function SettingsClient() {
   } = useSession();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [offset, setOffset] = useState(0);
-  const [allContributions, setAllContributions] = useState<
-    UserSettingsResponse["contributions"]
-  >([]);
-  const [totalCount, setTotalCount] = useState<number>(0);
-  const [hasInitialLoad, setHasInitialLoad] = useState(false);
 
-  const { data, isLoading: isLoadingSettings } = useQuery<UserSettingsResponse>(
-    {
-      queryKey: ["user-settings", offset],
-      queryFn: async () => {
-        const res = await fetch(`/api/user/settings?offset=${offset}`);
-        if (!res.ok) throw new Error("Failed to fetch settings");
-        return res.json();
-      },
-      enabled: !!session,
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading: isLoadingSettings,
+  } = useInfiniteQuery({
+    queryKey: ["user-settings", "contributions"],
+    queryFn: async ({ pageParam }) => {
+      const res = await fetch(`/api/user/settings?offset=${pageParam}`);
+      if (!res.ok) throw new Error("Failed to fetch settings");
+      return res.json() as Promise<UserSettingsResponse>;
     },
-  );
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      const loadedCount = allPages.reduce(
+        (count, page) => count + page.contributions.length,
+        0,
+      );
 
-  useEffect(() => {
-    if (data?.contributions) {
-      if (offset === 0) {
-        setAllContributions(data.contributions);
-      } else {
-        setAllContributions((prev) => [...prev, ...data.contributions]);
-      }
-      setTotalCount(data.total);
-      setHasInitialLoad(true);
-    }
-  }, [data?.contributions, data?.total, offset]);
+      return loadedCount < lastPage.total ? loadedCount : undefined;
+    },
+    enabled: !!session,
+  });
+  const settings = data?.pages[0];
+  const allContributions =
+    data?.pages.flatMap((page) => page.contributions) ?? [];
+  const totalCount = settings?.total ?? 0;
+  const hasInitialLoad = !!settings;
 
   const updateNavigationApp = useMutation({
     mutationFn: async (navigationApp: string | null) => {
@@ -149,21 +152,8 @@ export default function SettingsClient() {
       if (!res.ok) throw new Error("Failed to update");
       return res.json();
     },
-    onSuccess: (data) => {
-      queryClient.setQueryData(
-        ["user-settings", offset],
-        (old: UserSettingsResponse | undefined) => ({
-          ...old,
-          navigationApp: data.navigationApp,
-        }),
-      );
-      queryClient.setQueryData(
-        ["user-settings"],
-        (old: UserSettingsResponse | undefined) => ({
-          ...old,
-          navigationApp: data.navigationApp,
-        }),
-      );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-settings"] });
       toast.success(t("navigationApp.saved"));
     },
     onError: () => {
@@ -226,21 +216,12 @@ export default function SettingsClient() {
   };
 
   const handleContributionDelete = (
-    contributionId: number,
+    _contributionId: number,
     parkingId: number,
   ) => {
-    setAllContributions((prev) => prev.filter((c) => c.id !== contributionId));
-    queryClient.setQueryData<{ contributions: ContributionWithUser[] }>(
-      ["contributions", parkingId],
-      (oldData) => {
-        if (!oldData) return oldData;
-        return {
-          contributions: oldData.contributions.filter(
-            (c) => c.id !== contributionId,
-          ),
-        };
-      },
-    );
+    queryClient.invalidateQueries({
+      queryKey: ["contributions", parkingId],
+    });
     queryClient.invalidateQueries({
       queryKey: ["can-contribute", parkingId],
     });
@@ -250,7 +231,7 @@ export default function SettingsClient() {
   };
 
   const handleLoadMore = () => {
-    setOffset((prev) => prev + 5);
+    void fetchNextPage();
   };
 
   return (
@@ -359,7 +340,7 @@ export default function SettingsClient() {
               name={name}
               value={value}
               icon={icon}
-              selected={data?.navigationApp === value}
+              selected={settings?.navigationApp === value}
               setSelected={updateNavigationApp.mutate}
               disabled={isLoadingSettings || updateNavigationApp.isPending}
             />
@@ -400,7 +381,7 @@ export default function SettingsClient() {
                 />
               ))}
 
-              {allContributions.length < totalCount && (
+              {hasNextPage && (
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -410,9 +391,9 @@ export default function SettingsClient() {
                     variant="outline"
                     className="w-full"
                     onClick={handleLoadMore}
-                    disabled={isLoadingSettings}
+                    disabled={isFetchingNextPage}
                   >
-                    {isLoadingSettings && <Spinner className="size-4" />}
+                    {isFetchingNextPage && <Spinner className="size-4" />}
                     {t("contributions.showMore")}
                   </Button>
                 </motion.div>
